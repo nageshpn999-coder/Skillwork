@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>మనుషులు కావాలి — పని పోస్ట్ | Skillwork</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back" href="index.html">←</a>
+  <div class="brand">పని పోస్ట్ చేయండి</div>
+</div>
+
+<div class="wrap">
+  <h1>మీకు కావాల్సిన పని వివరాలు</h1>
+  <p class="sub">ఇది పోస్ట్ చేసిన తర్వాత, ఆ ప్రాంతంలో ఉన్న వర్కర్స్‌కి కనిపిస్తుంది. వారు నేరుగా మిమ్మల్ని కాల్/వాట్సాప్ చేస్తారు.</p>
+
+  <form id="eForm">
+    <label>మీ పేరు / సంస్థ పేరు</label>
+    <input type="text" id="ename" required placeholder="ఉదా: వెంకటేష్ / ABC కన్‌స్ట్రక్షన్స్">
+
+    <label>ఫోన్ నంబర్ (WhatsApp ఉన్నది)</label>
+    <input type="tel" id="ephone" required maxlength="10" placeholder="10 అంకెల నంబర్">
+
+    <label>జిల్లా</label>
+    <select id="edistrict" required></select>
+
+    <label>మండలం</label>
+    <input type="text" id="emandal" required placeholder="ఉదా: మక్తల్">
+
+    <label>ఊరు</label>
+    <input type="text" id="evillage" required placeholder="ఉదా: గోపాల్‌పేట్">
+
+    <div class="group-label">ఎలాంటి పని కావాలి? (ఒకటి కంటే ఎక్కువ ఎంచుకోవచ్చు)</div>
+    <div id="eSkillBox"></div>
+
+    <label>ఎంతమంది కావాలి</label>
+    <input type="text" id="count" placeholder="ఉదా: 5 మంది">
+
+    <label>ఎప్పుడు కావాలి</label>
+    <input type="text" id="when" placeholder="ఉదా: రేపు ఉదయం నుండి">
+
+    <label>కూలి రేటు (optional)</label>
+    <input type="text" id="wage" placeholder="ఉదా: రోజుకు ₹500">
+
+    <label>వివరాలు (optional)</label>
+    <textarea id="details" placeholder="ఇంకా ఏమైనా వివరాలు..."></textarea>
+
+    <button type="submit" class="btn terracotta">పని పోస్ట్ చేయండి</button>
+    <p class="note">Submit చేసిన తర్వాత మీ పోస్టింగ్ ఈ ప్రాంతంలో ఉన్న వర్కర్స్‌కి కనిపిస్తుంది. 📍 Location permission అడిగితే "Allow" చేయండి — దాని వలన వర్కర్స్‌కి మీరు ఎంత దూరంలో ఉన్నారో ఖచ్చితంగా చూపించగలుగుతాం.</p>
+  </form>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/data.js"></script>
+<script>
+fillDistrictSelect(document.getElementById('edistrict'));
+const eSelectedSkills = new Set();
+buildSkillChips(document.getElementById('eSkillBox'), eSelectedSkills);
+
+document.getElementById('eForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const phone = cleanPhone(document.getElementById('ephone').value);
+  if(phone.length!==10){ showToast('దయచేసి సరైన 10 అంకెల ఫోన్ నంబర్ ఇవ్వండి'); return; }
+  if(eSelectedSkills.size===0){ showToast('కనీసం ఒక పని రకం ఎంచుకోండి'); return; }
+
+  const loc = await getMyLocation();
+
+  const data = {
+    name: document.getElementById('ename').value.trim(),
+    phone: phone,
+    district: document.getElementById('edistrict').value,
+    mandal: document.getElementById('emandal').value.trim(),
+    village: document.getElementById('evillage').value.trim(),
+    skills: Array.from(eSelectedSkills),
+    count: document.getElementById('count').value.trim(),
+    when: document.getElementById('when').value.trim(),
+    wage: document.getElementById('wage').value.trim(),
+    details: document.getElementById('details').value.trim(),
+    lat: loc ? loc.lat : null,
+    lng: loc ? loc.lng : null,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  try{
+    await db.collection('panipniWork').add(data);
+    showToast('✅ పోస్ట్ చేయబడింది!');
+    setTimeout(()=>{ window.location.href='find-workers.html'; }, 1200);
+  }catch(err){
+    console.error(err);
+    showToast('⚠️ Error — Firebase config సరిచూడండి');
+  }
+});
+</script>
+</body>
+</html>

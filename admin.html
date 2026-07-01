@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin | Skillwork</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .tabs{display:flex;gap:8px;margin-bottom:16px}
+  .tabs button{flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-family:inherit;font-size:14px}
+  .tabs button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .card .del{background:#B3261E;color:#fff;flex:0 0 auto;padding:11px 16px}
+  .stat{display:flex;gap:10px;margin-bottom:16px}
+  .stat div{flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+  .stat b{display:block;font-size:22px}
+  .stat span{font-size:12.5px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div id="gate" class="wrap">
+  <h1>Admin Login</h1>
+  <input type="text" id="pass" placeholder="పాస్‌వర్డ్">
+  <button class="btn green" onclick="checkPass()">లాగిన్</button>
+</div>
+
+<div id="panel" class="wrap" style="display:none">
+  <div class="topbar" style="margin:-20px -18px 20px;">
+    <div class="brand">Admin Panel</div>
+  </div>
+
+  <div class="stat">
+    <div><b id="wCount">0</b><span>Workers</span></div>
+    <div><b id="jCount">0</b><span>Work Posts</span></div>
+  </div>
+
+  <div class="tabs">
+    <button class="active" onclick="showTab('workers')">Workers</button>
+    <button onclick="showTab('work')">Work Posts</button>
+  </div>
+
+  <div id="adminList" class="loading">లోడ్ అవుతోంది...</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/data.js"></script>
+<script>
+// మీకు నచ్చిన పాస్‌వర్డ్‌గా మార్చుకోండి
+const ADMIN_PASS = "onlineland2026";
+
+function checkPass(){
+  if(document.getElementById('pass').value === ADMIN_PASS){
+    document.getElementById('gate').style.display='none';
+    document.getElementById('panel').style.display='block';
+    loadAll();
+  } else {
+    showToast('పాస్‌వర్డ్ తప్పు');
+  }
+}
+
+let workers=[], works=[], currentTab='workers';
+
+async function loadAll(){
+  const [wSnap, jSnap] = await Promise.all([
+    db.collection('panipniWorkers').orderBy('createdAt','desc').get(),
+    db.collection('panipniWork').orderBy('createdAt','desc').get()
+  ]);
+  workers = wSnap.docs.map(d=>({id:d.id,...d.data()}));
+  works = jSnap.docs.map(d=>({id:d.id,...d.data()}));
+  document.getElementById('wCount').textContent = workers.length;
+  document.getElementById('jCount').textContent = works.length;
+  renderTab();
+}
+
+function showTab(t){
+  currentTab=t;
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderTab();
+}
+
+function renderTab(){
+  const list = document.getElementById('adminList');
+  const data = currentTab==='workers' ? workers : works;
+  const coll = currentTab==='workers' ? 'panipniWorkers' : 'panipniWork';
+  if(data.length===0){
+    list.innerHTML = `<div class="empty"><span class="big">📭</span>ఖాళీగా ఉంది</div>`;
+    return;
+  }
+  list.innerHTML = data.map(d=>`
+    <div class="card">
+      <b class="name">${d.name}</b>
+      <div class="place">📍 ${d.village}, ${d.mandal}, ${d.district} · 📞 ${d.phone}</div>
+      <div class="tags">${d.skills.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+      <div class="actions">
+        <a class="del" onclick="delItem('${coll}','${d.id}')" href="javascript:void(0)">🗑️ Delete</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function delItem(coll,id){
+  if(!confirm('ఈ entry delete చేయాలా?')) return;
+  await db.collection(coll).doc(id).delete();
+  showToast('Deleted');
+  loadAll();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>దగ్గరలో పని | Skillwork</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .locbox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:16px}
+  .locbox .row{display:flex;gap:8px;margin-top:8px}
+  .locbox select{flex:1}
+  .locstatus{font-size:13px;color:var(--ink-soft);display:flex;align-items:center;gap:6px}
+  .dist{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:var(--green-dark);background:#EAF3EC;padding:5px 10px;border-radius:999px}
+  .dist.far{color:var(--terracotta-dark);background:#FBEEE3}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back" href="index.html">←</a>
+  <div class="brand">దగ్గరలో పని</div>
+</div>
+
+<div class="wrap">
+  <div class="locbox">
+    <div class="locstatus" id="locStatus">📍 మీ లొకేషన్ చెక్ చేస్తున్నాం...</div>
+    <div class="row" id="manualLocRow" style="display:none">
+      <select id="myDistrict"><option value="">మీ జిల్లా</option></select>
+      <input type="text" id="myMandal" placeholder="మీ మండలం">
+    </div>
+  </div>
+
+  <div class="filters">
+    <select id="fDistrict"><option value="">అన్ని జిల్లాలు</option></select>
+  </div>
+
+  <div id="list" class="loading">లోడ్ అవుతోంది...</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/data.js"></script>
+<script>
+fillDistrictSelect(document.getElementById('fDistrict'));
+fillDistrictSelect(document.getElementById('myDistrict'));
+
+let allWork = [];
+let myLoc = null; // {lat,lng} if GPS granted
+let myManual = {district:'', mandal:''};
+
+function render(){
+  const d = document.getElementById('fDistrict').value;
+  let filtered = d ? allWork.filter(w=>w.district===d) : allWork.slice();
+
+  filtered = filtered.map(w=>{
+    const item = {...w};
+    if(myLoc && item.lat!=null && item.lng!=null){
+      attachDistance(item, myLoc);
+    } else {
+      item._myVillage=''; item._myMandal=myManual.mandal; item._myDistrict=myManual.district;
+      attachDistance(item, null);
+    }
+    return item;
+  });
+
+  filtered.sort((a,b)=> (a._distKm||999) - (b._distKm||999));
+
+  const list = document.getElementById('list');
+  if(filtered.length===0){
+    list.innerHTML = `<div class="empty"><span class="big">📭</span>ప్రస్తుతం ఈ ప్రాంతంలో పని పోస్టింగ్‌లు లేవు.<br>తర్వాత మళ్ళీ చూడండి.</div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(w=>`
+    <div class="card">
+      <b class="name">${w.name}</b>
+      <div class="place">📍 ${w.village}, ${w.mandal}, ${w.district}</div>
+      <span class="dist ${w._distKm>30?'far':''}">${w._exact?'📏':'≈'} ${w._distText}</span>
+      <div class="tags">${w.skills.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+      ${w.count?`<div class="place">👥 కావాల్సిన మంది: ${w.count}</div>`:''}
+      ${w.when?`<div class="place">🗓️ ఎప్పుడు: ${w.when}</div>`:''}
+      ${w.wage?`<div class="place">💰 కూలి: ${w.wage}</div>`:''}
+      ${w.details?`<div class="place">${w.details}</div>`:''}
+      <div class="actions">
+        <a class="call" href="tel:${w.phone}">📞 కాల్ చేయండి</a>
+        <a class="wa" target="_blank" href="${waLink(w.phone,'నమస్తే, మీ పని పోస్టింగ్ చూసి కాంటాక్ట్ చేస్తున్నాను — Skillwork')}">💬 WhatsApp</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('fDistrict').addEventListener('change', render);
+document.getElementById('myDistrict').addEventListener('change', e=>{ myManual.district=e.target.value; render(); });
+document.getElementById('myMandal').addEventListener('input', e=>{ myManual.mandal=e.target.value; render(); });
+
+async function initLocation(){
+  myLoc = await getMyLocation();
+  const statusEl = document.getElementById('locStatus');
+  if(myLoc){
+    statusEl.textContent = '✅ మీ లొకేషన్ దొరికింది — ఖచ్చితమైన దూరం చూపిస్తున్నాం';
+  } else {
+    statusEl.textContent = '📍 Location దొరకలేదు — మీ జిల్లా/మండలం ఇక్కడ ఎంచుకోండి (సుమారుగా దూరం చూపిస్తాం)';
+    document.getElementById('manualLocRow').style.display='flex';
+  }
+  render();
+}
+
+db.collection('panipniWork').orderBy('createdAt','desc').get().then(snap=>{
+  allWork = snap.docs.map(d=>d.data());
+  initLocation();
+}).catch(err=>{
+  console.error(err);
+  document.getElementById('list').innerHTML = `<div class="empty"><span class="big">⚠️</span>డేటా లోడ్ కాలేదు — Firebase config సరిచూడండి.</div>`;
+});
+</script>
+</body>
+</html>
