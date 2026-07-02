@@ -19,6 +19,10 @@
   <p class="sub" data-i="post_sub"></p>
 
   <form id="eForm">
+    <!-- Phase 3: GPS నుండి జిల్లా/ఏరియా auto-select బటన్ -->
+    <button type="button" class="btn locbtn" id="useLocBtn"></button>
+    <p class="note" id="locMsg" style="display:none;margin-top:6px"></p>
+
     <label data-i="biz_name"></label>
     <input type="text" id="ename" required data-i-ph="ph_bizname">
 
@@ -35,6 +39,8 @@
 
     <div id="areaWrap" style="display:none">
       <label data-i="area"></label>
+      <!-- Phase 3: area search box — టైప్ చేస్తే కింద dropdown filter అవుతుంది -->
+      <input type="text" id="areaSearch" data-i-ph="search_area_ph" autocomplete="off" style="margin-bottom:8px">
       <select id="earea"></select>
     </div>
 
@@ -73,6 +79,46 @@ const districtSel = document.getElementById('edistrict');
 fillDistrictSelect(districtSel);
 fillAreaSelect(document.getElementById('earea'));
 setupHydAreaSwitch(districtSel, document.getElementById('mandalWrap'), document.getElementById('areaWrap'));
+
+// ---- Phase 3: 🔍 Area search (Hyderabad only) ----
+const areaSearchEl = document.getElementById('areaSearch');
+areaSearchEl.addEventListener('input', ()=>{
+  fillAreaSelect(document.getElementById('earea'), areaSearchEl.value);
+});
+
+// ---- Phase 3: 📍 Use My Current Location ----
+const useLocBtn = document.getElementById('useLocBtn');
+const locMsg = document.getElementById('locMsg');
+useLocBtn.textContent = t('use_my_loc');
+
+useLocBtn.addEventListener('click', async ()=>{
+  useLocBtn.disabled = true;
+  useLocBtn.textContent = t('loc_detecting');
+  const loc = await getMyLocation();
+  useLocBtn.disabled = false;
+  useLocBtn.textContent = t('use_my_loc');
+  locMsg.style.display = 'block';
+
+  if(!loc){
+    locMsg.textContent = t('loc_denied_msg');
+    return;
+  }
+
+  const nd = nearestDistrict(loc.lat, loc.lng);
+  if(nd){
+    districtSel.value = nd.te;
+    districtSel.dispatchEvent(new Event('change'));
+  }
+  if(nd && nd.te===HYD_TE){
+    const na = nearestHydArea(loc.lat, loc.lng);
+    if(na){
+      areaSearchEl.value='';
+      fillAreaSelect(document.getElementById('earea'));
+      document.getElementById('earea').value = na.te;
+    }
+  }
+  locMsg.textContent = t('loc_set');
+});
 
 const eSelectedSkills = new Set();
 function rebuildChips(){
