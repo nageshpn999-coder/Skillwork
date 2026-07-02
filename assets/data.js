@@ -73,6 +73,13 @@ const I18N = {
     dist_all: "అన్ని దూరాలు",
     within: "{n} KM లోపు",
     open_map: "📍 మ్యాప్‌లో చూడండి",
+    use_my_loc: "📍 నా ప్రస్తుత లొకేషన్ వాడండి",
+    loc_detecting: "లొకేషన్ గుర్తిస్తున్నాం...",
+    loc_set: "✅ మీ లొకేషన్ ఆధారంగా జిల్లా/ఏరియా set చేశాం — సరిచూసుకోండి",
+    loc_denied_msg: "లొకేషన్ దొరకలేదు — ఫర్వాలేదు, కింద మాన్యువల్‌గా ఎంచుకోండి",
+    search_area_ph: "ఏరియా వెతకండి... (ఉదా: Gach, Kuka)",
+    skill_search_ph: "🔍 స్కిల్, పేరు లేదా పని వెతకండి",
+    no_match: "సరిపోలే వర్కర్స్ లేదా పనులు దొరకలేదు.",
     ph_name: "ఉదా: రమేష్", ph_phone: "10 అంకెల నంబర్", ph_mandal: "ఉదా: మక్తల్", ph_village: "ఉదా: గోపాల్‌పేట్ / KPHB కాలనీ",
     ph_available: "ఉదా: ఇప్పుడే / రేపటి నుండి", ph_bizname: "ఉదా: వెంకటేష్ / ABC కన్‌స్ట్రక్షన్స్",
     ph_count: "ఉదా: 5 మంది", ph_when: "ఉదా: రేపు ఉదయం నుండి", ph_wage: "ఉదా: రోజుకు ₹600 / నెలకు ₹15,000", ph_details: "ఇంకా ఏమైనా వివరాలు..."
@@ -142,6 +149,13 @@ const I18N = {
     dist_all: "All distances",
     within: "Within {n} KM",
     open_map: "📍 Open in Google Maps",
+    use_my_loc: "📍 Use My Current Location",
+    loc_detecting: "Detecting your location...",
+    loc_set: "✅ District/Area set from your location — please verify",
+    loc_denied_msg: "Location not available — no problem, select manually below",
+    search_area_ph: "Search area... (e.g. Gach, Kuka)",
+    skill_search_ph: "🔍 Search Skill, Worker or Job",
+    no_match: "No matching Workers or Jobs found.",
     ph_name: "e.g. Ramesh", ph_phone: "10-digit number", ph_mandal: "e.g. Makthal", ph_village: "e.g. Gopalpet / KPHB Colony",
     ph_available: "e.g. Immediately / From tomorrow", ph_bizname: "e.g. Venkatesh / ABC Constructions",
     ph_count: "e.g. 5 people", ph_when: "e.g. From tomorrow morning", ph_wage: "e.g. ₹600/day / ₹15,000/month", ph_details: "Any other details..."
@@ -184,83 +198,83 @@ function chooseLang(l){
 
 // ---- Telangana districts (33) — canonical value = Telugu ----
 const DISTRICTS = [
-  {te:"హైదరాబాద్", en:"Hyderabad"},
-  {te:"రంగారెడ్డి", en:"Rangareddy"},
-  {te:"మేడ్చల్–మల్కాజిగిరి", en:"Medchal–Malkajgiri"},
-  {te:"సంగారెడ్డి", en:"Sangareddy"},
-  {te:"వికారాబాద్", en:"Vikarabad"},
-  {te:"మహబూబ్‌నగర్", en:"Mahabubnagar"},
-  {te:"నారాయణపేట", en:"Narayanpet"},
-  {te:"జోగులాంబ గద్వాల", en:"Jogulamba Gadwal"},
-  {te:"వనపర్తి", en:"Wanaparthy"},
-  {te:"నాగర్‌కర్నూల్", en:"Nagarkurnool"},
-  {te:"మెదక్", en:"Medak"},
-  {te:"సిద్దిపేట", en:"Siddipet"},
-  {te:"నిజామాబాద్", en:"Nizamabad"},
-  {te:"కామారెడ్డి", en:"Kamareddy"},
-  {te:"నిర్మల్", en:"Nirmal"},
-  {te:"ఆదిలాబాద్", en:"Adilabad"},
-  {te:"కొమరం భీమ్ ఆసిఫాబాద్", en:"Komaram Bheem Asifabad"},
-  {te:"మంచిర్యాల", en:"Mancherial"},
-  {te:"పెద్దపల్లి", en:"Peddapalli"},
-  {te:"కరీంనగర్", en:"Karimnagar"},
-  {te:"జగిత్యాల", en:"Jagtial"},
-  {te:"రాజన్న సిరిసిల్ల", en:"Rajanna Sircilla"},
-  {te:"వరంగల్", en:"Warangal"},
-  {te:"హనుమకొండ", en:"Hanumakonda"},
-  {te:"జనగామ", en:"Jangaon"},
-  {te:"జయశంకర్ భూపాలపల్లి", en:"Jayashankar Bhupalpally"},
-  {te:"ములుగు", en:"Mulugu"},
-  {te:"మహబూబాబాద్", en:"Mahabubabad"},
-  {te:"ఖమ్మం", en:"Khammam"},
-  {te:"భద్రాద్రి కొత్తగూడెం", en:"Bhadradri Kothagudem"},
-  {te:"నల్గొండ", en:"Nalgonda"},
-  {te:"సూర్యాపేట", en:"Suryapet"},
-  {te:"యాదాద్రి భువనగిరి", en:"Yadadri Bhuvanagiri"}
+  {lat:17.385, lng:78.4867, te:"హైదరాబాద్", en:"Hyderabad"},
+  {lat:17.25, lng:78.45, te:"రంగారెడ్డి", en:"Rangareddy"},
+  {lat:17.63, lng:78.48, te:"మేడ్చల్–మల్కాజిగిరి", en:"Medchal–Malkajgiri"},
+  {lat:17.62, lng:78.08, te:"సంగారెడ్డి", en:"Sangareddy"},
+  {lat:17.34, lng:77.9, te:"వికారాబాద్", en:"Vikarabad"},
+  {lat:16.74, lng:77.99, te:"మహబూబ్‌నగర్", en:"Mahabubnagar"},
+  {lat:16.74, lng:77.49, te:"నారాయణపేట", en:"Narayanpet"},
+  {lat:16.23, lng:77.8, te:"జోగులాంబ గద్వాల", en:"Jogulamba Gadwal"},
+  {lat:16.36, lng:78.06, te:"వనపర్తి", en:"Wanaparthy"},
+  {lat:16.48, lng:78.32, te:"నాగర్‌కర్నూల్", en:"Nagarkurnool"},
+  {lat:18.05, lng:78.26, te:"మెదక్", en:"Medak"},
+  {lat:18.1, lng:78.85, te:"సిద్దిపేట", en:"Siddipet"},
+  {lat:18.67, lng:78.1, te:"నిజామాబాద్", en:"Nizamabad"},
+  {lat:18.32, lng:78.34, te:"కామారెడ్డి", en:"Kamareddy"},
+  {lat:19.1, lng:78.34, te:"నిర్మల్", en:"Nirmal"},
+  {lat:19.67, lng:78.53, te:"ఆదిలాబాద్", en:"Adilabad"},
+  {lat:19.36, lng:79.28, te:"కొమరం భీమ్ ఆసిఫాబాద్", en:"Komaram Bheem Asifabad"},
+  {lat:18.87, lng:79.44, te:"మంచిర్యాల", en:"Mancherial"},
+  {lat:18.62, lng:79.37, te:"పెద్దపల్లి", en:"Peddapalli"},
+  {lat:18.44, lng:79.13, te:"కరీంనగర్", en:"Karimnagar"},
+  {lat:18.79, lng:78.91, te:"జగిత్యాల", en:"Jagtial"},
+  {lat:18.39, lng:78.81, te:"రాజన్న సిరిసిల్ల", en:"Rajanna Sircilla"},
+  {lat:17.98, lng:79.6, te:"వరంగల్", en:"Warangal"},
+  {lat:18.01, lng:79.56, te:"హనుమకొండ", en:"Hanumakonda"},
+  {lat:17.72, lng:79.16, te:"జనగామ", en:"Jangaon"},
+  {lat:18.43, lng:79.86, te:"జయశంకర్ భూపాలపల్లి", en:"Jayashankar Bhupalpally"},
+  {lat:18.19, lng:79.94, te:"ములుగు", en:"Mulugu"},
+  {lat:17.6, lng:80.0, te:"మహబూబాబాద్", en:"Mahabubabad"},
+  {lat:17.25, lng:80.15, te:"ఖమ్మం", en:"Khammam"},
+  {lat:17.55, lng:80.62, te:"భద్రాద్రి కొత్తగూడెం", en:"Bhadradri Kothagudem"},
+  {lat:17.05, lng:79.27, te:"నల్గొండ", en:"Nalgonda"},
+  {lat:17.14, lng:79.62, te:"సూర్యాపేట", en:"Suryapet"},
+  {lat:17.51, lng:78.89, te:"యాదాద్రి భువనగిరి", en:"Yadadri Bhuvanagiri"}
 ];
 
 // ---- Hyderabad areas — canonical value = Telugu ----
 const HYD_AREAS = [
-  {te:"అమీర్‌పేట", en:"Ameerpet"},
-  {te:"కూకట్‌పల్లి", en:"Kukatpally"},
-  {te:"KPHB", en:"KPHB"},
-  {te:"మియాపూర్", en:"Miyapur"},
-  {te:"చందానగర్", en:"Chandanagar"},
-  {te:"గచ్చిబౌలి", en:"Gachibowli"},
-  {te:"మాదాపూర్", en:"Madhapur"},
-  {te:"హైటెక్ సిటీ", en:"Hitech City"},
-  {te:"కొండాపూర్", en:"Kondapur"},
-  {te:"జూబ్లీ హిల్స్", en:"Jubilee Hills"},
-  {te:"బంజారా హిల్స్", en:"Banjara Hills"},
-  {te:"పంజాగుట్ట", en:"Panjagutta"},
-  {te:"సోమాజిగూడ", en:"Somajiguda"},
-  {te:"బేగంపేట", en:"Begumpet"},
-  {te:"సికింద్రాబాద్", en:"Secunderabad"},
-  {te:"అల్వాల్", en:"Alwal"},
-  {te:"కొంపల్లి", en:"Kompally"},
-  {te:"ECIL", en:"ECIL"},
-  {te:"ఉప్పల్", en:"Uppal"},
-  {te:"హబ్సిగూడ", en:"Habsiguda"},
-  {te:"తార్నాక", en:"Tarnaka"},
-  {te:"అంబర్‌పేట", en:"Amberpet"},
-  {te:"ముషీరాబాద్", en:"Musheerabad"},
-  {te:"కోఠి", en:"Koti"},
-  {te:"అబిడ్స్", en:"Abids"},
-  {te:"నాంపల్లి", en:"Nampally"},
-  {te:"మలక్‌పేట", en:"Malakpet"},
-  {te:"దిల్‌సుఖ్‌నగర్", en:"Dilsukhnagar"},
-  {te:"LB నగర్", en:"LB Nagar"},
-  {te:"వనస్థలిపురం", en:"Vanasthalipuram"},
-  {te:"చార్మినార్", en:"Charminar"},
-  {te:"సంతోష్ నగర్", en:"Santosh Nagar"},
-  {te:"మెహదీపట్నం", en:"Mehdipatnam"},
-  {te:"టోలిచౌకి", en:"Tolichowki"},
-  {te:"అత్తాపూర్", en:"Attapur"},
-  {te:"రాజేంద్రనగర్", en:"Rajendranagar"},
-  {te:"శంషాబాద్", en:"Shamshabad"},
-  {te:"పటాన్‌చెరు", en:"Patancheru"},
-  {te:"బాలానగర్", en:"Balanagar"},
-  {te:"నిజాంపేట", en:"Nizampet"},
+  {lat:17.4375, lng:78.4483, te:"అమీర్‌పేట", en:"Ameerpet"},
+  {lat:17.4849, lng:78.4138, te:"కూకట్‌పల్లి", en:"Kukatpally"},
+  {lat:17.4933, lng:78.3915, te:"KPHB", en:"KPHB"},
+  {lat:17.4969, lng:78.3715, te:"మియాపూర్", en:"Miyapur"},
+  {lat:17.493, lng:78.332, te:"చందానగర్", en:"Chandanagar"},
+  {lat:17.4401, lng:78.3489, te:"గచ్చిబౌలి", en:"Gachibowli"},
+  {lat:17.4483, lng:78.3915, te:"మాదాపూర్", en:"Madhapur"},
+  {lat:17.4435, lng:78.3772, te:"హైటెక్ సిటీ", en:"Hitech City"},
+  {lat:17.4622, lng:78.3568, te:"కొండాపూర్", en:"Kondapur"},
+  {lat:17.4325, lng:78.407, te:"జూబ్లీ హిల్స్", en:"Jubilee Hills"},
+  {lat:17.4108, lng:78.4294, te:"బంజారా హిల్స్", en:"Banjara Hills"},
+  {lat:17.4239, lng:78.452, te:"పంజాగుట్ట", en:"Panjagutta"},
+  {lat:17.4239, lng:78.462, te:"సోమాజిగూడ", en:"Somajiguda"},
+  {lat:17.444, lng:78.4661, te:"బేగంపేట", en:"Begumpet"},
+  {lat:17.4399, lng:78.4983, te:"సికింద్రాబాద్", en:"Secunderabad"},
+  {lat:17.5046, lng:78.51, te:"అల్వాల్", en:"Alwal"},
+  {lat:17.5453, lng:78.487, te:"కొంపల్లి", en:"Kompally"},
+  {lat:17.477, lng:78.585, te:"ECIL", en:"ECIL"},
+  {lat:17.4056, lng:78.5591, te:"ఉప్పల్", en:"Uppal"},
+  {lat:17.4062, lng:78.543, te:"హబ్సిగూడ", en:"Habsiguda"},
+  {lat:17.4266, lng:78.528, te:"తార్నాక", en:"Tarnaka"},
+  {lat:17.391, lng:78.514, te:"అంబర్‌పేట", en:"Amberpet"},
+  {lat:17.42, lng:78.499, te:"ముషీరాబాద్", en:"Musheerabad"},
+  {lat:17.385, lng:78.48, te:"కోఠి", en:"Koti"},
+  {lat:17.39, lng:78.475, te:"అబిడ్స్", en:"Abids"},
+  {lat:17.391, lng:78.468, te:"నాంపల్లి", en:"Nampally"},
+  {lat:17.373, lng:78.503, te:"మలక్‌పేట", en:"Malakpet"},
+  {lat:17.3688, lng:78.5247, te:"దిల్‌సుఖ్‌నగర్", en:"Dilsukhnagar"},
+  {lat:17.3476, lng:78.549, te:"LB నగర్", en:"LB Nagar"},
+  {lat:17.332, lng:78.559, te:"వనస్థలిపురం", en:"Vanasthalipuram"},
+  {lat:17.3616, lng:78.4747, te:"చార్మినార్", en:"Charminar"},
+  {lat:17.348, lng:78.503, te:"సంతోష్ నగర్", en:"Santosh Nagar"},
+  {lat:17.3949, lng:78.434, te:"మెహదీపట్నం", en:"Mehdipatnam"},
+  {lat:17.4, lng:78.409, te:"టోలిచౌకి", en:"Tolichowki"},
+  {lat:17.367, lng:78.434, te:"అత్తాపూర్", en:"Attapur"},
+  {lat:17.318, lng:78.403, te:"రాజేంద్రనగర్", en:"Rajendranagar"},
+  {lat:17.2403, lng:78.4294, te:"శంషాబాద్", en:"Shamshabad"},
+  {lat:17.533, lng:78.265, te:"పటాన్‌చెరు", en:"Patancheru"},
+  {lat:17.467, lng:78.44, te:"బాలానగర్", en:"Balanagar"},
+  {lat:17.516, lng:78.387, te:"నిజాంపేట", en:"Nizampet"},
   {te:"ఇతర ఏరియా (Other)", en:"Other area"}
 ];
 
@@ -604,14 +618,26 @@ function fillDistrictSelect(sel){
   });
 }
 
-function fillAreaSelect(sel){
+function fillAreaSelect(sel, filterText){
+  const f = (filterText||'').trim().toLowerCase();
   sel.innerHTML='';
   HYD_AREAS.forEach(a=>{
+    // Search matches English name, Telugu name — typing "gach" → Gachibowli
+    if(f && !(a.en.toLowerCase().includes(f) || a.te.includes(filterText.trim()))) return;
     const o=document.createElement('option');
     o.value=a.te;
     o.textContent = getLang()==='en' ? a.en : a.te;
     sel.appendChild(o);
   });
+  // Filter తో ఏమీ దొరకకపోతే అన్నీ చూపించు (user confuse అవ్వకుండా)
+  if(!sel.options.length){
+    HYD_AREAS.forEach(a=>{
+      const o=document.createElement('option');
+      o.value=a.te;
+      o.textContent = getLang()==='en' ? a.en : a.te;
+      sel.appendChild(o);
+    });
+  }
 }
 
 // Hyderabad district select → show area dropdown instead of mandal text input
@@ -674,6 +700,89 @@ function mapsLink(item){
   }
   const q = [item.village, item.mandal, districtLabel(item.district), 'Telangana'].filter(Boolean).join(', ');
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+}
+
+// ---- Smart Skill Search helpers ----
+// Store Once → Reuse Many Times: listing పేజీలు Firestore ని ఒక్కసారే చదివి
+// memory (allWork/allWorkers) లో ఉంచుతాయి; ఈ functions ఆ memory data మీద పనిచేస్తాయి.
+
+// HTML-safe escape (highlight చేసేటప్పుడు injection రాకుండా)
+function escHtml(s){
+  return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escReg(s){ return String(s??'').replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+
+// Query తో match అయిన భాగాన్ని <mark> తో highlight చేస్తుంది
+function highlightText(text, query){
+  const t = escHtml(text);
+  const q = (query||'').trim();
+  if(!q) return t;
+  try{
+    return t.replace(new RegExp('('+escReg(escHtml(q))+')','gi'), '<mark>$1</mark>');
+  }catch(e){ return t; }
+}
+
+// ఒక item (worker/work) query తో match అవుతుందా?
+// Name + skills (తెలుగు మరియు English రెండు labels) మీద మాత్రమే వెతుకుతుంది
+function matchesQuery(item, query){
+  const q = (query||'').trim().toLowerCase();
+  if(!q) return true;
+  if((item.name||'').toLowerCase().includes(q)) return true;
+  return (item.skills||[]).some(s=>{
+    if(String(s).toLowerCase().includes(q)) return true;            // stored Telugu value
+    for(const list of [SKILL_GROUPS, SKILL_GROUPS_URBAN]){
+      for(const g of list){
+        const it = g.items.find(x=>x.te===s);
+        if(it && (it.en.toLowerCase().includes(q) || it.te.includes(query.trim()))) return true;
+      }
+    }
+    return false;
+  });
+}
+
+// Auto-suggestions: రెండు skill lists నుండి query తో మొదలయ్యే/కలిగిన skills
+// ప్రస్తుత భాషలో label ఇస్తుంది, గరిష్టంగా 8
+function skillSuggestions(query){
+  const q = (query||'').trim().toLowerCase();
+  if(q.length<2) return [];
+  const seen = new Set();
+  const out = [];
+  for(const list of [SKILL_GROUPS, SKILL_GROUPS_URBAN]){
+    for(const g of list){
+      for(const it of g.items){
+        if(seen.has(it.te)) continue;
+        if(it.en.toLowerCase().includes(q) || it.te.includes(query.trim())){
+          seen.add(it.te);
+          out.push(getLang()==='en' ? it.en : it.te);
+          if(out.length>=8) return out;
+        }
+      }
+    }
+  }
+  return out;
+}
+
+// ---- Phase 3: nearest district/area from GPS ----
+// ఇచ్చిన lat/lng కి అతి దగ్గరగా ఉన్న జిల్లా (HQ coordinates ఆధారంగా)
+function nearestDistrict(lat, lng){
+  let best=null, bestKm=Infinity;
+  DISTRICTS.forEach(d=>{
+    if(d.lat==null) return;
+    const km = haversineKm(lat,lng,d.lat,d.lng);
+    if(km<bestKm){ bestKm=km; best=d; }
+  });
+  return best; // {te,en,lat,lng}
+}
+
+// ఇచ్చిన lat/lng కి అతి దగ్గరగా ఉన్న Hyderabad area
+function nearestHydArea(lat, lng){
+  let best=null, bestKm=Infinity;
+  HYD_AREAS.forEach(a=>{
+    if(a.lat==null) return;
+    const km = haversineKm(lat,lng,a.lat,a.lng);
+    if(km<bestKm){ bestKm=km; best=a; }
+  });
+  return best;
 }
 
 // ---- location helpers ----

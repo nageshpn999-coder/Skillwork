@@ -173,6 +173,12 @@ select{
 }
 .btn.green{background:linear-gradient(135deg,#4A8F5C,var(--green-dark));box-shadow:0 8px 20px var(--green-glow)}
 .btn.terracotta{background:linear-gradient(135deg,#D07835,var(--terracotta-dark));box-shadow:0 8px 20px var(--terra-glow)}
+.btn.locbtn{
+  background:#fff;color:var(--green-dark);
+  border:1.5px dashed var(--green);
+  box-shadow:none;margin-top:4px;padding:13px;font-size:15px;
+}
+.btn.locbtn:disabled{opacity:.6}
 .btn:active{transform:scale(.98)}
 
 .note{font-size:13px;color:var(--ink-soft);margin-top:10px;line-height:1.6}
@@ -247,6 +253,73 @@ select{
 }
 
 .loading{text-align:center;padding:36px;color:var(--ink-soft)}
+
+/* ---------- Smart Skill Search ---------- */
+.search-wrap{
+  position:relative;
+  margin-bottom:14px;
+}
+.search-box{
+  position:relative;
+  display:flex;align-items:center;
+}
+.search-box input{
+  width:100%;
+  padding:14px 44px 14px 16px;
+  border-radius:999px;
+  border:1.5px solid var(--line);
+  background:#fff;
+  font-size:15.5px;font-family:inherit;color:var(--ink);
+  box-shadow:0 3px 12px rgba(0,0,0,.05);
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.search-box input:focus{
+  outline:none;border-color:var(--sun);
+  box-shadow:0 0 0 3px rgba(232,169,59,.22), 0 3px 12px rgba(0,0,0,.05);
+}
+.search-clear{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  width:32px;height:32px;border-radius:50%;
+  border:none;background:var(--cream-deep);color:var(--ink-soft);
+  font-size:14px;font-weight:800;cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  font-family:inherit;
+  transition:transform .12s ease;
+}
+.search-clear:active{transform:translateY(-50%) scale(.9)}
+.search-clear.show{display:flex}
+
+/* Suggestions dropdown */
+.suggestions{
+  position:absolute;left:0;right:0;top:calc(100% + 6px);
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  box-shadow:0 10px 28px rgba(0,0,0,.12);
+  z-index:30;overflow:hidden;
+  display:none;
+  animation:sugIn .15s ease both;
+}
+.suggestions.show{display:block}
+@keyframes sugIn{
+  from{opacity:0;transform:translateY(-4px)}
+  to{opacity:1;transform:none}
+}
+.suggestions .sug{
+  padding:13px 18px;font-size:14.5px;cursor:pointer;
+  border-bottom:1px solid var(--cream-deep);
+  display:flex;align-items:center;gap:8px;
+}
+.suggestions .sug::before{content:"🔍";font-size:12px;opacity:.55}
+.suggestions .sug:last-child{border-bottom:none}
+.suggestions .sug:active{background:var(--cream)}
+
+/* Match highlight in cards */
+.card mark{
+  background:rgba(232,169,59,.35);
+  color:inherit;
+  border-radius:4px;
+  padding:0 2px;
+  font-weight:800;
+}
 
 footer.foot{
   text-align:center;color:var(--ink-soft);font-size:12.5px;
