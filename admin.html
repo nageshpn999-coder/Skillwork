@@ -92,8 +92,8 @@ function renderTab(){
   list.innerHTML = data.map(d=>`
     <div class="card">
       <b class="name">${d.name}</b>
-      <div class="place">📍 ${d.village}, ${d.mandal}, ${d.district} · 📞 ${d.phone}</div>
-      <div class="tags">${d.skills.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+      <div class="place">📍 ${d.village}, ${areaLabel(d.mandal)}, ${districtLabel(d.district)} · 📞 ${d.phone}</div>
+      <div class="tags">${(d.skills||[]).map(s=>`<span class="tag">${skillLabel(s)}</span>`).join('')}</div>
       <div class="actions">
         <a class="del" onclick="delItem('${coll}','${d.id}')" href="javascript:void(0)">🗑️ Delete</a>
       </div>

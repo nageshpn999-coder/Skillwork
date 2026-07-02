@@ -3,44 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>పని కావాలి — నమోదు | Skillwork</title>
+<title>Register | Skillwork</title>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
 <div class="topbar">
   <a class="back" href="index.html">←</a>
-  <div class="brand">నమోదు చేసుకోండి</div>
+  <div class="brand" data-i="need_work"></div>
+  <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
 </div>
 
 <div class="wrap">
-  <h1>మీ వివరాలు నమోదు చేయండి</h1>
-  <p class="sub">ఇది ఉచితం. మీ ఫోన్ నంబర్ దగ్గరలో పని ఇచ్చే వారికి కనిపిస్తుంది, వారు నేరుగా కాల్/వాట్సాప్ చేస్తారు.</p>
+  <h1 data-i="enroll_title"></h1>
+  <p class="sub" data-i="enroll_sub"></p>
 
   <form id="wForm">
-    <label>మీ పేరు</label>
-    <input type="text" id="name" required placeholder="ఉదా: రమేష్">
+    <label data-i="your_name"></label>
+    <input type="text" id="name" required data-i-ph="ph_name">
 
-    <label>ఫోన్ నంబర్ (WhatsApp ఉన్నది)</label>
-    <input type="tel" id="phone" required maxlength="10" placeholder="10 అంకెల నంబర్">
+    <label data-i="phone"></label>
+    <input type="tel" id="phone" required maxlength="10" data-i-ph="ph_phone">
 
-    <label>జిల్లా</label>
+    <label data-i="district"></label>
     <select id="district" required></select>
 
-    <label>మండలం</label>
-    <input type="text" id="mandal" required placeholder="ఉదా: మక్తల్">
+    <div id="mandalWrap">
+      <label data-i="mandal"></label>
+      <input type="text" id="mandal" data-i-ph="ph_mandal">
+    </div>
 
-    <label>ఊరు</label>
-    <input type="text" id="village" required placeholder="ఉదా: గోపాల్‌పేట్">
+    <div id="areaWrap" style="display:none">
+      <label data-i="area"></label>
+      <select id="area"></select>
+    </div>
 
-    <div class="group-label">మీ పని / స్కిల్ (ఒకటి కంటే ఎక్కువ ఎంచుకోవచ్చు)</div>
+    <label data-i="village"></label>
+    <input type="text" id="village" required data-i-ph="ph_village">
+
+    <div class="group-label" data-i="skills_label"></div>
     <div id="skillBox"></div>
 
-    <label>ఎప్పటి నుండి పనికి రెడీ? (optional)</label>
-    <input type="text" id="available" placeholder="ఉదా: ఇప్పుడే / రేపటి నుండి">
+    <label data-i="available"></label>
+    <input type="text" id="available" data-i-ph="ph_available">
 
-    <button type="submit" class="btn green">నమోదు చేయండి</button>
-    <p class="note">Submit చేసిన తర్వాత మీ వివరాలు ఈ ప్రాంతంలో పని ఇచ్చే వారికి కనిపిస్తాయి. 📍 Location permission అడిగితే "Allow" చేయండి — దాని వలన మీకు ఎంత దూరంలో పని ఉందో ఖచ్చితంగా చూపించగలుగుతాం.</p>
+    <button type="submit" class="btn green" data-i="submit_enroll"></button>
+    <p class="note" data-i="enroll_note"></p>
   </form>
 </div>
 
@@ -49,23 +57,38 @@
 <script src="assets/firebase-config.js"></script>
 <script src="assets/data.js"></script>
 <script>
-fillDistrictSelect(document.getElementById('district'));
+if(!getLang()) setLang('te');
+applyLang();
+
+const districtSel = document.getElementById('district');
+fillDistrictSelect(districtSel);
+fillAreaSelect(document.getElementById('area'));
+setupHydAreaSwitch(districtSel, document.getElementById('mandalWrap'), document.getElementById('areaWrap'));
+
 const selectedSkills = new Set();
-buildSkillChips(document.getElementById('skillBox'), selectedSkills);
+function rebuildChips(){
+  const groups = districtSel.value===HYD_TE ? SKILL_GROUPS_URBAN : SKILL_GROUPS;
+  buildSkillChips(document.getElementById('skillBox'), selectedSkills, groups);
+}
+districtSel.addEventListener('change', rebuildChips);
+rebuildChips();
 
 document.getElementById('wForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
   const phone = cleanPhone(document.getElementById('phone').value);
-  if(phone.length!==10){ showToast('దయచేసి సరైన 10 అంకెల ఫోన్ నంబర్ ఇవ్వండి'); return; }
-  if(selectedSkills.size===0){ showToast('కనీసం ఒక స్కిల్ ఎంచుకోండి'); return; }
+  if(phone.length!==10){ showToast(t('err_phone')); return; }
+  if(selectedSkills.size===0){ showToast(t('err_skill')); return; }
 
-  const loc = await getMyLocation(); // GPS permission అడుగుతుంది — ఇచ్చినా ఇవ్వకపోయినా ముందుకు వెళ్తుంది
+  const isHyd = districtSel.value===HYD_TE;
+  const mandalVal = isHyd ? document.getElementById('area').value : document.getElementById('mandal').value.trim();
+
+  const loc = await getMyLocation();
 
   const data = {
     name: document.getElementById('name').value.trim(),
     phone: phone,
-    district: document.getElementById('district').value,
-    mandal: document.getElementById('mandal').value.trim(),
+    district: districtSel.value,
+    mandal: mandalVal,
     village: document.getElementById('village').value.trim(),
     skills: Array.from(selectedSkills),
     available: document.getElementById('available').value.trim(),
@@ -76,11 +99,11 @@ document.getElementById('wForm').addEventListener('submit', async (e)=>{
 
   try{
     await db.collection('panipniWorkers').add(data);
-    showToast('✅ నమోదు పూర్తయింది!');
+    showToast(t('ok_enroll'));
     setTimeout(()=>{ window.location.href='find-work.html'; }, 1200);
   }catch(err){
     console.error(err);
-    showToast('⚠️ Error — Firebase config సరిచూడండి');
+    showToast(t('err_generic'));
   }
 });
 </script>

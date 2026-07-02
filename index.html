@@ -3,43 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skillwork — దగ్గరలో పని, దగ్గరలో మనుషులు</title>
+<title>Skillwork — దగ్గరలో పని | Work Nearby</title>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
+<div class="lang-overlay" id="langOverlay">
+  <div class="logo">🛠️</div>
+  <h2>భాష ఎంచుకోండి<br>Choose Language</h2>
+  <p>మీకు నచ్చిన భాషలో వాడుకోండి · Use in your preferred language</p>
+  <button class="lang-btn te" onclick="chooseLang('te')">తెలుగు</button>
+  <button class="lang-btn en" onclick="chooseLang('en')">English</button>
+</div>
+
 <div class="topbar">
   <div class="brand">Skillwork</div>
+  <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
 </div>
 
 <div class="wrap">
-  <h1>మీ దగ్గర ఉన్న పని,<br>మీ దగ్గర ఉన్న మనుషులు</h1>
-  <p class="sub">మహబూబ్‌నగర్ · నారాయణపేట · జోగులాంబ గద్వాల · వనపర్తి · నాగర్‌కర్నూల్ — 5 జిల్లాల్లో పని వెతుక్కునే వారికి, పని ఇచ్చే వారికి మధ్య వారధి.</p>
+  <div class="hero">
+    <div class="halo">📍 Telangana</div>
+    <h1 data-i-html="home_h1"></h1>
+    <p class="sub" data-i="home_sub"></p>
+  </div>
+
+  <div class="stats" id="statsRow" style="display:none">
+    <div class="stat"><b id="statWorkers">–</b><span id="statWorkersLbl"></span></div>
+    <div class="stat"><b id="statWorks">–</b><span id="statWorksLbl"></span></div>
+  </div>
 
   <a class="path-card worker" href="worker-enroll.html">
     <div class="icon">🧑‍🌾</div>
     <div class="txt">
-      <b>నాకు పని కావాలి</b>
-      <span>మీ పేరు, స్కిల్, ఊరు నమోదు చేసుకోండి — దగ్గరలో ఉన్న పని మీకు కనిపిస్తుంది</span>
+      <b data-i="need_work"></b>
+      <span data-i="need_work_sub"></span>
     </div>
   </a>
 
   <a class="path-card employer" href="post-work.html">
     <div class="icon">🧱</div>
     <div class="txt">
-      <b>నాకు మనుషులు కావాలి</b>
-      <span>మీకు కావాల్సిన పని పోస్ట్ చేయండి — దగ్గరలో ఉన్న వర్కర్స్ మీకు కనిపిస్తారు</span>
+      <b data-i="need_people"></b>
+      <span data-i="need_people_sub"></span>
     </div>
   </a>
 
-  <h2>ఇప్పటికే నమోదు చేసుకున్నారా?</h2>
+  <h2 data-i="already"></h2>
   <div class="mini-links">
-    <a href="find-work.html">📋 పని జాబితా చూడండి</a>
-    <a href="find-workers.html">👥 వర్కర్స్ చూడండి</a>
+    <a href="find-work.html" data-i="see_work"></a>
+    <a href="find-workers.html" data-i="see_workers"></a>
   </div>
 
-  <footer class="foot">Old Mahabubnagar జిల్లాల కోసం స్థానిక పని వేదిక</footer>
+  <footer class="foot" data-i="foot"></footer>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/data.js"></script>
+<script>
+if(!maybeShowLangOverlay()){ applyLang(); }
+function afterLangReady(){ applyLang(); loadStats(); }
+
+function loadStats(){
+  const lbls = {
+    te: {w:'నమోదైన వర్కర్స్', j:'పని పోస్టింగ్‌లు'},
+    en: {w:'Registered workers', j:'Work postings'}
+  };
+  const L = lbls[getLang()||'te'];
+  document.getElementById('statWorkersLbl').textContent = L.w;
+  document.getElementById('statWorksLbl').textContent = L.j;
+  Promise.all([
+    db.collection('panipniWorkers').get(),
+    db.collection('panipniWork').get()
+  ]).then(([w,j])=>{
+    document.getElementById('statWorkers').textContent = w.size;
+    document.getElementById('statWorks').textContent = j.size;
+    document.getElementById('statsRow').style.display='flex';
+  }).catch(()=>{ /* stats optional */ });
+}
+if(getLang()) loadStats();
+</script>
 </body>
 </html>

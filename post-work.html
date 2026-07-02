@@ -3,53 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>మనుషులు కావాలి — పని పోస్ట్ | Skillwork</title>
+<title>Post Work | Skillwork</title>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
 <div class="topbar">
   <a class="back" href="index.html">←</a>
-  <div class="brand">పని పోస్ట్ చేయండి</div>
+  <div class="brand" data-i="need_people"></div>
+  <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
 </div>
 
 <div class="wrap">
-  <h1>మీకు కావాల్సిన పని వివరాలు</h1>
-  <p class="sub">ఇది పోస్ట్ చేసిన తర్వాత, ఆ ప్రాంతంలో ఉన్న వర్కర్స్‌కి కనిపిస్తుంది. వారు నేరుగా మిమ్మల్ని కాల్/వాట్సాప్ చేస్తారు.</p>
+  <h1 data-i="post_title"></h1>
+  <p class="sub" data-i="post_sub"></p>
 
   <form id="eForm">
-    <label>మీ పేరు / సంస్థ పేరు</label>
-    <input type="text" id="ename" required placeholder="ఉదా: వెంకటేష్ / ABC కన్‌స్ట్రక్షన్స్">
+    <label data-i="biz_name"></label>
+    <input type="text" id="ename" required data-i-ph="ph_bizname">
 
-    <label>ఫోన్ నంబర్ (WhatsApp ఉన్నది)</label>
-    <input type="tel" id="ephone" required maxlength="10" placeholder="10 అంకెల నంబర్">
+    <label data-i="phone"></label>
+    <input type="tel" id="ephone" required maxlength="10" data-i-ph="ph_phone">
 
-    <label>జిల్లా</label>
+    <label data-i="district"></label>
     <select id="edistrict" required></select>
 
-    <label>మండలం</label>
-    <input type="text" id="emandal" required placeholder="ఉదా: మక్తల్">
+    <div id="mandalWrap">
+      <label data-i="mandal"></label>
+      <input type="text" id="emandal" data-i-ph="ph_mandal">
+    </div>
 
-    <label>ఊరు</label>
-    <input type="text" id="evillage" required placeholder="ఉదా: గోపాల్‌పేట్">
+    <div id="areaWrap" style="display:none">
+      <label data-i="area"></label>
+      <select id="earea"></select>
+    </div>
 
-    <div class="group-label">ఎలాంటి పని కావాలి? (ఒకటి కంటే ఎక్కువ ఎంచుకోవచ్చు)</div>
+    <label data-i="village"></label>
+    <input type="text" id="evillage" required data-i-ph="ph_village">
+
+    <div class="group-label" data-i="work_type"></div>
     <div id="eSkillBox"></div>
 
-    <label>ఎంతమంది కావాలి</label>
-    <input type="text" id="count" placeholder="ఉదా: 5 మంది">
+    <label data-i="how_many"></label>
+    <input type="text" id="count" data-i-ph="ph_count">
 
-    <label>ఎప్పుడు కావాలి</label>
-    <input type="text" id="when" placeholder="ఉదా: రేపు ఉదయం నుండి">
+    <label data-i="when_need"></label>
+    <input type="text" id="when" data-i-ph="ph_when">
 
-    <label>కూలి రేటు (optional)</label>
-    <input type="text" id="wage" placeholder="ఉదా: రోజుకు ₹500">
+    <label data-i="wage"></label>
+    <input type="text" id="wage" data-i-ph="ph_wage">
 
-    <label>వివరాలు (optional)</label>
-    <textarea id="details" placeholder="ఇంకా ఏమైనా వివరాలు..."></textarea>
+    <label data-i="details"></label>
+    <textarea id="details" data-i-ph="ph_details"></textarea>
 
-    <button type="submit" class="btn terracotta">పని పోస్ట్ చేయండి</button>
-    <p class="note">Submit చేసిన తర్వాత మీ పోస్టింగ్ ఈ ప్రాంతంలో ఉన్న వర్కర్స్‌కి కనిపిస్తుంది. 📍 Location permission అడిగితే "Allow" చేయండి — దాని వలన వర్కర్స్‌కి మీరు ఎంత దూరంలో ఉన్నారో ఖచ్చితంగా చూపించగలుగుతాం.</p>
+    <button type="submit" class="btn terracotta" data-i="submit_post"></button>
+    <p class="note" data-i="post_note"></p>
   </form>
 </div>
 
@@ -58,23 +66,38 @@
 <script src="assets/firebase-config.js"></script>
 <script src="assets/data.js"></script>
 <script>
-fillDistrictSelect(document.getElementById('edistrict'));
+if(!getLang()) setLang('te');
+applyLang();
+
+const districtSel = document.getElementById('edistrict');
+fillDistrictSelect(districtSel);
+fillAreaSelect(document.getElementById('earea'));
+setupHydAreaSwitch(districtSel, document.getElementById('mandalWrap'), document.getElementById('areaWrap'));
+
 const eSelectedSkills = new Set();
-buildSkillChips(document.getElementById('eSkillBox'), eSelectedSkills);
+function rebuildChips(){
+  const groups = districtSel.value===HYD_TE ? SKILL_GROUPS_URBAN : SKILL_GROUPS;
+  buildSkillChips(document.getElementById('eSkillBox'), eSelectedSkills, groups);
+}
+districtSel.addEventListener('change', rebuildChips);
+rebuildChips();
 
 document.getElementById('eForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
   const phone = cleanPhone(document.getElementById('ephone').value);
-  if(phone.length!==10){ showToast('దయచేసి సరైన 10 అంకెల ఫోన్ నంబర్ ఇవ్వండి'); return; }
-  if(eSelectedSkills.size===0){ showToast('కనీసం ఒక పని రకం ఎంచుకోండి'); return; }
+  if(phone.length!==10){ showToast(t('err_phone')); return; }
+  if(eSelectedSkills.size===0){ showToast(t('err_worktype')); return; }
+
+  const isHyd = districtSel.value===HYD_TE;
+  const mandalVal = isHyd ? document.getElementById('earea').value : document.getElementById('emandal').value.trim();
 
   const loc = await getMyLocation();
 
   const data = {
     name: document.getElementById('ename').value.trim(),
     phone: phone,
-    district: document.getElementById('edistrict').value,
-    mandal: document.getElementById('emandal').value.trim(),
+    district: districtSel.value,
+    mandal: mandalVal,
     village: document.getElementById('evillage').value.trim(),
     skills: Array.from(eSelectedSkills),
     count: document.getElementById('count').value.trim(),
@@ -88,11 +111,11 @@ document.getElementById('eForm').addEventListener('submit', async (e)=>{
 
   try{
     await db.collection('panipniWork').add(data);
-    showToast('✅ పోస్ట్ చేయబడింది!');
+    showToast(t('ok_post'));
     setTimeout(()=>{ window.location.href='find-workers.html'; }, 1200);
   }catch(err){
     console.error(err);
-    showToast('⚠️ Error — Firebase config సరిచూడండి');
+    showToast(t('err_generic'));
   }
 });
 </script>
