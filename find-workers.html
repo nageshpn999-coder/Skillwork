@@ -25,6 +25,15 @@
     </div>
   </div>
 
+  <!-- Smart Skill Search: name/skill మీద live search -->
+  <div class="search-wrap">
+    <div class="search-box">
+      <input type="text" id="skillSearch" autocomplete="off" data-i-ph="skill_search_ph">
+      <button type="button" class="search-clear" id="searchClear">✕</button>
+    </div>
+    <div class="suggestions" id="sugBox"></div>
+  </div>
+
   <div class="filters">
     <select id="fDistrict"></select>
     <select id="fRange"></select>
@@ -65,9 +74,56 @@ let allWorkers = [];
 let myLoc = null;
 let myManual = {district:'', mandal:''};
 
+// ---- Smart Skill Search state & wiring ----
+// Store Once → Reuse Many Times: Firestore ఒక్కసారే load (కింద ఉన్న existing get()),
+// టైప్ చేసిన ప్రతిసారీ memory లోని allWorkers మీదే filter — Firebase reads పెరగవు.
+let searchQuery = '';
+const searchEl = document.getElementById('skillSearch');
+const clearBtn = document.getElementById('searchClear');
+const sugBox = document.getElementById('sugBox');
+
+function renderSuggestions(){
+  const sugs = skillSuggestions(searchEl.value);
+  if(!sugs.length){ sugBox.classList.remove('show'); sugBox.innerHTML=''; return; }
+  sugBox.innerHTML = sugs.map(s=>`<div class="sug">${escHtml(s)}</div>`).join('');
+  sugBox.classList.add('show');
+  sugBox.querySelectorAll('.sug').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      searchEl.value = el.textContent;      // suggestion select
+      searchQuery = el.textContent;
+      sugBox.classList.remove('show');      // select అయ్యాక suggestions మాయం
+      clearBtn.classList.add('show');
+      render();
+    });
+  });
+}
+
+searchEl.addEventListener('input', ()=>{
+  searchQuery = searchEl.value;
+  clearBtn.classList.toggle('show', !!searchQuery.trim());
+  renderSuggestions();
+  render();                                  // live filtering — button/reload లేదు
+});
+
+clearBtn.addEventListener('click', ()=>{
+  searchEl.value=''; searchQuery='';
+  clearBtn.classList.remove('show');
+  sugBox.classList.remove('show');
+  render();
+  searchEl.focus();
+});
+
+// బయట tap చేస్తే suggestions మూసుకుంటాయి
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.search-wrap')) sugBox.classList.remove('show');
+});
+
 function render(){
   const d = fSel.value;
   let filtered = d ? allWorkers.filter(w=>w.district===d) : allWorkers.slice();
+
+  // Smart search filter — name/skill మీద మాత్రమే (district/area existing filters వాడతాయి)
+  filtered = filtered.filter(w=>matchesQuery(w, searchQuery));
 
   filtered = filtered.map(w=>{
     const item = {...w};
@@ -89,16 +145,18 @@ function render(){
 
   const list = document.getElementById('list');
   if(filtered.length===0){
-    list.innerHTML = `<div class="empty"><span class="big">📭</span>${t('empty_workers')}</div>`;
+    // Search వల్ల ఖాళీ అయితే ప్రత్యేక message
+    const msg = searchQuery.trim() ? t('no_match') : t('empty_workers');
+    list.innerHTML = `<div class="empty"><span class="big">📭</span>${msg}</div>`;
     return;
   }
   list.innerHTML = filtered.map(w=>`
     <div class="card">
-      <b class="name">${w.name}</b>
-      <div class="place">📍 ${w.village}, ${areaLabel(w.mandal)}, ${districtLabel(w.district)}</div>
+      <b class="name">${highlightText(w.name, searchQuery)}</b>
+      <div class="place">📍 ${escHtml(w.village)}, ${areaLabel(w.mandal)}, ${districtLabel(w.district)}</div>
       <span class="dist ${w._distKm>30?'far':''}">${w._exact?'📏':'≈'} ${w._distText}</span>
-      <div class="tags">${(w.skills||[]).map(s=>`<span class="tag">${skillLabel(s)}</span>`).join('')}</div>
-      ${w.available?`<div class="place">${t('ready')} ${w.available}</div>`:''}
+      <div class="tags">${(w.skills||[]).map(s=>`<span class="tag">${highlightText(skillLabel(s), searchQuery)}</span>`).join('')}</div>
+      ${w.available?`<div class="place">${t('ready')} ${escHtml(w.available)}</div>`:''}
       <div class="actions">
         <a class="call" href="tel:${w.phone}">${t('call')}</a>
         <a class="wa" target="_blank" href="${waLink(w.phone, t('wa_msg_worker')+' — Skillwork')}">💬 WhatsApp</a>
