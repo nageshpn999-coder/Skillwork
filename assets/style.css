@@ -215,6 +215,11 @@ select{
 .card .actions a:active{transform:scale(.96)}
 .card .call{background:linear-gradient(135deg,#4A8F5C,var(--green-dark));color:#fff;box-shadow:0 4px 12px var(--green-glow)}
 .card .wa{background:linear-gradient(135deg,#2EDB70,#1FA855);color:#fff;box-shadow:0 4px 12px rgba(37,211,102,.3)}
+.card .map{
+  background:#fff;color:var(--ink);border:1.5px solid var(--line);
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+.card .actions + .actions{margin-top:8px}
 .card .del{background:#B3261E;color:#fff;flex:0 0 auto;padding:11px 16px}
 
 .dist{

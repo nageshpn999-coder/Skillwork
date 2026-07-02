@@ -70,6 +70,9 @@ const I18N = {
     dist_m: "సుమారు {n} మీ దూరం", dist_km: "{n} కి.మీ దూరం",
     wa_msg_work: "నమస్తే, మీ పని పోస్టింగ్ చూసి కాంటాక్ట్ చేస్తున్నాను",
     wa_msg_worker: "నమస్తే, మీ ప్రొఫైల్ చూసి పని కోసం కాంటాక్ట్ చేస్తున్నాను",
+    dist_all: "అన్ని దూరాలు",
+    within: "{n} KM లోపు",
+    open_map: "📍 మ్యాప్‌లో చూడండి",
     ph_name: "ఉదా: రమేష్", ph_phone: "10 అంకెల నంబర్", ph_mandal: "ఉదా: మక్తల్", ph_village: "ఉదా: గోపాల్‌పేట్ / KPHB కాలనీ",
     ph_available: "ఉదా: ఇప్పుడే / రేపటి నుండి", ph_bizname: "ఉదా: వెంకటేష్ / ABC కన్‌స్ట్రక్షన్స్",
     ph_count: "ఉదా: 5 మంది", ph_when: "ఉదా: రేపు ఉదయం నుండి", ph_wage: "ఉదా: రోజుకు ₹600 / నెలకు ₹15,000", ph_details: "ఇంకా ఏమైనా వివరాలు..."
@@ -136,6 +139,9 @@ const I18N = {
     dist_m: "About {n} m away", dist_km: "{n} km away",
     wa_msg_work: "Hello, I saw your work posting and I'm contacting you",
     wa_msg_worker: "Hello, I saw your profile and I'm contacting you about work",
+    dist_all: "All distances",
+    within: "Within {n} KM",
+    open_map: "📍 Open in Google Maps",
     ph_name: "e.g. Ramesh", ph_phone: "10-digit number", ph_mandal: "e.g. Makthal", ph_village: "e.g. Gopalpet / KPHB Colony",
     ph_available: "e.g. Immediately / From tomorrow", ph_bizname: "e.g. Venkatesh / ABC Constructions",
     ph_count: "e.g. 5 people", ph_when: "e.g. From tomorrow morning", ph_wage: "e.g. ₹600/day / ₹15,000/month", ph_details: "Any other details..."
@@ -659,6 +665,15 @@ function waLink(phone,text){
   const p = cleanPhone(phone);
   const num = p.length===10 ? '91'+p : p;
   return `https://wa.me/${num}?text=${encodeURIComponent(text||'')}`;
+}
+
+// Google Maps link — GPS ఉంటే exact pin, లేకపోతే address search
+function mapsLink(item){
+  if(item.lat!=null && item.lng!=null){
+    return `https://www.google.com/maps?q=${item.lat},${item.lng}`;
+  }
+  const q = [item.village, item.mandal, districtLabel(item.district), 'Telangana'].filter(Boolean).join(', ');
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
 }
 
 // ---- location helpers ----
