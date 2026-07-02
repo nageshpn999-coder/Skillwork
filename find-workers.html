@@ -27,6 +27,7 @@
 
   <div class="filters">
     <select id="fDistrict"></select>
+    <select id="fRange"></select>
   </div>
 
   <div id="list" class="loading">...</div>
@@ -53,6 +54,13 @@ myOpt.value=''; myOpt.textContent=t('your_district');
 mySel.appendChild(myOpt);
 fillDistrictSelect(mySel);
 
+// Distance range filter: All, 2, 5, 10, 20, 50, 100 KM
+const rangeSel = document.getElementById('fRange');
+[['',t('dist_all')],['2',t('within').replace('{n}','2')],['5',t('within').replace('{n}','5')],['10',t('within').replace('{n}','10')],['20',t('within').replace('{n}','20')],['50',t('within').replace('{n}','50')],['100',t('within').replace('{n}','100')]].forEach(([v,l])=>{
+  const o=document.createElement('option'); o.value=v; o.textContent=l; rangeSel.appendChild(o);
+});
+rangeSel.addEventListener('change', ()=>render());
+
 let allWorkers = [];
 let myLoc = null;
 let myManual = {district:'', mandal:''};
@@ -72,6 +80,11 @@ function render(){
     return item;
   });
 
+  const maxKm = parseFloat(rangeSel.value);
+  if(!isNaN(maxKm)){
+    filtered = filtered.filter(w=> (w._distKm!=null) && w._distKm <= maxKm);
+  }
+
   filtered.sort((a,b)=> (a._distKm||999) - (b._distKm||999));
 
   const list = document.getElementById('list');
@@ -89,6 +102,9 @@ function render(){
       <div class="actions">
         <a class="call" href="tel:${w.phone}">${t('call')}</a>
         <a class="wa" target="_blank" href="${waLink(w.phone, t('wa_msg_worker')+' — Skillwork')}">💬 WhatsApp</a>
+      </div>
+      <div class="actions">
+        <a class="map" target="_blank" href="${mapsLink(w)}">${t('open_map')}</a>
       </div>
     </div>
   `).join('');
