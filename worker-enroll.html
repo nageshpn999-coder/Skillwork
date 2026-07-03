@@ -42,6 +42,8 @@
       <!-- Phase 3: area search box — టైప్ చేస్తే కింద dropdown filter అవుతుంది -->
       <input type="text" id="areaSearch" data-i-ph="search_area_ph" autocomplete="off" style="margin-bottom:8px">
       <select id="area"></select>
+      <!-- "Other Area" select చేస్తే మాత్రమే కనిపించే custom area box -->
+      <input type="text" id="customArea" data-i-ph="enter_area_ph" autocomplete="off" style="display:none;margin-top:8px">
     </div>
 
     <label data-i="village"></label>
@@ -78,8 +80,20 @@ setupHydAreaSwitch(districtSel, document.getElementById('mandalWrap'), document.
 // ---- Phase 3: 🔍 Area search (Hyderabad only) ----
 // టైప్ చేసిన వెంటనే dropdown options filter అవుతాయి
 const areaSearchEl = document.getElementById('areaSearch');
+const areaSel = document.getElementById('area');
+const customAreaEl = document.getElementById('customArea');
+
+// "Other Area" select అయినప్పుడు మాత్రమే custom text box చూపించు
+function syncCustomArea(){
+  const isOther = areaSel.value===OTHER_AREA_TE;
+  customAreaEl.style.display = isOther ? 'block' : 'none';
+  if(!isOther) customAreaEl.value='';
+}
+areaSel.addEventListener('change', syncCustomArea);
+
 areaSearchEl.addEventListener('input', ()=>{
-  fillAreaSelect(document.getElementById('area'), areaSearchEl.value);
+  fillAreaSelect(areaSel, areaSearchEl.value);
+  syncCustomArea(); // filter తర్వాత selected value మారొచ్చు
 });
 
 // ---- Phase 3: 📍 Use My Current Location ----
@@ -112,8 +126,9 @@ useLocBtn.addEventListener('click', async ()=>{
     const na = nearestHydArea(loc.lat, loc.lng);
     if(na){
       areaSearchEl.value='';
-      fillAreaSelect(document.getElementById('area'));
-      document.getElementById('area').value = na.te;
+      fillAreaSelect(areaSel);
+      areaSel.value = na.te;   // GPS ఎప్పుడూ named area నే select చేస్తుంది
+      syncCustomArea();
     }
   }
   locMsg.textContent = t('loc_set');
@@ -147,7 +162,9 @@ document.getElementById('wForm').addEventListener('submit', async (e)=>{
   if(selectedSkills.size===0){ showToast(t('err_skill')); return; }
 
   const isHyd = districtSel.value===HYD_TE;
-  const mandalVal = isHyd ? document.getElementById('area').value : document.getElementById('mandal').value.trim();
+  const mandalVal = isHyd ? areaSel.value : document.getElementById('mandal').value.trim();
+  // "Other Area" అయితే user టైప్ చేసిన పేరు customArea గా save (కొత్త field — existing fields మారవు)
+  const customAreaVal = (isHyd && areaSel.value===OTHER_AREA_TE) ? customAreaEl.value.trim() : '';
 
   const loc = await getMyLocation();
 
@@ -156,6 +173,7 @@ document.getElementById('wForm').addEventListener('submit', async (e)=>{
     phone: phone,
     district: districtSel.value,
     mandal: mandalVal,
+    customArea: customAreaVal,
     village: document.getElementById('village').value.trim(),
     skills: Array.from(selectedSkills),
     available: document.getElementById('available').value.trim(),
