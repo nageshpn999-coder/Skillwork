@@ -82,6 +82,7 @@ const I18N = {
     no_match: "సరిపోలే వర్కర్స్ లేదా పనులు దొరకలేదు.",
     skill_filter_ph: "🔍 స్కిల్ వెతకండి... (ఉదా: Ele, Dri)",
     no_skills_found: "సరిపోలే స్కిల్స్ దొరకలేదు.",
+    enter_area_ph: "మీ ఏరియా పేరు రాయండి / Enter Your Area Name",
     ph_name: "ఉదా: రమేష్", ph_phone: "10 అంకెల నంబర్", ph_mandal: "ఉదా: మక్తల్", ph_village: "ఉదా: గోపాల్‌పేట్ / KPHB కాలనీ",
     ph_available: "ఉదా: ఇప్పుడే / రేపటి నుండి", ph_bizname: "ఉదా: వెంకటేష్ / ABC కన్‌స్ట్రక్షన్స్",
     ph_count: "ఉదా: 5 మంది", ph_when: "ఉదా: రేపు ఉదయం నుండి", ph_wage: "ఉదా: రోజుకు ₹600 / నెలకు ₹15,000", ph_details: "ఇంకా ఏమైనా వివరాలు..."
@@ -160,6 +161,7 @@ const I18N = {
     no_match: "No matching Workers or Jobs found.",
     skill_filter_ph: "🔍 Search skills... (e.g. Ele, Dri)",
     no_skills_found: "No matching skills found.",
+    enter_area_ph: "Enter Your Area Name",
     ph_name: "e.g. Ramesh", ph_phone: "10-digit number", ph_mandal: "e.g. Makthal", ph_village: "e.g. Gopalpet / KPHB Colony",
     ph_available: "e.g. Immediately / From tomorrow", ph_bizname: "e.g. Venkatesh / ABC Constructions",
     ph_count: "e.g. 5 people", ph_when: "e.g. From tomorrow morning", ph_wage: "e.g. ₹600/day / ₹15,000/month", ph_details: "Any other details..."
@@ -279,6 +281,60 @@ const HYD_AREAS = [
   {lat:17.533, lng:78.265, te:"పటాన్‌చెరు", en:"Patancheru"},
   {lat:17.467, lng:78.44, te:"బాలానగర్", en:"Balanagar"},
   {lat:17.516, lng:78.387, te:"నిజాంపేట", en:"Nizampet"},
+  {lat:17.462, lng:78.306, te:"నల్లగండ్ల", en:"Nallagandla"},
+  {lat:17.398, lng:78.332, te:"కోకాపేట", en:"Kokapet"},
+  {lat:17.386, lng:78.357, te:"నార్సింగి", en:"Narsingi"},
+  {lat:17.402, lng:78.372, te:"మణికొండ", en:"Manikonda"},
+  {lat:17.389, lng:78.32, te:"గండిపేట", en:"Gandipet"},
+  {lat:17.413, lng:78.34, te:"ఫైనాన్షియల్ డిస్ట్రిక్ట్", en:"Financial District"},
+  {lat:17.418, lng:78.356, te:"నానక్‌రామ్‌గూడ", en:"Nanakramguda"},
+  {lat:17.441, lng:78.38, te:"రాయదుర్గ్", en:"Raidurg"},
+  {lat:17.468, lng:78.287, te:"తెల్లాపూర్", en:"Tellapur"},
+  {lat:17.489, lng:78.317, te:"లింగంపల్లి", en:"Lingampally"},
+  {lat:17.489, lng:78.302, te:"BHEL/రామచంద్రాపురం", en:"BHEL / Ramachandrapuram"},
+  {lat:17.522, lng:78.322, te:"అమీన్‌పూర్", en:"Ameenpur"},
+  {lat:17.547, lng:78.383, te:"బాచుపల్లి", en:"Bachupally"},
+  {lat:17.522, lng:78.4, te:"ప్రగతి నగర్", en:"Pragathi Nagar"},
+  {lat:17.506, lng:78.447, te:"జీడిమెట్ల", en:"Jeedimetla"},
+  {lat:17.534, lng:78.436, te:"సూరారం", en:"Suraram"},
+  {lat:17.529, lng:78.421, te:"గజులరామారం", en:"Gajularamaram"},
+  {lat:17.577, lng:78.423, te:"దుండిగల్", en:"Dundigal"},
+  {lat:17.629, lng:78.482, te:"మేడ్చల్", en:"Medchal"},
+  {lat:17.493, lng:78.568, te:"సైనిక్‌పురి", en:"Sainikpuri"},
+  {lat:17.48, lng:78.556, te:"AS రావు నగర్", en:"AS Rao Nagar"},
+  {lat:17.452, lng:78.535, te:"మల్కాజిగిరి", en:"Malkajgiri"},
+  {lat:17.468, lng:78.543, te:"నేరేడ్‌మెట్", en:"Neredmet"},
+  {lat:17.426, lng:78.554, te:"నాచారం", en:"Nacharam"},
+  {lat:17.438, lng:78.57, te:"మల్లాపూర్", en:"Mallapur"},
+  {lat:17.462, lng:78.607, te:"చెర్లపల్లి", en:"Cherlapally"},
+  {lat:17.449, lng:78.685, te:"ఘట్‌కేసర్", en:"Ghatkesar"},
+  {lat:17.418, lng:78.636, te:"పోచారం", en:"Pocharam"},
+  {lat:17.413, lng:78.592, te:"బోడుప్పల్", en:"Boduppal"},
+  {lat:17.405, lng:78.585, te:"పీర్జాదిగూడ", en:"Peerzadiguda"},
+  {lat:17.372, lng:78.562, te:"నాగోల్", en:"Nagole"},
+  {lat:17.367, lng:78.54, te:"కొత్తపేట", en:"Kothapet"},
+  {lat:17.356, lng:78.529, te:"సరూర్‌నగర్", en:"Saroornagar"},
+  {lat:17.33, lng:78.607, te:"హయత్‌నగర్", en:"Hayathnagar"},
+  {lat:17.301, lng:78.525, te:"బడంగ్‌పేట", en:"Badangpet"},
+  {lat:17.232, lng:78.606, te:"ఆదిబట్ల", en:"Adibatla"},
+  {lat:17.355, lng:78.415, te:"బండ్లగూడ జాగీర్", en:"Bandlaguda Jagir"},
+  {lat:17.383, lng:78.401, te:"గోల్కొండ", en:"Golconda"},
+  {lat:17.409, lng:78.402, te:"షేక్‌పేట", en:"Shaikpet"},
+  {lat:17.413, lng:78.413, te:"ఫిల్మ్ నగర్", en:"Film Nagar"},
+  {lat:17.433, lng:78.439, te:"యూసుఫ్‌గూడ", en:"Yousufguda"},
+  {lat:17.443, lng:78.444, te:"SR నగర్", en:"SR Nagar"},
+  {lat:17.457, lng:78.434, te:"ఎర్రగడ్డ", en:"Erragadda"},
+  {lat:17.45, lng:78.429, te:"మోతీ నగర్", en:"Moti Nagar"},
+  {lat:17.411, lng:78.458, te:"ఖైరతాబాద్", en:"Khairatabad"},
+  {lat:17.404, lng:78.462, te:"లక్డీకాపూల్", en:"Lakdikapul"},
+  {lat:17.4, lng:78.45, te:"మసాబ్ ట్యాంక్", en:"Masab Tank"},
+  {lat:17.402, lng:78.483, te:"హిమాయత్‌నగర్", en:"Himayatnagar"},
+  {lat:17.395, lng:78.488, te:"నారాయణగూడ", en:"Narayanguda"},
+  {lat:17.389, lng:78.497, te:"కాచిగూడ", en:"Kachiguda"},
+  {lat:17.332, lng:78.466, te:"ఫలక్‌నుమా", en:"Falaknuma"},
+  {lat:17.329, lng:78.482, te:"చాంద్రాయణగుట్ట", en:"Chandrayangutta"},
+  {lat:17.356, lng:78.493, te:"యాకుత్‌పురా", en:"Yakutpura"},
+  {lat:17.361, lng:78.51, te:"సైదాబాద్", en:"Saidabad"},
   {te:"ఇతర ఏరియా (Other)", en:"Other area"}
 ];
 
@@ -646,6 +702,7 @@ function fillAreaSelect(sel, filterText){
 
 // Hyderabad district select → show area dropdown instead of mandal text input
 const HYD_TE = "హైదరాబాద్";
+const OTHER_AREA_TE = "ఇతర ఏరియా (Other)";
 function setupHydAreaSwitch(districtSel, mandalWrap, areaWrap){
   function sync(){
     const isHyd = districtSel.value===HYD_TE;
@@ -746,6 +803,14 @@ function matchesQuery(item, query){
   const q = (query||'').trim().toLowerCase();
   if(!q) return true;
   if((item.name||'').toLowerCase().includes(q)) return true;
+  // Named Hyderabad area list ముందుగా (te & en labels రెండూ)
+  if(item.mandal){
+    const a = HYD_AREAS.find(x=>x.te===item.mandal);
+    if(a && (a.en.toLowerCase().includes(q) || a.te.includes(query.trim()))) return true;
+    if(String(item.mandal).toLowerCase().includes(q)) return true;
+  }
+  // Named list లో match లేకపోతే customArea లో వెతుకు
+  if(item.customArea && String(item.customArea).toLowerCase().includes(q)) return true;
   return (item.skills||[]).some(s=>{
     if(String(s).toLowerCase().includes(q)) return true;            // stored Telugu value
     for(const list of [SKILL_GROUPS, SKILL_GROUPS_URBAN]){
