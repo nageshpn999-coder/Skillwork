@@ -89,16 +89,45 @@ function renderTab(){
     list.innerHTML = `<div class="empty"><span class="big">📭</span>ఖాళీగా ఉంది</div>`;
     return;
   }
-  list.innerHTML = data.map(d=>`
+  list.innerHTML = data.map(d=>{
+    const feat = isFeatured(d);
+    const statusBadges =
+      (currentTab==='workers' && d.verified ? ' <span style="color:#2C5B39;font-weight:800">✅</span>' : '') +
+      (currentTab==='work' && feat ? ' <span style="color:#9C5223;font-weight:800">⭐</span>' : '');
+    const actionBtn = currentTab==='workers'
+      ? `<a class="call" onclick="toggleVerify('${d.id}', ${d.verified?'true':'false'})" href="javascript:void(0)">${d.verified?'❌ Unverify':'✅ Verify'}</a>`
+      : `<a class="call" onclick="toggleFeature('${d.id}', ${feat?'true':'false'})" href="javascript:void(0)">${feat?'❌ Unfeature':'⭐ Feature 7d'}</a>`;
+    return `
     <div class="card">
-      <b class="name">${d.name}</b>
-      <div class="place">📍 ${d.village}, ${areaLabel(d.mandal)}, ${districtLabel(d.district)} · 📞 ${d.phone}</div>
+      <b class="name">${d.name}${statusBadges}</b>
+      <div class="place">📍 ${d.village}, ${d.customArea||areaLabel(d.mandal)}, ${districtLabel(d.district)} · 📞 ${d.phone}</div>
       <div class="tags">${(d.skills||[]).map(s=>`<span class="tag">${skillLabel(s)}</span>`).join('')}</div>
       <div class="actions">
+        ${actionBtn}
         <a class="del" onclick="delItem('${coll}','${d.id}')" href="javascript:void(0)">🗑️ Delete</a>
       </div>
     </div>
-  `).join('');
+  `}).join('');
+}
+
+// Worker verify toggle — verified: true/false
+async function toggleVerify(id, cur){
+  await db.collection('panipniWorkers').doc(id).update({verified: !cur});
+  showToast(!cur ? '✅ Verified' : 'Verification removed');
+  loadAll();
+}
+
+// Work post feature toggle — 7 రోజుల expiry తో
+async function toggleFeature(id, cur){
+  if(cur){
+    await db.collection('panipniWork').doc(id).update({featured:false, featuredUntil:null});
+    showToast('Unfeatured');
+  } else {
+    const until = new Date(Date.now() + 7*24*60*60*1000);
+    await db.collection('panipniWork').doc(id).update({featured:true, featuredUntil: firebase.firestore.Timestamp.fromDate(until)});
+    showToast('⭐ Featured for 7 days');
+  }
+  loadAll();
 }
 
 async function delItem(coll,id){

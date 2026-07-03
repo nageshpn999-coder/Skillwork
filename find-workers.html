@@ -141,7 +141,7 @@ function render(){
     filtered = filtered.filter(w=> (w._distKm!=null) && w._distKm <= maxKm);
   }
 
-  filtered.sort((a,b)=> (a._distKm||999) - (b._distKm||999));
+  filtered.sort((a,b)=> ((a._distKm||999) - (b._distKm||999)) || ((b.verified?1:0)-(a.verified?1:0)));
 
   const list = document.getElementById('list');
   if(filtered.length===0){
@@ -152,7 +152,7 @@ function render(){
   }
   list.innerHTML = filtered.map(w=>`
     <div class="card">
-      <b class="name">${highlightText(w.name, searchQuery)}</b>
+      <b class="name">${highlightText(w.name, searchQuery)} ${w.verified?`<span class="vbadge">${t('verified_badge')}</span>`:''}</b>
       <div class="place">📍 ${escHtml(w.village)}, ${w.customArea ? escHtml(w.customArea) : areaLabel(w.mandal)}, ${districtLabel(w.district)}</div>
       <span class="dist ${w._distKm>30?'far':''}">${w._exact?'📏':'≈'} ${w._distText}</span>
       <div class="tags">${(w.skills||[]).map(s=>`<span class="tag">${highlightText(skillLabel(s), searchQuery)}</span>`).join('')}</div>

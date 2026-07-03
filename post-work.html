@@ -70,6 +70,8 @@
 
     <button type="submit" class="btn terracotta" data-i="submit_post"></button>
     <p class="note" data-i="post_note"></p>
+    <!-- ⭐ Featured promo — OWNER_WHATSAPP నంబర్ set చేస్తేనే కనిపిస్తుంది -->
+    <p class="note" id="featPromo" style="display:none"><a id="featPromoLink" target="_blank" style="color:var(--terracotta-dark);font-weight:700"></a></p>
   </form>
 </div>
 
@@ -80,6 +82,15 @@
 <script>
 if(!getLang()) setLang('te');
 applyLang();
+
+// ⭐ Featured promo link — data.js లో OWNER_WHATSAPP నిజమైన నంబర్ పెడితేనే కనిపిస్తుంది
+if(typeof OWNER_WHATSAPP!=='undefined' && OWNER_WHATSAPP && !OWNER_WHATSAPP.includes('X')){
+  const p = document.getElementById('featPromo');
+  const a = document.getElementById('featPromoLink');
+  a.textContent = t('feat_promo');
+  a.href = `https://wa.me/${OWNER_WHATSAPP}?text=${encodeURIComponent('Featured post కావాలి — Skillwork')}`;
+  p.style.display = 'block';
+}
 
 const districtSel = document.getElementById('edistrict');
 fillDistrictSelect(districtSel);

@@ -140,7 +140,7 @@ function render(){
     filtered = filtered.filter(w=> (w._distKm!=null) && w._distKm <= maxKm);
   }
 
-  filtered.sort((a,b)=> (a._distKm||999) - (b._distKm||999));
+  filtered.sort((a,b)=> ((isFeatured(b)?1:0)-(isFeatured(a)?1:0)) || ((a._distKm||999) - (b._distKm||999)));
 
   const list = document.getElementById('list');
   if(filtered.length===0){
@@ -149,7 +149,8 @@ function render(){
     return;
   }
   list.innerHTML = filtered.map(w=>`
-    <div class="card">
+    <div class="card ${isFeatured(w)?'featured':''}">
+      ${isFeatured(w)?`<span class="fbadge">${t('featured_badge')}</span>`:''}
       <b class="name">${highlightText(w.name, searchQuery)}</b>
       <div class="place">📍 ${escHtml(w.village)}, ${w.customArea ? escHtml(w.customArea) : areaLabel(w.mandal)}, ${districtLabel(w.district)}</div>
       <span class="dist ${w._distKm>30?'far':''}">${w._exact?'📏':'≈'} ${w._distText}</span>
