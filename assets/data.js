@@ -80,6 +80,8 @@ const I18N = {
     search_area_ph: "ఏరియా వెతకండి... (ఉదా: Gach, Kuka)",
     skill_search_ph: "🔍 స్కిల్, పేరు లేదా పని వెతకండి",
     no_match: "సరిపోలే వర్కర్స్ లేదా పనులు దొరకలేదు.",
+    skill_filter_ph: "🔍 స్కిల్ వెతకండి... (ఉదా: Ele, Dri)",
+    no_skills_found: "సరిపోలే స్కిల్స్ దొరకలేదు.",
     ph_name: "ఉదా: రమేష్", ph_phone: "10 అంకెల నంబర్", ph_mandal: "ఉదా: మక్తల్", ph_village: "ఉదా: గోపాల్‌పేట్ / KPHB కాలనీ",
     ph_available: "ఉదా: ఇప్పుడే / రేపటి నుండి", ph_bizname: "ఉదా: వెంకటేష్ / ABC కన్‌స్ట్రక్షన్స్",
     ph_count: "ఉదా: 5 మంది", ph_when: "ఉదా: రేపు ఉదయం నుండి", ph_wage: "ఉదా: రోజుకు ₹600 / నెలకు ₹15,000", ph_details: "ఇంకా ఏమైనా వివరాలు..."
@@ -156,6 +158,8 @@ const I18N = {
     search_area_ph: "Search area... (e.g. Gach, Kuka)",
     skill_search_ph: "🔍 Search Skill, Worker or Job",
     no_match: "No matching Workers or Jobs found.",
+    skill_filter_ph: "🔍 Search skills... (e.g. Ele, Dri)",
+    no_skills_found: "No matching skills found.",
     ph_name: "e.g. Ramesh", ph_phone: "10-digit number", ph_mandal: "e.g. Makthal", ph_village: "e.g. Gopalpet / KPHB Colony",
     ph_available: "e.g. Immediately / From tomorrow", ph_bizname: "e.g. Venkatesh / ABC Constructions",
     ph_count: "e.g. 5 people", ph_when: "e.g. From tomorrow morning", ph_wage: "e.g. ₹600/day / ₹15,000/month", ph_details: "Any other details..."
@@ -652,29 +656,43 @@ function setupHydAreaSwitch(districtSel, mandalWrap, areaWrap){
   sync();
 }
 
-function buildSkillChips(container, selectedSet, groups){
+function buildSkillChips(container, selectedSet, groups, filterText, preserveSelection){
   const list = groups || SKILL_GROUPS;
+  const f = (filterText||'').trim().toLowerCase();
   container.innerHTML='';
-  selectedSet.clear();
+  // District మారినప్పుడు selections clear; filter టైప్ చేసేటప్పుడు preserve
+  if(!preserveSelection) selectedSet.clear();
+  let shown = 0;
   list.forEach(g=>{
+    // Filter: English/Telugu label రెండింటిలో match అయిన skills మాత్రమే
+    const items = f ? g.items.filter(it=> it.en.toLowerCase().includes(f) || it.te.includes(filterText.trim())) : g.items;
+    if(!items.length) return; // ఖాళీ group headings చూపించొద్దు
     const label=document.createElement('div');
     label.className='group-label';
     label.textContent = getLang()==='en' ? g.group.en : g.group.te;
     container.appendChild(label);
     const row=document.createElement('div');
     row.className='chips';
-    g.items.forEach(skill=>{
+    items.forEach(skill=>{
       const chip=document.createElement('div');
-      chip.className='chip';
+      chip.className='chip' + (selectedSet.has(skill.te) ? ' on' : '');
       chip.textContent = getLang()==='en' ? skill.en : skill.te;
       chip.onclick=()=>{
         chip.classList.toggle('on');
         if(selectedSet.has(skill.te)) selectedSet.delete(skill.te); else selectedSet.add(skill.te);
       };
       row.appendChild(chip);
+      shown++;
     });
     container.appendChild(row);
   });
+  // ఏ skill match అవ్వకపోతే message
+  if(shown===0){
+    const msg=document.createElement('div');
+    msg.className='note';
+    msg.textContent = t('no_skills_found');
+    container.appendChild(msg);
+  }
 }
 
 function showToast(msg){
