@@ -325,6 +325,25 @@ select{
   font-weight:800;
 }
 
+/* ✅ Verified worker badge */
+.vbadge{
+  display:inline-block;font-size:11.5px;font-weight:800;
+  color:var(--green-dark);background:#EAF3EC;border:1px solid #CFE3D4;
+  padding:3px 9px;border-radius:999px;vertical-align:middle;margin-left:6px;
+}
+
+/* ⭐ Featured job post */
+.card.featured{
+  border:2px solid var(--sun);
+  box-shadow:0 6px 20px rgba(232,169,59,.25);
+  background:linear-gradient(180deg,#FFFBF2 0%,#fff 40%);
+}
+.fbadge{
+  display:inline-block;font-size:11.5px;font-weight:800;
+  color:var(--terracotta-dark);background:#FBEEE3;border:1px solid #F0DCC8;
+  padding:3px 10px;border-radius:999px;margin-bottom:8px;
+}
+
 footer.foot{
   text-align:center;color:var(--ink-soft);font-size:12.5px;
   padding:28px 18px 8px;

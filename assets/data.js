@@ -83,6 +83,9 @@ const I18N = {
     skill_filter_ph: "🔍 స్కిల్ వెతకండి... (ఉదా: Ele, Dri)",
     no_skills_found: "సరిపోలే స్కిల్స్ దొరకలేదు.",
     enter_area_ph: "మీ ఏరియా పేరు రాయండి / Enter Your Area Name",
+    verified_badge: "✅ ధృవీకరించబడింది",
+    featured_badge: "⭐ ఫీచర్డ్",
+    feat_promo: "⭐ మీ పోస్ట్ అందరికంటే పైన కనిపించాలా? Post చేశాక ఇక్కడ WhatsApp చేయండి",
     ph_name: "ఉదా: రమేష్", ph_phone: "10 అంకెల నంబర్", ph_mandal: "ఉదా: మక్తల్", ph_village: "ఉదా: గోపాల్‌పేట్ / KPHB కాలనీ",
     ph_available: "ఉదా: ఇప్పుడే / రేపటి నుండి", ph_bizname: "ఉదా: వెంకటేష్ / ABC కన్‌స్ట్రక్షన్స్",
     ph_count: "ఉదా: 5 మంది", ph_when: "ఉదా: రేపు ఉదయం నుండి", ph_wage: "ఉదా: రోజుకు ₹600 / నెలకు ₹15,000", ph_details: "ఇంకా ఏమైనా వివరాలు..."
@@ -162,6 +165,9 @@ const I18N = {
     skill_filter_ph: "🔍 Search skills... (e.g. Ele, Dri)",
     no_skills_found: "No matching skills found.",
     enter_area_ph: "Enter Your Area Name",
+    verified_badge: "✅ Verified",
+    featured_badge: "⭐ Featured",
+    feat_promo: "⭐ Want your post on top? WhatsApp us here after posting",
     ph_name: "e.g. Ramesh", ph_phone: "10-digit number", ph_mandal: "e.g. Makthal", ph_village: "e.g. Gopalpet / KPHB Colony",
     ph_available: "e.g. Immediately / From tomorrow", ph_bizname: "e.g. Venkatesh / ABC Constructions",
     ph_count: "e.g. 5 people", ph_when: "e.g. From tomorrow morning", ph_wage: "e.g. ₹600/day / ₹15,000/month", ph_details: "Any other details..."
@@ -703,6 +709,17 @@ function fillAreaSelect(sel, filterText){
 // Hyderabad district select → show area dropdown instead of mandal text input
 const HYD_TE = "హైదరాబాద్";
 const OTHER_AREA_TE = "ఇతర ఏరియా (Other)";
+
+// ⭐ Featured post enquiries మీ WhatsApp కి రావడానికి — మీ నంబర్ పెట్టండి (91 + 10 అంకెలు)
+const OWNER_WHATSAPP = "919959731120";
+
+// Post ఇంకా featured గా ఉందా? (featured=true మరియు గడువు దాటలేదు)
+function isFeatured(item){
+  if(!item.featured) return false;
+  if(!item.featuredUntil) return true;
+  const until = item.featuredUntil.toDate ? item.featuredUntil.toDate() : new Date(item.featuredUntil);
+  return until > new Date();
+}
 function setupHydAreaSwitch(districtSel, mandalWrap, areaWrap){
   function sync(){
     const isHyd = districtSel.value===HYD_TE;
