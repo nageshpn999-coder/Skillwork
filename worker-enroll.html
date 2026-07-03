@@ -48,6 +48,10 @@
     <input type="text" id="village" required data-i-ph="ph_village">
 
     <div class="group-label" data-i="skills_label"></div>
+    <!-- Skill search — హైదరాబాద్ select చేసినప్పుడు మాత్రమే కనిపిస్తుంది -->
+    <div id="skillFilterWrap" style="display:none">
+      <input type="text" id="skillFilter" data-i-ph="skill_filter_ph" autocomplete="off" style="margin-bottom:8px">
+    </div>
     <div id="skillBox"></div>
 
     <label data-i="available"></label>
@@ -116,12 +120,25 @@ useLocBtn.addEventListener('click', async ()=>{
 });
 
 const selectedSkills = new Set();
+const skillFilterWrap = document.getElementById('skillFilterWrap');
+const skillFilterEl = document.getElementById('skillFilter');
+
 function rebuildChips(){
-  const groups = districtSel.value===HYD_TE ? SKILL_GROUPS_URBAN : SKILL_GROUPS;
-  buildSkillChips(document.getElementById('skillBox'), selectedSkills, groups);
+  const isHyd = districtSel.value===HYD_TE;
+  const groups = isHyd ? SKILL_GROUPS_URBAN : SKILL_GROUPS;
+  // Skill search box హైదరాబాద్‌కి మాత్రమే; వేరే జిల్లా అయితే hide + clear
+  skillFilterWrap.style.display = isHyd ? 'block' : 'none';
+  if(!isHyd) skillFilterEl.value='';
+  // District మారింది → selections clear (preserveSelection=false)
+  buildSkillChips(document.getElementById('skillBox'), selectedSkills, groups, '', false);
 }
 districtSel.addEventListener('change', rebuildChips);
 rebuildChips();
+
+// టైప్ చేస్తుండగానే chips filter — Firebase query లేదు, selections preserve
+skillFilterEl.addEventListener('input', ()=>{
+  buildSkillChips(document.getElementById('skillBox'), selectedSkills, SKILL_GROUPS_URBAN, skillFilterEl.value, true);
+});
 
 document.getElementById('wForm').addEventListener('submit', async (e)=>{
   e.preventDefault();

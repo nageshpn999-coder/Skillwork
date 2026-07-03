@@ -48,6 +48,10 @@
     <input type="text" id="evillage" required data-i-ph="ph_village">
 
     <div class="group-label" data-i="work_type"></div>
+    <!-- Skill search — హైదరాబాద్ select చేసినప్పుడు మాత్రమే కనిపిస్తుంది -->
+    <div id="skillFilterWrap" style="display:none">
+      <input type="text" id="skillFilter" data-i-ph="skill_filter_ph" autocomplete="off" style="margin-bottom:8px">
+    </div>
     <div id="eSkillBox"></div>
 
     <label data-i="how_many"></label>
@@ -121,12 +125,23 @@ useLocBtn.addEventListener('click', async ()=>{
 });
 
 const eSelectedSkills = new Set();
+const skillFilterWrap = document.getElementById('skillFilterWrap');
+const skillFilterEl = document.getElementById('skillFilter');
+
 function rebuildChips(){
-  const groups = districtSel.value===HYD_TE ? SKILL_GROUPS_URBAN : SKILL_GROUPS;
-  buildSkillChips(document.getElementById('eSkillBox'), eSelectedSkills, groups);
+  const isHyd = districtSel.value===HYD_TE;
+  const groups = isHyd ? SKILL_GROUPS_URBAN : SKILL_GROUPS;
+  skillFilterWrap.style.display = isHyd ? 'block' : 'none';
+  if(!isHyd) skillFilterEl.value='';
+  buildSkillChips(document.getElementById('eSkillBox'), eSelectedSkills, groups, '', false);
 }
 districtSel.addEventListener('change', rebuildChips);
 rebuildChips();
+
+// టైప్ చేస్తుండగానే chips filter — Firebase query లేదు, selections preserve
+skillFilterEl.addEventListener('input', ()=>{
+  buildSkillChips(document.getElementById('eSkillBox'), eSelectedSkills, SKILL_GROUPS_URBAN, skillFilterEl.value, true);
+});
 
 document.getElementById('eForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
