@@ -1,4 +1,4 @@
-# Skillwork — Setup గైడ్
+# WorkPin — Setup గైడ్
 
 ## 1. Firebase Setup
 1. https://console.firebase.google.com → కొత్త ప్రాజెక్ట్ క్రియేట్ చేయండి (లేదా మీ ఉన్న `onlineland-28234` ప్రాజెక్ట్ వాడుకోవచ్చు)
