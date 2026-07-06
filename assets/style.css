@@ -1,4 +1,4 @@
-/* Skillwork — shared styles (v2, polished)
+/* WorkPin — shared styles (v2, polished)
    Palette: warm cream, deep green (worker), terracotta (employer), sun gold accents */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700;800&family=Inter:wght@400;600;700;800&display=swap');
 
@@ -227,6 +227,10 @@ select{
 .card .wa svg{flex:0 0 auto;display:block}
 .card .map{
   background:#fff;color:var(--ink);border:1.5px solid var(--line);
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+.card .share{
+  background:var(--cream-deep);color:var(--ink);border:1.5px solid var(--line);
   box-shadow:0 2px 8px rgba(0,0,0,.05);
 }
 .card .actions + .actions{margin-top:8px}

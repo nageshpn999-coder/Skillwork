@@ -86,6 +86,9 @@ const I18N = {
     verified_badge: "✅ ధృవీకరించబడింది",
     featured_badge: "⭐ ఫీచర్డ్",
     feat_promo: "⭐ మీ పోస్ట్ అందరికంటే పైన కనిపించాలా? Post చేశాక ఇక్కడ WhatsApp చేయండి",
+    share_btn: "📤 షేర్ చేయండి",
+    share_worker_msg: "👷 *{name}* — {skills}\n📍 {place}\n\nWorkPin లో ఈ వర్కర్ ప్రొఫైల్ చూడండి — దగ్గరలో వర్కర్స్, నేరుగా కాల్:\n{link}",
+    share_work_msg: "🔨 *పని అవకాశం!*\n*{name}* — {skills}\n📍 {place}\n\nWorkPin లో వివరాలు చూడండి — దగ్గరలో పని, నేరుగా కాల్:\n{link}",
     ph_name: "ఉదా: రమేష్", ph_phone: "10 అంకెల నంబర్", ph_mandal: "ఉదా: మక్తల్", ph_village: "ఉదా: గోపాల్‌పేట్ / KPHB కాలనీ",
     ph_available: "ఉదా: ఇప్పుడే / రేపటి నుండి", ph_bizname: "ఉదా: వెంకటేష్ / ABC కన్‌స్ట్రక్షన్స్",
     ph_count: "ఉదా: 5 మంది", ph_when: "ఉదా: రేపు ఉదయం నుండి", ph_wage: "ఉదా: రోజుకు ₹600 / నెలకు ₹15,000", ph_details: "ఇంకా ఏమైనా వివరాలు..."
@@ -168,6 +171,9 @@ const I18N = {
     verified_badge: "✅ Verified",
     featured_badge: "⭐ Featured",
     feat_promo: "⭐ Want your post on top? WhatsApp us here after posting",
+    share_btn: "📤 Share",
+    share_worker_msg: "👷 *{name}* — {skills}\n📍 {place}\n\nView this worker profile on WorkPin — nearby workers, direct call:\n{link}",
+    share_work_msg: "🔨 *Job opportunity!*\n*{name}* — {skills}\n📍 {place}\n\nSee details on WorkPin — nearby work, direct call:\n{link}",
     ph_name: "e.g. Ramesh", ph_phone: "10-digit number", ph_mandal: "e.g. Makthal", ph_village: "e.g. Gopalpet / KPHB Colony",
     ph_available: "e.g. Immediately / From tomorrow", ph_bizname: "e.g. Venkatesh / ABC Constructions",
     ph_count: "e.g. 5 people", ph_when: "e.g. From tomorrow morning", ph_wage: "e.g. ₹600/day / ₹15,000/month", ph_details: "Any other details..."
@@ -719,6 +725,20 @@ function isFeatured(item){
   if(!item.featuredUntil) return true;
   const until = item.featuredUntil.toDate ? item.featuredUntil.toDate() : new Date(item.featuredUntil);
   return until > new Date();
+}
+
+// 📤 WhatsApp share — card వివరాలు + page link తో share message
+function shareCardLink(item, type){
+  const skills = (item.skills||[]).map(s=>skillLabel(s)).join(', ');
+  const place = [item.village, item.customArea||areaLabel(item.mandal), districtLabel(item.district)].filter(Boolean).join(', ');
+  const page = type==='worker' ? 'find-workers.html' : 'find-work.html';
+  const link = new URL(page, window.location.href).href;
+  const msg = t(type==='worker' ? 'share_worker_msg' : 'share_work_msg')
+    .replace('{name}', item.name||'')
+    .replace('{skills}', skills)
+    .replace('{place}', place)
+    .replace('{link}', link);
+  return 'https://wa.me/?text=' + encodeURIComponent(msg);
 }
 function setupHydAreaSwitch(districtSel, mandalWrap, areaWrap){
   function sync(){
