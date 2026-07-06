@@ -89,6 +89,12 @@ const I18N = {
     share_btn: "📤 షేర్ చేయండి",
     share_worker_msg: "👷 *{name}* — {skills}\n📍 {place}\n\nWorkPin లో ఈ వర్కర్ ప్రొఫైల్ చూడండి — దగ్గరలో వర్కర్స్, నేరుగా కాల్:\n{link}",
     share_work_msg: "🔨 *పని అవకాశం!*\n*{name}* — {skills}\n📍 {place}\n\nWorkPin లో వివరాలు చూడండి — దగ్గరలో పని, నేరుగా కాల్:\n{link}",
+    student_checkbox: "🎓 నేను స్టూడెంట్‌ని — పార్ట్ టైం మాత్రమే",
+    parttime_badge: "🎓 పార్ట్ టైం",
+    job_type_label: "పని రకం",
+    job_full: "ఫుల్ టైం",
+    job_part: "పార్ట్ టైం",
+    job_any: "ఏదైనా",
     ph_name: "ఉదా: రమేష్", ph_phone: "10 అంకెల నంబర్", ph_mandal: "ఉదా: మక్తల్", ph_village: "ఉదా: గోపాల్‌పేట్ / KPHB కాలనీ",
     ph_available: "ఉదా: ఇప్పుడే / రేపటి నుండి", ph_bizname: "ఉదా: వెంకటేష్ / ABC కన్‌స్ట్రక్షన్స్",
     ph_count: "ఉదా: 5 మంది", ph_when: "ఉదా: రేపు ఉదయం నుండి", ph_wage: "ఉదా: రోజుకు ₹600 / నెలకు ₹15,000", ph_details: "ఇంకా ఏమైనా వివరాలు..."
@@ -174,6 +180,12 @@ const I18N = {
     share_btn: "📤 Share",
     share_worker_msg: "👷 *{name}* — {skills}\n📍 {place}\n\nView this worker profile on WorkPin — nearby workers, direct call:\n{link}",
     share_work_msg: "🔨 *Job opportunity!*\n*{name}* — {skills}\n📍 {place}\n\nSee details on WorkPin — nearby work, direct call:\n{link}",
+    student_checkbox: "🎓 I am a student — part time only",
+    parttime_badge: "🎓 Part Time",
+    job_type_label: "Job type",
+    job_full: "Full Time",
+    job_part: "Part Time",
+    job_any: "Any",
     ph_name: "e.g. Ramesh", ph_phone: "10-digit number", ph_mandal: "e.g. Makthal", ph_village: "e.g. Gopalpet / KPHB Colony",
     ph_available: "e.g. Immediately / From tomorrow", ph_bizname: "e.g. Venkatesh / ABC Constructions",
     ph_count: "e.g. 5 people", ph_when: "e.g. From tomorrow morning", ph_wage: "e.g. ₹600/day / ₹15,000/month", ph_details: "Any other details..."
@@ -437,6 +449,21 @@ const SKILL_GROUPS = [
 
 // ---- Urban skill groups (Hyderabad) — canonical value = te ----
 const SKILL_GROUPS_URBAN = [
+  {
+    group: {te:"🎓 స్టూడెంట్ / పార్ట్ టైం", en:"🎓 Student / Part Time"},
+    items: [
+      {te:"పార్ట్ టైం జాబ్స్ (General)", en:"Part Time Jobs (General)"},
+      {te:"వీకెండ్ వర్క్", en:"Weekend Work"},
+      {te:"ఈవెంట్ స్టాఫ్ (వీకెండ్)", en:"Event Staff (Weekend)"},
+      {te:"ఫుడ్ డెలివరీ (పార్ట్ టైం)", en:"Food Delivery (Part Time)"},
+      {te:"ట్యూషన్స్ చెప్పడం", en:"Tuitions"},
+      {te:"డేటా ఎంట్రీ (Work from Home)", en:"Data Entry (Work from Home)"},
+      {te:"టెలీకాలింగ్ (పార్ట్ టైం)", en:"Telecalling (Part Time)"},
+      {te:"ప్రమోషన్/ఫ్లయర్ డిస్ట్రిబ్యూషన్", en:"Promotion / Flyer Distribution"},
+      {te:"సర్వే వర్క్", en:"Survey Work"},
+      {te:"కంటెంట్/సోషల్ మీడియా", en:"Content / Social Media"}
+    ]
+  },
   {
     group: {te:"💻 IT & ఆఫీస్", en:"💻 IT & Office"},
     items: [
