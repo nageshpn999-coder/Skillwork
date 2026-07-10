@@ -59,12 +59,6 @@
     <label data-i="available"></label>
     <input type="text" id="available" data-i-ph="ph_available">
 
-    <!-- 🎓 Student/Part-time checkbox — అన్ని జిల్లాలకూ universal -->
-    <label style="display:flex;align-items:center;gap:10px;font-weight:600;margin-top:18px;cursor:pointer">
-      <input type="checkbox" id="isStudent" style="width:20px;height:20px;accent-color:var(--green)">
-      <span data-i="student_checkbox"></span>
-    </label>
-
     <button type="submit" class="btn green" data-i="submit_enroll"></button>
     <p class="note" data-i="enroll_note"></p>
   </form>
@@ -183,7 +177,6 @@ document.getElementById('wForm').addEventListener('submit', async (e)=>{
     village: document.getElementById('village').value.trim(),
     skills: Array.from(selectedSkills),
     available: document.getElementById('available').value.trim(),
-    partTime: document.getElementById('isStudent').checked,
     lat: loc ? loc.lat : null,
     lng: loc ? loc.lng : null,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
