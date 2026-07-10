@@ -59,6 +59,13 @@
     <label data-i="how_many"></label>
     <input type="text" id="count" data-i-ph="ph_count">
 
+    <label data-i="job_type_label"></label>
+    <select id="jobType">
+      <option value="any" data-i="job_any"></option>
+      <option value="full" data-i="job_full"></option>
+      <option value="part" data-i="job_part"></option>
+    </select>
+
     <label data-i="when_need"></label>
     <input type="text" id="when" data-i-ph="ph_when">
 
@@ -157,16 +164,25 @@ const skillFilterEl = document.getElementById('skillFilter');
 function rebuildChips(){
   const isHyd = districtSel.value===HYD_TE;
   const groups = isHyd ? SKILL_GROUPS_URBAN : SKILL_GROUPS;
-  skillFilterWrap.style.display = isHyd ? 'block' : 'none';
-  if(!isHyd) skillFilterEl.value='';
+  // Skill search box అన్ని జిల్లాలకూ — rural లో professional skills search చేస్తేనే కనిపిస్తాయి
+  skillFilterWrap.style.display = 'block';
+  skillFilterEl.value='';
   buildSkillChips(document.getElementById('eSkillBox'), eSelectedSkills, groups, '', false);
 }
 districtSel.addEventListener('change', rebuildChips);
 rebuildChips();
 
-// టైప్ చేస్తుండగానే chips filter — Firebase query లేదు, selections preserve
+// టైప్ చేస్తుండగానే chips filter — హైదరాబాద్: urban list; ఇతర జిల్లాలు: local + professional (search లోనే)
 skillFilterEl.addEventListener('input', ()=>{
-  buildSkillChips(document.getElementById('eSkillBox'), eSelectedSkills, SKILL_GROUPS_URBAN, skillFilterEl.value, true);
+  const isHyd = districtSel.value===HYD_TE;
+  const f = skillFilterEl.value.trim();
+  let groups;
+  if(isHyd){
+    groups = SKILL_GROUPS_URBAN;
+  } else {
+    groups = f ? [...SKILL_GROUPS, ...SKILL_GROUPS_URBAN] : SKILL_GROUPS;
+  }
+  buildSkillChips(document.getElementById('eSkillBox'), eSelectedSkills, groups, f, true);
 });
 
 document.getElementById('eForm').addEventListener('submit', async (e)=>{
@@ -191,6 +207,7 @@ document.getElementById('eForm').addEventListener('submit', async (e)=>{
     village: document.getElementById('evillage').value.trim(),
     skills: Array.from(eSelectedSkills),
     count: document.getElementById('count').value.trim(),
+    jobType: document.getElementById('jobType').value,
     when: document.getElementById('when').value.trim(),
     wage: document.getElementById('wage').value.trim(),
     details: document.getElementById('details').value.trim(),

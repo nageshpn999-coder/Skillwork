@@ -78,9 +78,12 @@ function loadStats(){
     db.collection('panipniWorkers').get(),
     db.collection('panipniWork').get()
   ]).then(([w,j])=>{
-    document.getElementById('statWorkers').textContent = w.size;
-    document.getElementById('statWorks').textContent = j.size;
-    document.getElementById('statsRow').style.display='flex';
+    // 50+ workers ఉన్నప్పుడే stats చూపించు — తక్కువ సంఖ్యలు కొత్తవారికి negative signal
+    if(w.size >= 50){
+      document.getElementById('statWorkers').textContent = w.size;
+      document.getElementById('statWorks').textContent = j.size;
+      document.getElementById('statsRow').style.display='flex';
+    }
   }).catch(()=>{ /* stats optional */ });
 }
 if(getLang()) loadStats();
