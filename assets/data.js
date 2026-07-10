@@ -89,6 +89,12 @@ const I18N = {
     share_btn: "📤 షేర్ చేయండి",
     share_worker_msg: "👷 *{name}* — {skills}\n📍 {place}\n\nWorkPin లో ఈ వర్కర్ ప్రొఫైల్ చూడండి — దగ్గరలో వర్కర్స్, నేరుగా కాల్:\n{link}",
     share_work_msg: "🔨 *పని అవకాశం!*\n*{name}* — {skills}\n📍 {place}\n\nWorkPin లో వివరాలు చూడండి — దగ్గరలో పని, నేరుగా కాల్:\n{link}",
+    student_checkbox: "🎓 నేను స్టూడెంట్‌ని — పార్ట్ టైం మాత్రమే",
+    parttime_badge: "🎓 పార్ట్ టైం",
+    job_type_label: "పని రకం",
+    job_full: "ఫుల్ టైం",
+    job_part: "పార్ట్ టైం",
+    job_any: "ఏదైనా",
     ph_name: "ఉదా: రమేష్", ph_phone: "10 అంకెల నంబర్", ph_mandal: "ఉదా: మక్తల్", ph_village: "ఉదా: గోపాల్‌పేట్ / KPHB కాలనీ",
     ph_available: "ఉదా: ఇప్పుడే / రేపటి నుండి", ph_bizname: "ఉదా: వెంకటేష్ / ABC కన్‌స్ట్రక్షన్స్",
     ph_count: "ఉదా: 5 మంది", ph_when: "ఉదా: రేపు ఉదయం నుండి", ph_wage: "ఉదా: రోజుకు ₹600 / నెలకు ₹15,000", ph_details: "ఇంకా ఏమైనా వివరాలు..."
@@ -174,6 +180,12 @@ const I18N = {
     share_btn: "📤 Share",
     share_worker_msg: "👷 *{name}* — {skills}\n📍 {place}\n\nView this worker profile on WorkPin — nearby workers, direct call:\n{link}",
     share_work_msg: "🔨 *Job opportunity!*\n*{name}* — {skills}\n📍 {place}\n\nSee details on WorkPin — nearby work, direct call:\n{link}",
+    student_checkbox: "🎓 I am a student — part time only",
+    parttime_badge: "🎓 Part Time",
+    job_type_label: "Job type",
+    job_full: "Full Time",
+    job_part: "Part Time",
+    job_any: "Any",
     ph_name: "e.g. Ramesh", ph_phone: "10-digit number", ph_mandal: "e.g. Makthal", ph_village: "e.g. Gopalpet / KPHB Colony",
     ph_available: "e.g. Immediately / From tomorrow", ph_bizname: "e.g. Venkatesh / ABC Constructions",
     ph_count: "e.g. 5 people", ph_when: "e.g. From tomorrow morning", ph_wage: "e.g. ₹600/day / ₹15,000/month", ph_details: "Any other details..."
@@ -438,16 +450,45 @@ const SKILL_GROUPS = [
 // ---- Urban skill groups (Hyderabad) — canonical value = te ----
 const SKILL_GROUPS_URBAN = [
   {
+    group: {te:"🎓 స్టూడెంట్ / పార్ట్ టైం", en:"🎓 Student / Part Time"},
+    items: [
+      {te:"పార్ట్ టైం జాబ్స్ (General)", en:"Part Time Jobs (General)"},
+      {te:"వీకెండ్ వర్క్", en:"Weekend Work"},
+      {te:"ఈవెంట్ స్టాఫ్ (వీకెండ్)", en:"Event Staff (Weekend)"},
+      {te:"ఫుడ్ డెలివరీ (పార్ట్ టైం)", en:"Food Delivery (Part Time)"},
+      {te:"ట్యూషన్స్ చెప్పడం", en:"Tuitions"},
+      {te:"డేటా ఎంట్రీ (Work from Home)", en:"Data Entry (Work from Home)"},
+      {te:"టెలీకాలింగ్ (పార్ట్ టైం)", en:"Telecalling (Part Time)"},
+      {te:"ప్రమోషన్/ఫ్లయర్ డిస్ట్రిబ్యూషన్", en:"Promotion / Flyer Distribution"},
+      {te:"సర్వే వర్క్", en:"Survey Work"},
+      {te:"కంటెంట్/సోషల్ మీడియా", en:"Content / Social Media"}
+    ]
+  },
+  {
     group: {te:"💻 IT & ఆఫీస్", en:"💻 IT & Office"},
     items: [
       {te:"సాఫ్ట్‌వేర్ డెవలపర్", en:"Software Developer"},
       {te:"వెబ్ డెవలపర్", en:"Web Developer"},
+      {te:"ఫుల్ స్టాక్ డెవలపర్", en:"Full Stack Developer"},
+      {te:"ఫ్రంటెండ్ డెవలపర్", en:"Frontend Developer"},
+      {te:"బ్యాకెండ్ డెవలపర్", en:"Backend Developer"},
       {te:"మొబైల్ యాప్ డెవలపర్", en:"Mobile App Developer"},
+      {te:"AI ఇంజనీర్", en:"AI Engineer"},
+      {te:"Agentic AI డెవలపర్", en:"Agentic AI Developer"},
+      {te:"ప్రాంప్ట్ ఇంజనీర్", en:"Prompt Engineer"},
+      {te:"మెషిన్ లెర్నింగ్ ఇంజనీర్", en:"Machine Learning Engineer"},
+      {te:"UI/UX డిజైనర్", en:"UI/UX Designer"},
+      {te:"DevOps ఇంజనీర్", en:"DevOps Engineer"},
+      {te:"క్లౌడ్ ఇంజనీర్", en:"Cloud Engineer"},
+      {te:"సైబర్ సెక్యూరిటీ ఇంజనీర్", en:"Cyber Security Engineer"},
+      {te:"డేటా అనలిస్ట్", en:"Data Analyst"},
       {te:"డేటా ఎంట్రీ ఆపరేటర్", en:"Data Entry Operator"},
       {te:"కంప్యూటర్ ఆపరేటర్", en:"Computer Operator"},
       {te:"గ్రాఫిక్ డిజైనర్", en:"Graphic Designer"},
       {te:"డిజిటల్ మార్కెటింగ్", en:"Digital Marketing"},
       {te:"అకౌంటెంట్", en:"Accountant"},
+      {te:"HR ఎగ్జిక్యూటివ్", en:"HR Executive"},
+      {te:"మార్కెటింగ్ ఎగ్జిక్యూటివ్", en:"Marketing Executive"},
       {te:"ఆఫీస్ అసిస్టెంట్", en:"Office Assistant"},
       {te:"రిసెప్షనిస్ట్", en:"Receptionist"}
     ]
@@ -489,6 +530,11 @@ const SKILL_GROUPS_URBAN = [
       {te:"CCTV/నెట్‌వర్క్ టెక్నీషియన్", en:"CCTV Technician"},
       {te:"సాధారణ కూలీలు", en:"General Labour"},
       {te:"ఇంటీరియర్ డిజైనర్", en:"Interior Designer"},
+      {te:"ఆర్కిటెక్ట్", en:"Architect"},
+      {te:"కన్‌స్ట్రక్షన్ ఇంజనీర్", en:"Construction Engineer"},
+      {te:"స్ట్రక్చరల్ ఇంజనీర్", en:"Structural Engineer"},
+      {te:"క్వాంటిటీ సర్వేయర్", en:"Quantity Surveyor"},
+      {te:"ప్రాజెక్ట్ మేనేజర్", en:"Project Manager"},
       {te:"JCB ఆపరేటర్", en:"JCB Operator"},
       {te:"సర్వేయర్ (Land Surveyor)", en:"Land Surveyor"}
     ]
@@ -519,6 +565,7 @@ const SKILL_GROUPS_URBAN = [
     group: {te:"🏥 హెల్త్‌కేర్", en:"🏥 Healthcare"},
     items: [
       {te:"డాక్టర్", en:"Doctor"},
+      {te:"డెంటిస్ట్", en:"Dentist"},
       {te:"నర్స్", en:"Nurse"},
       {te:"ఫార్మసిస్ట్", en:"Pharmacist"},
       {te:"ల్యాబ్ టెక్నీషియన్", en:"Lab Technician"},
@@ -652,6 +699,7 @@ const SKILL_GROUPS_URBAN = [
     group: {te:"🏢 ప్రొఫెషనల్ సేవలు", en:"🏢 Professional Services"},
     items: [
       {te:"రియల్ ఎస్టేట్ ఏజెంట్", en:"Real Estate Agent"},
+      {te:"ప్రాపర్టీ కన్సల్టెంట్", en:"Property Consultant"},
       {te:"ఇన్సూరెన్స్ అడ్వైజర్", en:"Insurance Advisor"},
       {te:"లోన్ ఎగ్జిక్యూటివ్", en:"Loan Executive"},
       {te:"అడ్వకేట్", en:"Advocate"},
@@ -757,9 +805,11 @@ function buildSkillChips(container, selectedSet, groups, filterText, preserveSel
   // District మారినప్పుడు selections clear; filter టైప్ చేసేటప్పుడు preserve
   if(!preserveSelection) selectedSet.clear();
   let shown = 0;
+  const seen = new Set(); // combined lists లో duplicate skills రాకుండా
   list.forEach(g=>{
     // Filter: English/Telugu label రెండింటిలో match అయిన skills మాత్రమే
-    const items = f ? g.items.filter(it=> it.en.toLowerCase().includes(f) || it.te.includes(filterText.trim())) : g.items;
+    const items = (f ? g.items.filter(it=> it.en.toLowerCase().includes(f) || it.te.includes(filterText.trim())) : g.items)
+      .filter(it=>{ if(seen.has(it.te)) return false; seen.add(it.te); return true; });
     if(!items.length) return; // ఖాళీ group headings చూపించొద్దు
     const label=document.createElement('div');
     label.className='group-label';
