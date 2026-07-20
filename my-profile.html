@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile | WorkPin</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back" href="index.html">←</a>
+  <div class="brand" data-i="profile_title"></div>
+  <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
+</div>
+
+<div class="wrap">
+  <p class="sub" data-i="profile_sub"></p>
+
+  <!-- ఫోన్ నంబర్ తో ప్రొఫైల్ వెతకడం — login అవసరం లేదు -->
+  <label data-i="phone"></label>
+  <input type="tel" id="pPhone" maxlength="10" data-i-ph="ph_phone">
+  <button class="btn green" id="findBtn" data-i="find_profile" style="margin-top:14px"></button>
+
+  <div id="profileList" style="margin-top:20px"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/data.js"></script>
+<script>
+if(!getLang()) setLang('te');
+applyLang();
+
+const db = firebase.firestore();
+let myDocs = [];
+
+// ఫోన్ నంబర్‌తో worker profile(s) వెతుకు
+document.getElementById('findBtn').addEventListener('click', async ()=>{
+  const phone = document.getElementById('pPhone').value.trim();
+  if(!/^\d{10}$/.test(phone)){ showToast(t('err_phone')); return; }
+
+  const list = document.getElementById('profileList');
+  list.innerHTML = `<div class="loading">...</div>`;
+
+  try{
+    const snap = await db.collection('panipniWorkers').where('phone','==',phone).get();
+    if(snap.empty){
+      list.innerHTML = `<div class="empty"><span class="big">🔍</span>${t('profile_not_found')}</div>`;
+      return;
+    }
+    myDocs = snap.docs;
+    renderProfiles();
+  }catch(e){
+    list.innerHTML = `<div class="empty">${t('err_generic')}</div>`;
+  }
+});
+
+function renderProfiles(){
+  const list = document.getElementById('profileList');
+  list.innerHTML = myDocs.map((doc,idx)=>{
+    const d = doc.data();
+    const busy = !!d.busy;
+    return `
+    <div class="card">
+      <b class="name">${escHtml(d.name)} ${busy?`<span class="busybadge">${t('busy_badge')}</span>`:''}</b>
+      <div class="place">📍 ${escHtml(d.village)}, ${d.customArea?escHtml(d.customArea):areaLabel(d.mandal)}, ${districtLabel(d.district)}</div>
+      <div class="tags">${(d.skills||[]).map(s=>`<span class="tag">${skillLabel(s)}</span>`).join('')}</div>
+      <!-- స్టేటస్ మార్చే బటన్లు — ఒక్క tap -->
+      <div class="status-btns">
+        <button class="stbtn free ${!busy?'on':''}" onclick="setStatus(${idx}, false)">${t('status_free')}</button>
+        <button class="stbtn busy ${busy?'on':''}" onclick="setStatus(${idx}, true)">${t('status_busy')}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Firestore లో busy field update — listing లో వెంటనే ప్రతిఫలిస్తుంది
+async function setStatus(idx, busy){
+  try{
+    await myDocs[idx].ref.update({busy: busy});
+    // local data refresh
+    const snap = await db.collection('panipniWorkers').where('phone','==',document.getElementById('pPhone').value.trim()).get();
+    myDocs = snap.docs;
+    renderProfiles();
+    showToast(t('status_updated'));
+  }catch(e){
+    showToast(t('err_generic'));
+  }
+}
+</script>
+</body>
+</html>

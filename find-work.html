@@ -121,6 +121,15 @@ function render(){
   const d = fSel.value;
   let filtered = d ? allWork.filter(w=>w.district===d) : allWork.slice();
 
+  // 15 రోజుల auto-expiry — పాత posts automatic గా కనిపించవు
+  const cutoff = Date.now() - 15*24*60*60*1000;
+  filtered = filtered.filter(w=>{
+    if(isFeatured(w)) return true; // featured కి దాని సొంత expiry ఉంది
+    if(!w.createdAt) return true;  // పాత entries (తేదీ లేనివి) చూపించు
+    const created = w.createdAt.toDate ? w.createdAt.toDate().getTime() : new Date(w.createdAt).getTime();
+    return isNaN(created) ? true : created > cutoff;
+  });
+
   // Smart search filter — name/skill మీద మాత్రమే
   filtered = filtered.filter(w=>matchesQuery(w, searchQuery));
 
@@ -151,7 +160,7 @@ function render(){
   list.innerHTML = filtered.map(w=>`
     <div class="card ${isFeatured(w)?'featured':''}">
       ${isFeatured(w)?`<span class="fbadge">${t('featured_badge')}</span>`:''}
-      <b class="name">${highlightText(w.name, searchQuery)}</b>
+      <b class="name">${highlightText(w.name, searchQuery)} ${w.jobType==='part'?`<span class="ptbadge">${t('parttime_badge')}</span>`:''} ${w.jobType==='full'?`<span class="ptbadge">${t('job_full')}</span>`:''}</b>
       <div class="place">📍 ${escHtml(w.village)}, ${w.customArea ? escHtml(w.customArea) : areaLabel(w.mandal)}, ${districtLabel(w.district)}</div>
       <span class="dist ${w._distKm>30?'far':''}">${w._exact?'📏':'≈'} ${w._distText}</span>
       <div class="tags">${(w.skills||[]).map(s=>`<span class="tag">${highlightText(skillLabel(s), searchQuery)}</span>`).join('')}</div>
