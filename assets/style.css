@@ -356,6 +356,31 @@ select{
   padding:3px 9px;border-radius:999px;vertical-align:middle;margin-left:6px;
 }
 
+/* 🔴 Busy status badge */
+.busybadge{
+  display:inline-block;font-size:11.5px;font-weight:800;
+  color:#A33B2E;background:#FBE9E5;border:1px solid #F2D3CC;
+  padding:3px 9px;border-radius:999px;vertical-align:middle;margin-left:6px;
+}
+
+/* My Profile — status toggle buttons */
+.status-btns{
+  display:flex;gap:10px;margin-top:14px;
+}
+.stbtn{
+  flex:1;padding:13px;border-radius:12px;font-family:inherit;
+  font-size:14.5px;font-weight:800;cursor:pointer;
+  border:2px solid var(--line);background:#fff;color:var(--ink-soft);
+  transition:all .15s ease;
+}
+.stbtn.free.on{
+  background:#EAF3EC;border-color:var(--green);color:var(--green-dark);
+}
+.stbtn.busy.on{
+  background:#FBE9E5;border-color:#C4573F;color:#A33B2E;
+}
+.stbtn:active{transform:scale(.97)}
+
 /* ⭐ Featured job post */
 .card.featured{
   border:2px solid var(--sun);
