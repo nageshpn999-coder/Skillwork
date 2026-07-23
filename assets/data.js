@@ -390,6 +390,8 @@ const SKILL_GROUPS = [
     group: {te:"🌾 వ్యవసాయం", en:"🌾 Agriculture"},
     items: [
       {te:"వ్యవసాయ కూలీలు", en:"Farm labour"},
+      {te:"ఫామ్ హెల్పర్", en:"Farm Helper"},
+      {te:"ఇరిగేషన్ హెల్పర్", en:"Irrigation Helper"},
       {te:"ట్రాక్టర్ డ్రైవర్", en:"Tractor driver"},
       {te:"పంట కోత", en:"Harvesting"},
       {te:"స్ప్రేయింగ్", en:"Spraying"},
@@ -401,6 +403,7 @@ const SKILL_GROUPS = [
     group: {te:"🏗️ నిర్మాణం", en:"🏗️ Construction"},
     items: [
       {te:"మేస్త్రీ", en:"Mason"},
+      {te:"తాపీ మేస్త్రీ", en:"Tapi Mason"},
       {te:"కార్పెంటర్", en:"Carpenter"},
       {te:"పెయింటర్", en:"Painter"},
       {te:"ఎలక్ట్రీషియన్", en:"Electrician"},
@@ -457,9 +460,32 @@ const SKILL_GROUPS = [
     ]
   },
   {
+    group: {te:"🏥 హాస్పిటల్ పనులు", en:"🏥 Hospital Work"},
+    items: [
+      {te:"కంపౌండర్", en:"Compounder"},
+      {te:"వార్డ్ బాయ్", en:"Ward Boy"},
+      {te:"వార్డ్ గర్ల్", en:"Ward Girl"},
+      {te:"పేషెంట్ కేర్ అసిస్టెంట్", en:"Patient Care Assistant"}
+    ]
+  },
+  {
+    group: {te:"🎉 ఫంక్షన్ హాల్ పనులు", en:"🎉 Function Hall Work"},
+    items: [
+      {te:"ఫంక్షన్ హాల్ వర్కర్", en:"Function Hall Worker"},
+      {te:"డెకరేషన్ హెల్పర్", en:"Decoration Helper"},
+      {te:"సర్వింగ్ స్టాఫ్", en:"Serving Staff"},
+      {te:"కిచెన్ హెల్పర్", en:"Kitchen Helper"}
+    ]
+  },
+  {
     group: {te:"🏪 దుకాణాలు/ఆఫీస్", en:"🏪 Shops/Office"},
     items: [
       {te:"సేల్స్ మ్యాన్", en:"Salesman"},
+      {te:"బట్టల దుకాణం ఉద్యోగి", en:"Clothing Shop Worker"},
+      {te:"సేల్స్ బాయ్", en:"Sales Boy"},
+      {te:"సేల్స్ గర్ల్", en:"Sales Girl"},
+      {te:"స్టోర్ అసిస్టెంట్", en:"Store Assistant"},
+      {te:"ప్యాకింగ్ స్టాఫ్", en:"Packing Staff"},
       {te:"డెలివరీ బాయ్", en:"Delivery boy"},
       {te:"హెల్పర్", en:"Helper"},
       {te:"ఆఫీస్ బాయ్", en:"Office boy"},
@@ -541,6 +567,7 @@ const SKILL_GROUPS_URBAN = [
     group: {te:"🏗️ నిర్మాణం", en:"🏗️ Construction"},
     items: [
       {te:"మేస్త్రీ", en:"Mason"},
+      {te:"తాపీ మేస్త్రీ", en:"Tapi Mason"},
       {te:"కార్పెంటర్", en:"Carpenter"},
       {te:"ఎలక్ట్రీషియన్", en:"Electrician"},
       {te:"ప్లంబర్", en:"Plumber"},
@@ -586,6 +613,10 @@ const SKILL_GROUPS_URBAN = [
   {
     group: {te:"🏥 హెల్త్‌కేర్", en:"🏥 Healthcare"},
     items: [
+      {te:"కంపౌండర్", en:"Compounder"},
+      {te:"వార్డ్ బాయ్", en:"Ward Boy"},
+      {te:"వార్డ్ గర్ల్", en:"Ward Girl"},
+      {te:"పేషెంట్ కేర్ అసిస్టెంట్", en:"Patient Care Assistant"},
       {te:"డాక్టర్", en:"Doctor"},
       {te:"డెంటిస్ట్", en:"Dentist"},
       {te:"నర్స్", en:"Nurse"},
@@ -620,6 +651,11 @@ const SKILL_GROUPS_URBAN = [
     group: {te:"🛒 రిటైల్ & షాపింగ్", en:"🛒 Retail & Shopping"},
     items: [
       {te:"సేల్స్ ఎగ్జిక్యూటివ్", en:"Sales Executive"},
+      {te:"బట్టల దుకాణం ఉద్యోగి", en:"Clothing Shop Worker"},
+      {te:"సేల్స్ బాయ్", en:"Sales Boy"},
+      {te:"సేల్స్ గర్ల్", en:"Sales Girl"},
+      {te:"స్టోర్ అసిస్టెంట్", en:"Store Assistant"},
+      {te:"ప్యాకింగ్ స్టాఫ్", en:"Packing Staff"},
       {te:"స్టోర్ కీపర్", en:"Store Keeper"},
       {te:"బిల్లింగ్ ఎగ్జిక్యూటివ్", en:"Billing Executive"},
       {te:"షోరూమ్ స్టాఫ్", en:"Showroom Staff"}
@@ -666,6 +702,8 @@ const SKILL_GROUPS_URBAN = [
   {
     group: {te:"🎉 ఈవెంట్స్ & మీడియా", en:"🎉 Events & Media"},
     items: [
+      {te:"ఫంక్షన్ హాల్ వర్కర్", en:"Function Hall Worker"},
+      {te:"సర్వింగ్ స్టాఫ్", en:"Serving Staff"},
       {te:"ఈవెంట్ స్టాఫ్", en:"Event Staff"},
       {te:"క్యాటరింగ్ స్టాఫ్", en:"Catering Staff"},
       {te:"ఫోటోగ్రాఫర్", en:"Photographer"},
