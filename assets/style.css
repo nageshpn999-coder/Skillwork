@@ -329,6 +329,95 @@ select{
   font-weight:800;
 }
 
+/* ⚡ Quick pick chips (ఎప్పటి నుండి రెడీ) */
+.quick-label{
+  font-size:13px;font-weight:700;color:var(--ink-soft);
+  margin:2px 0 8px;
+}
+.quick-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.qchip{
+  padding:9px 15px;border-radius:999px;
+  border:1.5px solid var(--line);background:#fff;
+  font-size:13.5px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;user-select:none;
+  transition:all .12s ease;
+}
+.qchip.on{
+  background:var(--green-dark);border-color:var(--green-dark);color:#fff;
+}
+.qchip:active{transform:scale(.96)}
+
+/* ➕ Add another (వరుస enrollments) */
+.add-another{
+  margin-top:16px;padding:18px 16px;text-align:center;
+  background:#EAF3EC;border:1.5px solid #CFE3D4;border-radius:16px;
+}
+.add-another .ok-line{
+  font-weight:800;font-size:16px;color:var(--green-dark);margin-bottom:12px;
+}
+.add-another button{
+  width:100%;padding:15px;border:none;border-radius:12px;
+  background:var(--green-dark);color:#fff;
+  font-family:inherit;font-size:15.5px;font-weight:800;cursor:pointer;
+}
+.add-another button:active{transform:scale(.98)}
+.add-another a{
+  display:inline-block;margin-top:12px;
+  color:var(--green-dark);font-weight:700;font-size:14px;
+}
+
+/* ⚙️ Settings page */
+.set-group{margin-bottom:20px}
+.set-label{font-weight:800;font-size:14.5px;color:var(--ink);margin-bottom:10px}
+.lang-row{display:flex;gap:10px}
+.langbtn{
+  flex:1;padding:14px;border-radius:12px;font-family:inherit;
+  font-size:15px;font-weight:800;cursor:pointer;
+  border:2px solid var(--line);background:#fff;color:var(--ink-soft);
+}
+.langbtn.on{background:#EAF3EC;border-color:var(--green);color:var(--green-dark)}
+.langbtn:active{transform:scale(.97)}
+
+.set-list{
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.05);
+}
+.set-list a{
+  display:block;padding:16px 18px;
+  font-size:15px;font-weight:600;color:var(--ink);
+  text-decoration:none;border-bottom:1px solid var(--cream-deep);
+}
+.set-list a:last-child{border-bottom:none}
+.set-list a:active{background:var(--cream)}
+
+/* 📄 Legal / info pages */
+.legal h2{font-size:20px;color:var(--green-dark);margin:18px 0 10px}
+.legal h3{font-size:15.5px;color:var(--ink);margin:18px 0 6px}
+.legal p{font-size:14.5px;line-height:1.75;color:var(--ink-soft);margin-bottom:10px}
+.legal hr{border:none;border-top:1px solid var(--line);margin:26px 0}
+
+/* 📲 PWA install banner */
+.install-bar{
+  display:flex;flex-direction:column;gap:10px;
+  background:linear-gradient(135deg,#EAF3EC,#DCEBE0);
+  border:1.5px solid #CFE3D4;
+  color:var(--green-dark);
+  font-weight:700;font-size:14px;line-height:1.5;
+  padding:14px 16px;border-radius:16px;margin-bottom:16px;
+  box-shadow:0 3px 10px rgba(0,0,0,.04);
+}
+.install-actions{display:flex;gap:10px}
+.install-bar button{
+  flex:1;padding:11px;border-radius:10px;border:none;
+  font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;
+  background:var(--green-dark);color:#fff;
+}
+.install-bar button.later{
+  background:#fff;color:var(--ink-soft);border:1.5px solid var(--line);
+  flex:0 0 90px;
+}
+.install-bar button:active{transform:scale(.97)}
+
 /* 📝 Post-work banner on worker search page */
 .post-banner{
   display:block;
