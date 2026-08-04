@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Register | WorkPin</title>
 <link rel="stylesheet" href="assets/style.css">
+<!-- PWA: ఫోన్ హోమ్ స్క్రీన్‌లో app లాగా install అవ్వడానికి -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2C5B39">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="WorkPin">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+<link rel="icon" href="assets/icons/icon-192.png">
 </head>
 <body>
 
@@ -46,8 +55,8 @@
       <input type="text" id="customArea" data-i-ph="enter_area_ph" autocomplete="off" style="display:none;margin-top:8px">
     </div>
 
-    <label data-i="village"></label>
-    <input type="text" id="village" required data-i-ph="ph_village">
+    <label data-i="village_opt"></label>
+    <input type="text" id="village" data-i-ph="ph_village">
 
     <div class="group-label" data-i="skills_label"></div>
     <!-- Skill search — హైదరాబాద్ select చేసినప్పుడు మాత్రమే కనిపిస్తుంది -->
@@ -57,6 +66,9 @@
     <div id="skillBox"></div>
 
     <label data-i="available"></label>
+    <!-- త్వరగా tap చేసే chips — typing అవసరం లేదు -->
+    <div class="quick-label" data-i="quick_ready"></div>
+    <div class="quick-chips" id="quickChips"></div>
     <input type="text" id="available" data-i-ph="ph_available">
 
     <!-- 🎓 Student/Part-time checkbox — అన్ని జిల్లాలకూ universal -->
@@ -66,6 +78,13 @@
     </label>
 
     <button type="submit" class="btn green" data-i="submit_enroll"></button>
+
+    <!-- Submit అయ్యాక కనిపిస్తుంది — వరుసగా enroll చేయడానికి -->
+    <div class="add-another" id="addAnotherBar" style="display:none">
+      <div class="ok-line" data-i="ok_enroll"></div>
+      <button type="button" id="addAnotherBtn" data-i="add_another"></button>
+      <a href="find-workers.html" data-i="see_workers"></a>
+    </div>
     <p class="note" data-i="enroll_note"></p>
   </form>
 </div>
@@ -201,12 +220,65 @@ document.getElementById('wForm').addEventListener('submit', async (e)=>{
   try{
     await db.collection('panipniWorkers').add(data);
     showToast(t('ok_enroll'));
-    setTimeout(()=>{ window.location.href='find-work.html'; }, 1200);
+    // Adda దగ్గర వరుసగా enroll చేయడానికి — "ఇంకొకరిని చేర్చండి" చూపిస్తాం
+    showAddAnother();
   }catch(err){
     console.error(err);
     showToast(t('err_generic'));
   }
 });
+
+// ---- వరుస enrollments కోసం ----
+// జిల్లా/ఏరియా అలాగే ఉంచి, వ్యక్తిగత fields మాత్రం clear చేస్తుంది
+function showAddAnother(){
+  const bar = document.getElementById('addAnotherBar');
+  bar.style.display = 'block';
+  window.scrollTo({top: bar.offsetTop - 120, behavior: 'smooth'});
+}
+
+document.getElementById('addAnotherBtn').addEventListener('click', ()=>{
+  // వ్యక్తిగత వివరాలు clear (district/area/mandal అలాగే ఉంటాయి — వేగం కోసం)
+  ['name','phone','village','available'].forEach(id=>{ document.getElementById(id).value=''; });
+  document.getElementById('isStudent').checked = false;
+  // skills clear
+  selectedSkills.clear();
+  document.querySelectorAll('#skillBox .chip.on').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('#quickChips .qchip.on').forEach(c=>c.classList.remove('on'));
+  document.getElementById('addAnotherBar').style.display='none';
+  document.getElementById('name').focus();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+// ---- Quick chips (ఎప్పటి నుండి రెడీ) ----
+// tap చేస్తే available box లో text వస్తుంది — typing అవసరం లేదు
+const QUICK_KEYS = ['q_now','q_team','q_vehicle','q_exp','q_weekend','q_parttime'];
+const quickBox = document.getElementById('quickChips');
+const availEl = document.getElementById('available');
+
+function buildQuickChips(){
+  quickBox.innerHTML = '';
+  QUICK_KEYS.forEach(k=>{
+    const c = document.createElement('div');
+    c.className = 'qchip';
+    c.textContent = t(k);
+    c.onclick = ()=>{
+      c.classList.toggle('on');
+      // ఎంచుకున్న chips అన్నీ కలిపి text తయారు చేయి
+      const picked = Array.from(quickBox.querySelectorAll('.qchip.on')).map(x=>x.textContent);
+      availEl.value = picked.join(' · ');
+    };
+    quickBox.appendChild(c);
+  });
+}
+buildQuickChips();
+</script>
+<script>
+// Service worker register — offline support + home screen install
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>

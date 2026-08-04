@@ -1,0 +1,46 @@
+{
+  "name": "WorkPin — దగ్గరలో పని",
+  "short_name": "WorkPin",
+  "description": "దగ్గరలో పని, దగ్గరలో మనుషులు — Telangana local work platform",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBF6EC",
+  "theme_color": "#2C5B39",
+  "lang": "te",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "నాకు పని కావాలి",
+      "url": "worker-enroll.html"
+    },
+    {
+      "name": "వర్కర్స్ చూడండి",
+      "url": "find-workers.html"
+    },
+    {
+      "name": "నా ప్రొఫైల్",
+      "url": "my-profile.html"
+    }
+  ]
+}

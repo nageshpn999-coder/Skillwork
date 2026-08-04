@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings | WorkPin</title>
+<link rel="stylesheet" href="assets/style.css">
+<!-- PWA: ఫోన్ హోమ్ స్క్రీన్‌లో app లాగా install అవ్వడానికి -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2C5B39">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="WorkPin">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+<link rel="icon" href="assets/icons/icon-192.png">
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back" href="index.html">←</a>
+  <div class="brand" data-i="settings_title"></div>
+  <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
+</div>
+
+<div class="wrap">
+
+  <!-- భాష మార్చడం -->
+  <div class="set-group">
+    <div class="set-label" data-i="lang_setting"></div>
+    <div class="lang-row">
+      <button class="langbtn" id="btnTe" onclick="pickLang('te')">తెలుగు</button>
+      <button class="langbtn" id="btnEn" onclick="pickLang('en')">English</button>
+    </div>
+  </div>
+
+  <!-- లింక్‌లు -->
+  <div class="set-list">
+    <a href="privacy.html" data-i="s_privacy"></a>
+    <a href="terms.html" data-i="s_terms"></a>
+    <a href="about.html" data-i="s_about"></a>
+    <a id="helpLink" target="_blank" data-i="s_help"></a>
+    <a id="contactLink" data-i="s_contact"></a>
+    <a id="shareLink" target="_blank" data-i="s_share"></a>
+  </div>
+
+  <p class="note" style="text-align:center;margin-top:22px">WorkPin v1.0 · www.workpin.in</p>
+</div>
+
+<script src="assets/data.js"></script>
+<script>
+if(!getLang()) setLang('te');
+applyLang();
+
+// ప్రస్తుత భాషను highlight చేయి
+function markLang(){
+  const l = getLang() || 'te';
+  document.getElementById('btnTe').classList.toggle('on', l==='te');
+  document.getElementById('btnEn').classList.toggle('on', l==='en');
+}
+markLang();
+
+function pickLang(l){
+  setLang(l);
+  location.reload();
+}
+
+// Help & Contact — మీ WhatsApp/ఫోన్ కి
+const num = (typeof OWNER_WHATSAPP!=='undefined' && OWNER_WHATSAPP) ? OWNER_WHATSAPP : '';
+if(num){
+  document.getElementById('helpLink').href = `https://wa.me/${num}?text=${encodeURIComponent('WorkPin సహాయం కావాలి')}`;
+  document.getElementById('contactLink').href = `tel:+${num}`;
+}
+// App share
+document.getElementById('shareLink').href = 'https://wa.me/?text=' + encodeURIComponent(t('share_app_msg'));
+</script>
+<script>
+// Service worker register — offline support + home screen install
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
