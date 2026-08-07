@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "in.workpin.app",
+        "sha256_cert_fingerprints": ["95:58:89:55:3D:C9:C5:34:72:7F:A3:DE:7C:00:E0:0E:96:05:92:1D:20:72:BA:B0:5E:6B:00:2B:F9:BC:40:3B"]
+      }
+    }]
