@@ -12,13 +12,31 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="WorkPin">
-<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
-<link rel="icon" href="assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
 <style>
   .tabs{display:flex;gap:8px;margin-bottom:16px}
   .tabs button{flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-family:inherit;font-size:14px}
   .tabs button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
   .card .del{background:#B3261E;color:#fff;flex:0 0 auto;padding:11px 16px}
+  .card .edit{background:#E8A93B;color:#241F19;font-weight:800}
+  /* ✏️ Edit modal */
+  .edit-modal{
+    position:fixed;inset:0;z-index:100;
+    background:rgba(0,0,0,.45);
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:16px;overflow-y:auto;
+  }
+  .edit-box{
+    background:var(--cream,#FBF6EC);
+    border-radius:18px;padding:20px 18px;
+    width:100%;max-width:520px;margin:20px auto;
+    box-shadow:0 20px 50px rgba(0,0,0,.3);
+  }
+  .edit-box h2{font-size:19px;margin-bottom:14px;color:var(--green-dark)}
+  .edit-actions{display:flex;gap:10px;margin-top:18px}
+  .edit-actions .btn{flex:1;margin:0}
+  .btn.cancel-btn{background:#fff;color:var(--ink-soft);border:1.5px solid var(--line);box-shadow:none}
   .stat{display:flex;gap:10px;margin-bottom:16px}
   .stat div{flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
   .stat b{display:block;font-size:22px}
@@ -49,6 +67,47 @@
   </div>
 
   <div id="adminList" class="loading">లోడ్ అవుతోంది...</div>
+</div>
+
+<!-- ✏️ Edit modal — వివరాలు సరిచేయడానికి (profile link చెడదు) -->
+<div id="editModal" class="edit-modal" style="display:none">
+  <div class="edit-box">
+    <h2>✏️ వివరాలు సరిచేయండి</h2>
+
+    <label>పేరు</label>
+    <input type="text" id="eName">
+
+    <label>ఫోన్ నంబర్</label>
+    <input type="tel" id="ePhone" maxlength="10">
+
+    <label>జిల్లా</label>
+    <select id="eDistrict" onchange="syncEditArea()"></select>
+
+    <div id="eAreaWrap" style="display:none">
+      <label>ఏరియా</label>
+      <select id="eArea"></select>
+    </div>
+
+    <div id="eMandalWrap">
+      <label>మండలం</label>
+      <input type="text" id="eMandal">
+    </div>
+
+    <label>ఊరు / కాలనీ</label>
+    <input type="text" id="eVillage">
+
+    <label>పని / స్కిల్</label>
+    <input type="text" id="eSkillFilter" placeholder="🔍 స్కిల్ వెతకండి..." oninput="buildEditChips()">
+    <div id="eSkillBox"></div>
+
+    <label id="eAvailLabel">ఎప్పటి నుండి రెడీ?</label>
+    <input type="text" id="eAvailable">
+
+    <div class="edit-actions">
+      <button class="btn green" onclick="saveEdit()">💾 సేవ్ చేయండి</button>
+      <button class="btn cancel-btn" onclick="closeEdit()">రద్దు</button>
+    </div>
+  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -113,10 +172,98 @@ function renderTab(){
       <div class="tags">${(d.skills||[]).map(s=>`<span class="tag">${skillLabel(s)}</span>`).join('')}</div>
       <div class="actions">
         ${actionBtn}
+        <a class="edit" onclick="openEdit('${coll}','${d.id}')" href="javascript:void(0)">✏️ Edit</a>
+      </div>
+      <div class="actions">
         <a class="del" onclick="delItem('${coll}','${d.id}')" href="javascript:void(0)">🗑️ Delete</a>
       </div>
     </div>
   `}).join('');
+}
+
+// ---- ✏️ Edit ----
+// Profile link (status లో పెట్టినది) చెడకుండా వివరాలు సరిచేయడానికి.
+// Delete+మళ్ళీ enroll చేస్తే link చనిపోతుంది — అందుకే edit.
+let editColl = null, editId = null, editSkills = new Set();
+
+function openEdit(coll, id){
+  const data = coll==='panipniWorkers' ? workers : works;
+  const d = data.find(x=>x.id===id);
+  if(!d) return;
+  editColl = coll; editId = id;
+  editSkills = new Set(d.skills||[]);
+
+  document.getElementById('eName').value = d.name||'';
+  document.getElementById('ePhone').value = d.phone||'';
+  document.getElementById('eVillage').value = d.village||'';
+  document.getElementById('eAvailable').value = (coll==='panipniWorkers' ? (d.available||'') : (d.details||''));
+  document.getElementById('eAvailLabel').textContent = coll==='panipniWorkers' ? 'ఎప్పటి నుండి రెడీ?' : 'వివరాలు';
+
+  // జిల్లా / ఏరియా
+  const dsel = document.getElementById('eDistrict');
+  fillDistrictSelect(dsel);
+  dsel.value = d.district || '';
+  syncEditArea();
+  const asel = document.getElementById('eArea');
+  if(d.district===HYD_TE){ asel.value = d.mandal || ''; }
+  else { document.getElementById('eMandal').value = d.mandal || ''; }
+
+  buildEditChips();
+  document.getElementById('editModal').style.display = 'flex';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// హైదరాబాద్ అయితే ఏరియా dropdown, లేకపోతే మండలం text
+function syncEditArea(){
+  const isHyd = document.getElementById('eDistrict').value === HYD_TE;
+  document.getElementById('eAreaWrap').style.display = isHyd ? 'block' : 'none';
+  document.getElementById('eMandalWrap').style.display = isHyd ? 'none' : 'block';
+  if(isHyd) fillAreaSelect(document.getElementById('eArea'));
+  buildEditChips();
+}
+
+function buildEditChips(){
+  const isHyd = document.getElementById('eDistrict').value === HYD_TE;
+  const groups = isHyd ? SKILL_GROUPS_URBAN : SKILL_GROUPS;
+  const box = document.getElementById('eSkillBox');
+  const f = document.getElementById('eSkillFilter').value.trim();
+  // filter ఉంటే రెండు lists లోనూ వెతుకు (hidden professions కూడా)
+  const list = f ? [...SKILL_GROUPS, ...SKILL_GROUPS_URBAN] : groups;
+  buildSkillChips(box, editSkills, list, f, true);
+}
+
+function closeEdit(){
+  document.getElementById('editModal').style.display = 'none';
+  editColl = null; editId = null;
+}
+
+async function saveEdit(){
+  if(!editColl || !editId) return;
+  const phone = document.getElementById('ePhone').value.trim();
+  if(!/^\d{10}$/.test(phone)){ showToast('సరైన 10 అంకెల ఫోన్ నంబర్ ఇవ్వండి'); return; }
+
+  const dsel = document.getElementById('eDistrict');
+  const isHyd = dsel.value === HYD_TE;
+  const upd = {
+    name: document.getElementById('eName').value.trim(),
+    phone: phone,
+    district: dsel.value,
+    mandal: isHyd ? document.getElementById('eArea').value : document.getElementById('eMandal').value.trim(),
+    village: document.getElementById('eVillage').value.trim(),
+    skills: Array.from(editSkills)
+  };
+  if(editColl === 'panipniWorkers') upd.available = document.getElementById('eAvailable').value.trim();
+  else upd.details = document.getElementById('eAvailable').value.trim();
+
+  try{
+    await db.collection(editColl).doc(editId).update(upd);
+    showToast('✅ మార్పులు సేవ్ అయ్యాయి');
+    closeEdit();
+    loadAll();
+  }catch(e){
+    console.error(e);
+    showToast('⚠️ సేవ్ కాలేదు — మళ్ళీ ప్రయత్నించండి');
+  }
 }
 
 // Worker verify toggle — verified: true/false
