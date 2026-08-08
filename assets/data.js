@@ -84,6 +84,10 @@ const I18N = {
     no_skills_found: "సరిపోలే స్కిల్స్ దొరకలేదు.",
     enter_area_ph: "మీ ఏరియా పేరు రాయండి / Enter Your Area Name",
     post_banner: "మీకు కావాల్సిన worker దొరకలేదా? 📝 పని పోస్ట్ చేయండి — workers మిమ్మల్ని సంప్రదిస్తారు →",
+    shared_profile: "👤 షేర్ చేసిన ప్రొఫైల్",
+    see_all_workers: "👥 అందరు వర్కర్స్‌ను చూడండి →",
+    see_all_work: "📋 అన్ని పనులు చూడండి →",
+    profile_gone: "ఈ ప్రొఫైల్ ఇప్పుడు అందుబాటులో లేదు. కింద అందరినీ చూడండి.",
     verified_badge: "✅ ధృవీకరించబడింది",
     featured_badge: "⭐ ఫీచర్డ్",
     feat_promo: "⭐ మీ పోస్ట్ అందరికంటే పైన కనిపించాలా? Post చేశాక ఇక్కడ WhatsApp చేయండి",
@@ -209,6 +213,10 @@ const I18N = {
     no_skills_found: "No matching skills found.",
     enter_area_ph: "Enter Your Area Name",
     post_banner: "Didn't find the worker you need? 📝 Post your work — workers will contact you →",
+    shared_profile: "👤 Shared profile",
+    see_all_workers: "👥 See all workers →",
+    see_all_work: "📋 See all work →",
+    profile_gone: "This profile is no longer available. See everyone below.",
     verified_badge: "✅ Verified",
     featured_badge: "⭐ Featured",
     feat_promo: "⭐ Want your post on top? WhatsApp us here after posting",
@@ -924,7 +932,8 @@ function shareCardLink(item, type){
   const skills = (item.skills||[]).map(s=>skillLabel(s)).join(', ');
   const place = [item.village, item.customArea||areaLabel(item.mandal), districtLabel(item.district)].filter(Boolean).join(', ');
   const page = type==='worker' ? 'find-workers.html' : 'find-work.html';
-  const link = new URL(page, window.location.href).href;
+  // Direct profile link — id ఉంటే receive చేసినవారికి ఆ ఒక్క profile మాత్రమే కనిపిస్తుంది
+  const link = new URL(page + (item.id ? ('?id=' + encodeURIComponent(item.id)) : ''), window.location.href).href;
   const msg = t(type==='worker' ? 'share_worker_msg' : 'share_work_msg')
     .replace('{name}', item.name||'')
     .replace('{skills}', skills)
