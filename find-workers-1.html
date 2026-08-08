@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Work Nearby | WorkPin</title>
+<title>Workers Nearby | WorkPin</title>
 <link rel="stylesheet" href="assets/style.css">
 <!-- PWA: ఫోన్ హోమ్ స్క్రీన్‌లో app లాగా install అవ్వడానికి -->
 <link rel="manifest" href="manifest.json">
@@ -19,18 +19,21 @@
 
 <div class="topbar">
   <a class="back" href="index.html">←</a>
-  <div class="brand" data-i="nearby_work"></div>
+  <div class="brand" data-i="nearby_workers"></div>
   <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
 </div>
 
 <div class="wrap">
-  <!-- Share link ద్వారా వచ్చినప్పుడు మాత్రమే -->
+  <!-- Share link ద్వారా వచ్చినప్పుడు మాత్రమే కనిపిస్తుంది -->
   <div class="focus-bar" id="focusBar" style="display:none">
     <span data-i="shared_profile"></span>
-    <a href="find-work.html" data-i="see_all_work"></a>
+    <a href="find-workers.html" data-i="see_all_workers"></a>
   </div>
 
-  <p class="sub" data-i="list_sub_work"></p>
+  <p class="sub" data-i="list_sub_workers"></p>
+
+  <!-- Employer కి post-work దారి — search లో దొరకనప్పుడు -->
+  <a href="post-work.html" class="post-banner" data-i="post_banner"></a>
 
   <div class="locbox">
     <div class="locstatus" id="locStatus"></div>
@@ -85,15 +88,15 @@ const rangeSel = document.getElementById('fRange');
 });
 rangeSel.addEventListener('change', ()=>render());
 
-let allWork = [];
-// Share link నుండి వచ్చిన post id
+let allWorkers = [];
+// Share link నుండి వచ్చిన profile id (ఉంటే ఆ ఒక్కరిని చూపిస్తాం)
 let focusId = new URLSearchParams(location.search).get('id');
 let myLoc = null;
 let myManual = {district:'', mandal:''};
 
 // ---- Smart Skill Search state & wiring ----
-// Store Once → Reuse Many Times: Firestore ఒక్కసారే load,
-// టైప్ చేసిన ప్రతిసారీ memory లోని allWork మీదే filter — Firebase reads పెరగవు.
+// Store Once → Reuse Many Times: Firestore ఒక్కసారే load (కింద ఉన్న existing get()),
+// టైప్ చేసిన ప్రతిసారీ memory లోని allWorkers మీదే filter — Firebase reads పెరగవు.
 let searchQuery = '';
 const searchEl = document.getElementById('skillSearch');
 const clearBtn = document.getElementById('searchClear');
@@ -106,9 +109,9 @@ function renderSuggestions(){
   sugBox.classList.add('show');
   sugBox.querySelectorAll('.sug').forEach(el=>{
     el.addEventListener('click', ()=>{
-      searchEl.value = el.textContent;
+      searchEl.value = el.textContent;      // suggestion select
       searchQuery = el.textContent;
-      sugBox.classList.remove('show');
+      sugBox.classList.remove('show');      // select అయ్యాక suggestions మాయం
       clearBtn.classList.add('show');
       render();
     });
@@ -119,7 +122,7 @@ searchEl.addEventListener('input', ()=>{
   searchQuery = searchEl.value;
   clearBtn.classList.toggle('show', !!searchQuery.trim());
   renderSuggestions();
-  render();
+  render();                                  // live filtering — button/reload లేదు
 });
 
 clearBtn.addEventListener('click', ()=>{
@@ -130,39 +133,33 @@ clearBtn.addEventListener('click', ()=>{
   searchEl.focus();
 });
 
+// బయట tap చేస్తే suggestions మూసుకుంటాయి
 document.addEventListener('click', (e)=>{
   if(!e.target.closest('.search-wrap')) sugBox.classList.remove('show');
 });
 
 function render(){
-  // ---- Direct share: URL లో ?id=... ఉంటే ఆ ఒక్క పోస్ట్ మాత్రమే ----
+  // ---- Direct profile share: URL లో ?id=... ఉంటే ఆ ఒక్కరిని మాత్రమే చూపించు ----
   if(focusId){
-    const one = allWork.filter(w=>w.id===focusId);
+    const one = allWorkers.filter(w=>w.id===focusId);
     if(one.length){
       document.getElementById('focusBar').style.display='flex';
+      const list = document.getElementById('list');
       const w = {...one[0]};
       if(myLoc && w.lat!=null && w.lng!=null){ attachDistance(w, myLoc); }
       else { w._myVillage=''; w._myMandal=myManual.mandal; w._myDistrict=myManual.district; attachDistance(w, null); }
-      document.getElementById('list').innerHTML = cardHtml(w);
+      list.innerHTML = cardHtml(w);
       return;
     }
+    // ఆ profile తొలగిపోయి ఉంటే — normal list చూపించు
     focusId = null;
     showToast(t('profile_gone'));
   }
 
   const d = fSel.value;
-  let filtered = d ? allWork.filter(w=>w.district===d) : allWork.slice();
+  let filtered = d ? allWorkers.filter(w=>w.district===d) : allWorkers.slice();
 
-  // 15 రోజుల auto-expiry — పాత posts automatic గా కనిపించవు
-  const cutoff = Date.now() - 15*24*60*60*1000;
-  filtered = filtered.filter(w=>{
-    if(isFeatured(w)) return true; // featured కి దాని సొంత expiry ఉంది
-    if(!w.createdAt) return true;  // పాత entries (తేదీ లేనివి) చూపించు
-    const created = w.createdAt.toDate ? w.createdAt.toDate().getTime() : new Date(w.createdAt).getTime();
-    return isNaN(created) ? true : created > cutoff;
-  });
-
-  // Smart search filter — name/skill మీద మాత్రమే
+  // Smart search filter — name/skill మీద మాత్రమే (district/area existing filters వాడతాయి)
   filtered = filtered.filter(w=>matchesQuery(w, searchQuery));
 
   filtered = filtered.map(w=>{
@@ -181,37 +178,34 @@ function render(){
     filtered = filtered.filter(w=> (w._distKm!=null) && w._distKm <= maxKm);
   }
 
-  filtered.sort((a,b)=> ((isFeatured(b)?1:0)-(isFeatured(a)?1:0)) || ((a._distKm||999) - (b._distKm||999)));
+  filtered.sort((a,b)=> ((a.busy?1:0)-(b.busy?1:0)) || ((a._distKm||999) - (b._distKm||999)) || ((b.verified?1:0)-(a.verified?1:0)));
 
   const list = document.getElementById('list');
   if(filtered.length===0){
-    const msg = searchQuery.trim() ? t('no_match') : t('empty_work');
+    // Search వల్ల ఖాళీ అయితే ప్రత్యేక message
+    const msg = searchQuery.trim() ? t('no_match') : t('empty_workers');
     list.innerHTML = `<div class="empty"><span class="big">📭</span>${msg}</div>`;
     return;
   }
   list.innerHTML = filtered.map(w=>cardHtml(w)).join('');
 }
 
-// ఒక job card ని HTML గా తయారు చేస్తుంది
+// ఒక worker card ని HTML గా తయారు చేస్తుంది (list కి, single-profile view కి రెండింటికీ)
 function cardHtml(w){
   return `
-    <div class="card ${isFeatured(w)?'featured':''}">
-      ${isFeatured(w)?`<span class="fbadge">${t('featured_badge')}</span>`:''}
-      <b class="name">${highlightText(w.name, searchQuery)} ${w.jobType==='part'?`<span class="ptbadge">${t('parttime_badge')}</span>`:''} ${w.jobType==='full'?`<span class="ptbadge">${t('job_full')}</span>`:''}</b>
+    <div class="card">
+      <b class="name">${highlightText(w.name, searchQuery)} ${w.verified?`<span class="vbadge">${t('verified_badge')}</span>`:''} ${w.partTime?`<span class="ptbadge">${t('parttime_badge')}</span>`:''} ${w.busy?`<span class="busybadge">${t('busy_badge')}</span>`:''}</b>
       <div class="place">📍 ${escHtml(w.village)}, ${w.customArea ? escHtml(w.customArea) : areaLabel(w.mandal)}, ${districtLabel(w.district)}</div>
       <span class="dist ${w._distKm>30?'far':''}">${w._exact?'📏':'≈'} ${w._distText}</span>
       <div class="tags">${(w.skills||[]).map(s=>`<span class="tag">${highlightText(skillLabel(s), searchQuery)}</span>`).join('')}</div>
-      ${w.count?`<div class="place">${t('people_needed')} ${escHtml(w.count)}</div>`:''}
-      ${w.when?`<div class="place">${t('when_lbl')} ${escHtml(w.when)}</div>`:''}
-      ${w.wage?`<div class="place">${t('wage_lbl')} ${escHtml(w.wage)}</div>`:''}
-      ${w.details?`<div class="place">${escHtml(w.details)}</div>`:''}
+      ${w.available?`<div class="place">${t('ready')} ${escHtml(w.available)}</div>`:''}
       <div class="actions">
         <a class="call" href="tel:${w.phone}">${t('call')}</a>
-        <a class="wa" target="_blank" href="${waLink(w.phone, t('wa_msg_work')+' — WorkPin')}"><svg viewBox="0 0 32 32" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M16.004 3.2c-7.06 0-12.8 5.74-12.8 12.8 0 2.26.59 4.46 1.71 6.4L3.2 28.8l6.58-1.67a12.74 12.74 0 0 0 6.22 1.6h.01c7.06 0 12.79-5.74 12.79-12.8s-5.73-12.73-12.79-12.73zm0 23.36h-.01a10.6 10.6 0 0 1-5.4-1.48l-.39-.23-3.9.99 1.04-3.8-.25-.4a10.55 10.55 0 0 1-1.63-5.64c0-5.87 4.78-10.64 10.65-10.64 2.84 0 5.51 1.11 7.52 3.12a10.57 10.57 0 0 1 3.11 7.53c0 5.87-4.77 10.55-10.74 10.55zm5.84-7.96c-.32-.16-1.89-.93-2.18-1.04-.29-.11-.5-.16-.72.16-.21.32-.82 1.04-1.01 1.25-.19.21-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.59-.95-.85-1.59-1.9-1.78-2.22-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.56.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.72-1.73-.98-2.37-.26-.62-.52-.54-.72-.55h-.61c-.21 0-.56.08-.85.4-.29.32-1.12 1.09-1.12 2.66 0 1.57 1.14 3.09 1.3 3.3.16.21 2.25 3.44 5.45 4.82.76.33 1.36.53 1.82.67.77.24 1.46.21 2.01.13.61-.09 1.89-.77 2.15-1.52.27-.75.27-1.39.19-1.52-.08-.13-.29-.21-.61-.37z"/></svg><span>WhatsApp</span></a>
+        <a class="wa" target="_blank" href="${waLink(w.phone, t('wa_msg_worker')+' — WorkPin')}"><svg viewBox="0 0 32 32" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M16.004 3.2c-7.06 0-12.8 5.74-12.8 12.8 0 2.26.59 4.46 1.71 6.4L3.2 28.8l6.58-1.67a12.74 12.74 0 0 0 6.22 1.6h.01c7.06 0 12.79-5.74 12.79-12.8s-5.73-12.73-12.79-12.73zm0 23.36h-.01a10.6 10.6 0 0 1-5.4-1.48l-.39-.23-3.9.99 1.04-3.8-.25-.4a10.55 10.55 0 0 1-1.63-5.64c0-5.87 4.78-10.64 10.65-10.64 2.84 0 5.51 1.11 7.52 3.12a10.57 10.57 0 0 1 3.11 7.53c0 5.87-4.77 10.55-10.74 10.55zm5.84-7.96c-.32-.16-1.89-.93-2.18-1.04-.29-.11-.5-.16-.72.16-.21.32-.82 1.04-1.01 1.25-.19.21-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.59-.95-.85-1.59-1.9-1.78-2.22-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.56.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.72-1.73-.98-2.37-.26-.62-.52-.54-.72-.55h-.61c-.21 0-.56.08-.85.4-.29.32-1.12 1.09-1.12 2.66 0 1.57 1.14 3.09 1.3 3.3.16.21 2.25 3.44 5.45 4.82.76.33 1.36.53 1.82.67.77.24 1.46.21 2.01.13.61-.09 1.89-.77 2.15-1.52.27-.75.27-1.39.19-1.52-.08-.13-.29-.21-.61-.37z"/></svg><span>WhatsApp</span></a>
       </div>
       <div class="actions">
         <a class="map" target="_blank" href="${mapsLink(w)}">${t('open_map')}</a>
-        <a class="share" target="_blank" href="${shareCardLink(w,'work')}">${t('share_btn')}</a>
+        <a class="share" target="_blank" href="${shareCardLink(w,'worker')}">${t('share_btn')}</a>
       </div>
     </div>
   `;
@@ -233,8 +227,9 @@ async function initLocation(){
   render();
 }
 
-db.collection('panipniWork').orderBy('createdAt','desc').get().then(snap=>{
-  allWork = snap.docs.map(d=>({id:d.id, ...d.data()}));
+db.collection('panipniWorkers').orderBy('createdAt','desc').get().then(snap=>{
+  // doc.id కూడా చేర్చాలి — direct profile share link దీని ఆధారంగానే పనిచేస్తుంది
+  allWorkers = snap.docs.map(d=>({id:d.id, ...d.data()}));
   initLocation();
 }).catch(err=>{
   console.error(err);
