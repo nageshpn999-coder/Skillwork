@@ -12,8 +12,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="WorkPin">
-<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
-<link rel="icon" href="assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
 </head>
 <body>
 
@@ -88,8 +88,8 @@ function afterLangReady(){ applyLang(); loadStats(); }
 
 function loadStats(){
   const lbls = {
-    te: {w:'నమోదైన వర్కర్స్', j:'పని పోస్టింగ్‌లు'},
-    en: {w:'Registered workers', j:'Work postings'}
+    te: {w:'నమోదైనవారు', j:'పని పోస్టింగ్‌లు'},
+    en: {w:'Registered people', j:'Work postings'}
   };
   const L = lbls[getLang()||'te'];
   document.getElementById('statWorkersLbl').textContent = L.w;
