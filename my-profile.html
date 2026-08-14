@@ -86,6 +86,8 @@ function renderProfiles(){
       <div class="curloc">
         <div class="curloc-title">${t('cur_loc_title')}</div>
         <div class="curloc-help">${t('cur_loc_help')}</div>
+        <button type="button" class="btn locbtn curloc-gps" onclick="useGpsLoc(${idx})">${t('use_my_loc')}</button>
+        <div class="curloc-msg" id="locMsg${idx}" style="display:none"></div>
         <select id="locDist${idx}" onchange="syncLocArea(${idx})"></select>
         <div id="locAreaWrap${idx}" style="display:none">
           <select id="locArea${idx}"></select>
@@ -124,6 +126,38 @@ function syncLocArea(idx){
   if(isHyd) fillAreaSelect(document.getElementById('locArea'+idx));
 }
 
+// 📍 GPS తో ప్రాంతం auto-select — worker ఏదీ ఎంచుకోనవసరం లేదు
+let gpsCoords = {};   // idx → {lat,lng}
+
+async function useGpsLoc(idx){
+  const msg = document.getElementById('locMsg'+idx);
+  msg.style.display = 'block';
+  msg.textContent = t('loc_detecting');
+
+  const loc = await getMyLocation();
+  if(!loc){
+    msg.textContent = t('loc_denied_msg');   // deny అయినా manual ఎలాగూ ఉంది
+    return;
+  }
+
+  gpsCoords[idx] = {lat: loc.lat, lng: loc.lng};
+
+  // దగ్గరి జిల్లా auto-select
+  const nd = nearestDistrict(loc.lat, loc.lng);
+  const dsel = document.getElementById('locDist'+idx);
+  if(nd){
+    dsel.value = nd.te;
+    syncLocArea(idx);
+    // హైదరాబాద్ అయితే దగ్గరి ఏరియా కూడా
+    if(nd.te === HYD_TE){
+      const na = nearestHydArea(loc.lat, loc.lng);
+      const asel = document.getElementById('locArea'+idx);
+      if(na && asel) asel.value = na.te;
+    }
+  }
+  msg.textContent = t('loc_set');
+}
+
 // ప్రస్తుత ప్రాంతం సేవ్ — listing లో ఇదే location కనిపిస్తుంది
 async function saveLoc(idx){
   const dsel = document.getElementById('locDist'+idx);
@@ -133,11 +167,14 @@ async function saveLoc(idx){
     : document.getElementById('locMandal'+idx).value.trim();
   try{
     // GPS ఆధారిత పాత దూరం తప్పు కాకుండా lat/lng తీసేస్తాం — కొత్త ప్రాంతం బట్టి చూపిస్తుంది
+    // GPS వాడితే కొత్త coords → ఖచ్చితమైన కి.మీ కనిపిస్తుంది
+    // వాడకపోతే null → పాత ఊరి దూరం తప్పుగా చూపించకుండా
+    const g = gpsCoords[idx];
     await myDocs[idx].ref.update({
       district: dsel.value,
       mandal: mandal,
-      lat: null,
-      lng: null
+      lat: g ? g.lat : null,
+      lng: g ? g.lng : null
     });
     const snap = await db.collection('panipniWorkers').where('phone','==',document.getElementById('pPhone').value.trim()).get();
     myDocs = snap.docs;
