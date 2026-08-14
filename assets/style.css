@@ -479,6 +479,12 @@ select{
 }
 .curloc select, .curloc input{margin-bottom:8px}
 .curloc .curloc-btn{margin-top:4px;padding:13px;font-size:14.5px}
+.curloc .curloc-gps{margin:0 0 10px;padding:12px;font-size:14px}
+.curloc-msg{
+  font-size:12.5px;line-height:1.5;color:var(--green-dark);
+  background:#EAF3EC;border:1px solid #CFE3D4;
+  padding:9px 12px;border-radius:10px;margin-bottom:10px;
+}
 
 /* My Profile — status toggle buttons */
 .status-btns{
