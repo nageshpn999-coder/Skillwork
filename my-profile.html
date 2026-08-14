@@ -12,8 +12,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="WorkPin">
-<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
-<link rel="icon" href="assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
 </head>
 <body>
 
@@ -81,8 +81,72 @@ function renderProfiles(){
         <button class="stbtn free ${!busy?'on':''}" onclick="setStatus(${idx}, false)">${t('status_free')}</button>
         <button class="stbtn busy ${busy?'on':''}" onclick="setStatus(${idx}, true)">${t('status_busy')}</button>
       </div>
+
+      <!-- 📍 ప్రస్తుతం ఉన్న ప్రాంతం — ఊరు మారినప్పుడు మార్చుకోవడానికి -->
+      <div class="curloc">
+        <div class="curloc-title">${t('cur_loc_title')}</div>
+        <div class="curloc-help">${t('cur_loc_help')}</div>
+        <select id="locDist${idx}" onchange="syncLocArea(${idx})"></select>
+        <div id="locAreaWrap${idx}" style="display:none">
+          <select id="locArea${idx}"></select>
+        </div>
+        <div id="locMandalWrap${idx}">
+          <input type="text" id="locMandal${idx}" data-i-ph="your_mandal">
+        </div>
+        <button class="btn green curloc-btn" onclick="saveLoc(${idx})">${t('cur_loc_save')}</button>
+      </div>
     </div>`;
   }).join('');
+
+  applyLang();
+  // ప్రతి profile కి location dropdowns నింపు (ప్రస్తుత విలువతో)
+  myDocs.forEach((doc, idx)=>{
+    const d = doc.data();
+    const dsel = document.getElementById('locDist'+idx);
+    fillDistrictSelect(dsel);
+    dsel.value = d.district || '';
+    syncLocArea(idx);
+    if(d.district === HYD_TE){
+      const a = document.getElementById('locArea'+idx);
+      if(a) a.value = d.mandal || '';
+    } else {
+      const m = document.getElementById('locMandal'+idx);
+      if(m) m.value = d.mandal || '';
+    }
+  });
+}
+
+// హైదరాబాద్ అయితే ఏరియా dropdown, లేకపోతే మండలం text box
+function syncLocArea(idx){
+  const isHyd = document.getElementById('locDist'+idx).value === HYD_TE;
+  document.getElementById('locAreaWrap'+idx).style.display = isHyd ? 'block' : 'none';
+  document.getElementById('locMandalWrap'+idx).style.display = isHyd ? 'none' : 'block';
+  if(isHyd) fillAreaSelect(document.getElementById('locArea'+idx));
+}
+
+// ప్రస్తుత ప్రాంతం సేవ్ — listing లో ఇదే location కనిపిస్తుంది
+async function saveLoc(idx){
+  const dsel = document.getElementById('locDist'+idx);
+  const isHyd = dsel.value === HYD_TE;
+  const mandal = isHyd
+    ? document.getElementById('locArea'+idx).value
+    : document.getElementById('locMandal'+idx).value.trim();
+  try{
+    // GPS ఆధారిత పాత దూరం తప్పు కాకుండా lat/lng తీసేస్తాం — కొత్త ప్రాంతం బట్టి చూపిస్తుంది
+    await myDocs[idx].ref.update({
+      district: dsel.value,
+      mandal: mandal,
+      lat: null,
+      lng: null
+    });
+    const snap = await db.collection('panipniWorkers').where('phone','==',document.getElementById('pPhone').value.trim()).get();
+    myDocs = snap.docs;
+    renderProfiles();
+    showToast(t('cur_loc_saved'));
+  }catch(e){
+    console.error(e);
+    showToast(t('err_generic'));
+  }
 }
 
 // Firestore లో busy field update — listing లో వెంటనే ప్రతిఫలిస్తుంది
