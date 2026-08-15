@@ -144,6 +144,20 @@ document.addEventListener('click', (e)=>{
   if(!e.target.closest('.search-wrap')) sugBox.classList.remove('show');
 });
 
+// ---- Premium listing (చెల్లింపు స్థానాలు 1,2,3) ----
+// మూడు షరతులు తీరితేనే పైన వస్తారు:
+//   1) promoRank = 1/2/3 ఉండాలి
+//   2) promoUntil గడువు దాటకూడదు (YYYY-MM-DD)
+//   3) దూరం 30 కి.మీ లోపు ఉండాలి — దూరపు వ్యక్తులు డబ్బు కట్టినా పైకి రారు
+const PROMO_MAX_KM = 30;
+function slotOf(w){
+  const r = Number(w.promoRank);
+  if(!r || r<1 || r>3) return 99;
+  if(w._distKm != null && w._distKm > PROMO_MAX_KM) return 99;
+  const until = w.promoUntil ? new Date(w.promoUntil+'T23:59:59').getTime() : 0;
+  return until > Date.now() ? r : 99;
+}
+
 function render(){
   // ---- Direct profile share: URL లో ?id=... ఉంటే ఆ ఒక్కరిని మాత్రమే చూపించు ----
   if(focusId){
@@ -185,7 +199,7 @@ function render(){
     filtered = filtered.filter(w=> (w._distKm!=null) && w._distKm <= maxKm);
   }
 
-  filtered.sort((a,b)=> ((a.busy?1:0)-(b.busy?1:0)) || ((a._distKm||999) - (b._distKm||999)) || ((b.verified?1:0)-(a.verified?1:0)));
+  filtered.sort((a,b)=> (slotOf(a)-slotOf(b)) || ((a.busy?1:0)-(b.busy?1:0)) || ((a._distKm||999) - (b._distKm||999)) || ((b.verified?1:0)-(a.verified?1:0)));
 
   const list = document.getElementById('list');
   if(filtered.length===0){
@@ -201,7 +215,7 @@ function render(){
 function cardHtml(w){
   return `
     <div class="card">
-      <b class="name">${highlightText(w.name, searchQuery)} ${w.verified?`<span class="vbadge">${t('verified_badge')}</span>`:''} ${w.partTime?`<span class="ptbadge">${t('parttime_badge')}</span>`:''} ${w.busy?`<span class="busybadge">${t('busy_badge')}</span>`:''}</b>
+      <b class="name">${highlightText(w.name, searchQuery)} ${slotOf(w)<99?`<span class="ptbadge">⭐ ప్రచారం</span>`:''} ${w.verified?`<span class="vbadge">${t('verified_badge')}</span>`:''} ${w.partTime?`<span class="ptbadge">${t('parttime_badge')}</span>`:''} ${w.busy?`<span class="busybadge">${t('busy_badge')}</span>`:''}</b>
       <div class="place">📍 ${escHtml(w.village)}, ${w.customArea ? escHtml(w.customArea) : areaLabel(w.mandal)}, ${districtLabel(w.district)}</div>
       ${w._distText?`<span class="dist ${w._distKm>30?'far':''}">${w._exact?'📏':'≈'} ${w._distText}</span>`:''}
       <div class="tags">${(w.skills||[]).map(s=>`<span class="tag">${highlightText(skillLabel(s), searchQuery)}</span>`).join('')}</div>
