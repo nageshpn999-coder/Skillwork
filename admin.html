@@ -159,9 +159,20 @@ function renderTab(){
   }
   list.innerHTML = data.map(d=>{
     const feat = isFeatured(d);
+    const pSlot = promoSlot(d);
     const statusBadges =
       (currentTab==='workers' && d.verified ? ' <span style="color:#2C5B39;font-weight:800">✅</span>' : '') +
+      (currentTab==='workers' && pSlot ? ` <span style="color:#9C5223;font-weight:800">⭐${pSlot}</span>` : '') +
       (currentTab==='work' && feat ? ' <span style="color:#9C5223;font-weight:800">⭐</span>' : '');
+    // Premium listing controls — workers tab లో మాత్రమే
+    const promoRow = currentTab!=='workers' ? '' : `
+      <div class="place" style="margin-top:6px">⭐ ప్రీమియం స్థానం ${pSlot ? `— ప్రస్తుతం ${pSlot}, గడువు ${d.promoUntil}` : '— లేదు'}</div>
+      <div class="actions">
+        <a class="edit" onclick="setPromo('${d.id}',1)" href="javascript:void(0)">1</a>
+        <a class="edit" onclick="setPromo('${d.id}',2)" href="javascript:void(0)">2</a>
+        <a class="edit" onclick="setPromo('${d.id}',3)" href="javascript:void(0)">3</a>
+        <a class="del" onclick="clearPromo('${d.id}')" href="javascript:void(0)">తీసేయి</a>
+      </div>`;
     const actionBtn = currentTab==='workers'
       ? `<a class="call" onclick="toggleVerify('${d.id}', ${d.verified?'true':'false'})" href="javascript:void(0)">${d.verified?'❌ Unverify':'✅ Verify'}</a>`
       : `<a class="call" onclick="toggleFeature('${d.id}', ${feat?'true':'false'})" href="javascript:void(0)">${feat?'❌ Unfeature':'⭐ Feature 7d'}</a>`;
@@ -170,6 +181,7 @@ function renderTab(){
       <b class="name">${d.name}${statusBadges}</b>
       <div class="place">📍 ${d.village}, ${d.customArea||areaLabel(d.mandal)}, ${districtLabel(d.district)} · 📞 ${d.phone}</div>
       <div class="tags">${(d.skills||[]).map(s=>`<span class="tag">${skillLabel(s)}</span>`).join('')}</div>
+      ${promoRow}
       <div class="actions">
         ${actionBtn}
         <a class="edit" onclick="openEdit('${coll}','${d.id}')" href="javascript:void(0)">✏️ Edit</a>
@@ -270,6 +282,33 @@ async function saveEdit(){
 async function toggleVerify(id, cur){
   await db.collection('panipniWorkers').doc(id).update({verified: !cur});
   showToast(!cur ? '✅ Verified' : 'Verification removed');
+  loadAll();
+}
+
+// ---- ⭐ Premium listing (చెల్లింపు స్థానాలు 1,2,3) ----
+// promoRank (number 1/2/3) + promoUntil (string "YYYY-MM-DD")
+// గడువు దాటితే తనంతట తానే మామూలు స్థానానికి వెళ్ళిపోతారు.
+function promoSlot(d){
+  const r = Number(d.promoRank);
+  if(!r || r<1 || r>3) return 0;
+  const until = d.promoUntil ? new Date(d.promoUntil+'T23:59:59').getTime() : 0;
+  return until > Date.now() ? r : 0;
+}
+
+// ఎన్ని రోజులు అని అడిగి, ఆ స్థానం ఇస్తుంది (default 30 రోజులు)
+async function setPromo(id, rank){
+  const days = parseInt(prompt('ఎన్ని రోజులు?', '30'), 10);
+  if(!days || days<1) return;
+  const until = new Date(Date.now() + days*24*60*60*1000);
+  const ymd = until.toISOString().slice(0,10);
+  await db.collection('panipniWorkers').doc(id).update({promoRank: rank, promoUntil: ymd});
+  showToast(`⭐ స్థానం ${rank} — ${ymd} వరకు`);
+  loadAll();
+}
+
+async function clearPromo(id){
+  await db.collection('panipniWorkers').doc(id).update({promoRank: 0, promoUntil: ''});
+  showToast('ప్రీమియం తీసేయబడింది');
   loadAll();
 }
 
