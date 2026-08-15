@@ -94,6 +94,12 @@ let focusId = new URLSearchParams(location.search).get('id');
 let myLoc = null;
 let myManual = {district:'', mandal:''};
 
+// నా location (GPS గానీ, జిల్లా/మండలం గానీ) తెలియకపోతే — దూరం బ్యాడ్జ్ చూపించొద్దు.
+// లేకపోతే పోల్చడానికి ఏమీ లేక తప్పుగా "వేరే జిల్లా" అని వస్తుంది.
+function clearUnknownDistance(item){
+  if(!myManual.district && !myManual.mandal){ item._distKm = null; item._distText = ''; }
+}
+
 // ---- Smart Skill Search state & wiring ----
 // Store Once → Reuse Many Times: Firestore ఒక్కసారే load (కింద ఉన్న existing get()),
 // టైప్ చేసిన ప్రతిసారీ memory లోని allWorkers మీదే filter — Firebase reads పెరగవు.
@@ -147,7 +153,7 @@ function render(){
       const list = document.getElementById('list');
       const w = {...one[0]};
       if(myLoc && w.lat!=null && w.lng!=null){ attachDistance(w, myLoc); }
-      else { w._myVillage=''; w._myMandal=myManual.mandal; w._myDistrict=myManual.district; attachDistance(w, null); }
+      else { w._myVillage=''; w._myMandal=myManual.mandal; w._myDistrict=myManual.district; attachDistance(w, null); clearUnknownDistance(w); }
       list.innerHTML = cardHtml(w);
       return;
     }
@@ -169,6 +175,7 @@ function render(){
     } else {
       item._myVillage=''; item._myMandal=myManual.mandal; item._myDistrict=myManual.district;
       attachDistance(item, null);
+      clearUnknownDistance(item);
     }
     return item;
   });
@@ -196,7 +203,7 @@ function cardHtml(w){
     <div class="card">
       <b class="name">${highlightText(w.name, searchQuery)} ${w.verified?`<span class="vbadge">${t('verified_badge')}</span>`:''} ${w.partTime?`<span class="ptbadge">${t('parttime_badge')}</span>`:''} ${w.busy?`<span class="busybadge">${t('busy_badge')}</span>`:''}</b>
       <div class="place">📍 ${escHtml(w.village)}, ${w.customArea ? escHtml(w.customArea) : areaLabel(w.mandal)}, ${districtLabel(w.district)}</div>
-      <span class="dist ${w._distKm>30?'far':''}">${w._exact?'📏':'≈'} ${w._distText}</span>
+      ${w._distText?`<span class="dist ${w._distKm>30?'far':''}">${w._exact?'📏':'≈'} ${w._distText}</span>`:''}
       <div class="tags">${(w.skills||[]).map(s=>`<span class="tag">${highlightText(skillLabel(s), searchQuery)}</span>`).join('')}</div>
       ${w.available?`<div class="place">${t('ready')} ${escHtml(w.available)}</div>`:''}
       <div class="actions">
