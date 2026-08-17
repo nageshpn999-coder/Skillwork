@@ -47,13 +47,15 @@
 
 <div id="gate" class="wrap">
   <h1>Admin Login</h1>
-  <input type="text" id="pass" placeholder="పాస్‌వర్డ్">
+  <input type="email" id="email" placeholder="ఇమెయిల్" autocomplete="username">
+  <input type="password" id="pass" placeholder="పాస్‌వర్డ్" autocomplete="current-password">
   <button class="btn green" onclick="checkPass()">లాగిన్</button>
 </div>
 
 <div id="panel" class="wrap" style="display:none">
   <div class="topbar" style="margin:-20px -18px 20px;">
     <div class="brand">Admin Panel</div>
+    <button class="lang-toggle" onclick="doLogout()">లాగ్ అవుట్</button>
   </div>
 
   <div class="stat">
@@ -112,21 +114,41 @@
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="assets/firebase-config.js"></script>
 <script src="assets/data.js"></script>
 <script>
-// మీకు నచ్చిన పాస్‌వర్డ్‌గా మార్చుకోండి
-const ADMIN_PASS = "onlineland2026";
+// Firebase Authentication తో login.
+// పాస్‌వర్డ్ ఇక కోడ్‌లో ఉండదు — Firestore Rules కూడా ఈ login ని చూసే
+// మార్పులకు అనుమతిస్తాయి. కాబట్టి ఎవరైనా ఈ పేజీ తెరిచినా డేటా సురక్షితం.
+async function checkPass(){
+  const email = document.getElementById('email').value.trim();
+  const pass  = document.getElementById('pass').value;
+  if(!email || !pass){ showToast('ఇమెయిల్, పాస్‌వర్డ్ ఇవ్వండి'); return; }
+  try{
+    await firebase.auth().signInWithEmailAndPassword(email, pass);
+    // login విజయవంతం అయితే onAuthStateChanged panel చూపిస్తుంది
+  }catch(e){
+    showToast('ఇమెయిల్ లేదా పాస్‌వర్డ్ తప్పు');
+  }
+}
 
-function checkPass(){
-  if(document.getElementById('pass').value === ADMIN_PASS){
+async function doLogout(){
+  await firebase.auth().signOut();
+  location.reload();
+}
+
+// పేజీ తెరిచినప్పుడు — ఇంతకుముందే login అయి ఉంటే నేరుగా panel చూపిస్తుంది
+firebase.auth().onAuthStateChanged(user=>{
+  if(user){
     document.getElementById('gate').style.display='none';
     document.getElementById('panel').style.display='block';
     loadAll();
   } else {
-    showToast('పాస్‌వర్డ్ తప్పు');
+    document.getElementById('gate').style.display='block';
+    document.getElementById('panel').style.display='none';
   }
-}
+});
 
 let workers=[], works=[], currentTab='workers';
 
