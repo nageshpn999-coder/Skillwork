@@ -477,10 +477,13 @@ const SKILL_GROUPS = [
       {te:"వెల్డర్", en:"Welder"},
       {te:"టైల్స్/మార్బుల్ వర్క్", en:"Tiles/marble work"},
       {te:"సెంటరింగ్ వర్క్", en:"Centering work"},
+      {te:"RCC రూఫ్/స్లాబ్ వర్క్", en:"RCC roof/slab work"},
+      {te:"బార్ బెండర్ (స్టీల్ వర్క్)", en:"Bar bender (steel work)"},
       {te:"సాధారణ కూలీలు", en:"General labour"},
       {te:"ఇంటీరియర్ డిజైనర్", en:"Interior designer"},
       {te:"JCB ఆపరేటర్", en:"JCB operator"},
       {te:"సర్వేయర్ (Land Surveyor)", en:"Land surveyor"},
+      {te:"వాస్తు నిపుణుడు", en:"Vastu consultant"},
       {te:"ఫాల్స్ సీలింగ్ వర్క్", en:"False ceiling work"},
       {te:"గ్రానైట్/స్టోన్ వర్క్", en:"Granite/stone work"}
     ]
@@ -654,6 +657,9 @@ const SKILL_GROUPS_URBAN = [
       {te:"POP/ఫాల్స్ సీలింగ్ వర్క్", en:"POP Worker"},
       {te:"AC/Fridge మెకానిక్", en:"AC Technician"},
       {te:"CCTV/నెట్‌వర్క్ టెక్నీషియన్", en:"CCTV Technician"},
+      {te:"సెంటరింగ్ వర్క్", en:"Centering work"},
+      {te:"RCC రూఫ్/స్లాబ్ వర్క్", en:"RCC roof/slab work"},
+      {te:"బార్ బెండర్ (స్టీల్ వర్క్)", en:"Bar bender (steel work)"},
       {te:"సాధారణ కూలీలు", en:"General Labour"},
       {te:"ఇంటీరియర్ డిజైనర్", en:"Interior Designer"},
       {te:"ఆర్కిటెక్ట్", en:"Architect"},
@@ -662,7 +668,8 @@ const SKILL_GROUPS_URBAN = [
       {te:"క్వాంటిటీ సర్వేయర్", en:"Quantity Surveyor"},
       {te:"ప్రాజెక్ట్ మేనేజర్", en:"Project Manager"},
       {te:"JCB ఆపరేటర్", en:"JCB Operator"},
-      {te:"సర్వేయర్ (Land Surveyor)", en:"Land Surveyor"}
+      {te:"సర్వేయర్ (Land Surveyor)", en:"Land Surveyor"},
+      {te:"వాస్తు నిపుణుడు", en:"Vastu consultant"}
     ]
   },
   {
