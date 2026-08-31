@@ -484,6 +484,8 @@ const SKILL_GROUPS = [
       {te:"JCB ఆపరేటర్", en:"JCB operator"},
       {te:"సర్వేయర్ (Land Surveyor)", en:"Land surveyor"},
       {te:"వాస్తు నిపుణుడు", en:"Vastu consultant"},
+      {te:"బోర్‌వెల్ డ్రిల్లింగ్", en:"Borewell drilling"},
+      {te:"కోర్ కటింగ్/డ్రిల్లింగ్ వర్క్", en:"Core cutting/drilling work"},
       {te:"ఫాల్స్ సీలింగ్ వర్క్", en:"False ceiling work"},
       {te:"గ్రానైట్/స్టోన్ వర్క్", en:"Granite/stone work"}
     ]
@@ -669,7 +671,9 @@ const SKILL_GROUPS_URBAN = [
       {te:"ప్రాజెక్ట్ మేనేజర్", en:"Project Manager"},
       {te:"JCB ఆపరేటర్", en:"JCB Operator"},
       {te:"సర్వేయర్ (Land Surveyor)", en:"Land Surveyor"},
-      {te:"వాస్తు నిపుణుడు", en:"Vastu consultant"}
+      {te:"వాస్తు నిపుణుడు", en:"Vastu consultant"},
+      {te:"బోర్‌వెల్ డ్రిల్లింగ్", en:"Borewell drilling"},
+      {te:"కోర్ కటింగ్/డ్రిల్లింగ్ వర్క్", en:"Core cutting/drilling work"}
     ]
   },
   {
