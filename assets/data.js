@@ -495,6 +495,7 @@ const SKILL_GROUPS = [
     items: [
       {te:"కారు/ఆటో డ్రైవర్", en:"Car/auto driver"},
       {te:"లారీ డ్రైవర్", en:"Lorry driver"},
+      {te:"బొలెరో/పికప్ డ్రైవర్", en:"Bolero/pickup driver"},
       {te:"క్యాబ్/బైక్ టాక్సీ డ్రైవర్", en:"Cab/bike taxi driver"},
       {te:"డెలివరీ ఎగ్జిక్యూటివ్", en:"Delivery executive"},
       {te:"ప్యాకర్స్ & మూవర్స్ హెల్పర్", en:"Packers & movers helper"}
@@ -642,6 +643,7 @@ const SKILL_GROUPS_URBAN = [
       {te:"ఆటో డ్రైవర్", en:"Auto Driver"},
       {te:"బైక్ రైడర్", en:"Bike Rider"},
       {te:"ట్రక్/లారీ డ్రైవర్", en:"Truck Driver"},
+      {te:"బొలెరో/పికప్ డ్రైవర్", en:"Bolero/pickup driver"},
       {te:"బస్ డ్రైవర్", en:"Bus Driver"}
     ]
   },
