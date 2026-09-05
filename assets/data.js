@@ -521,7 +521,8 @@ const SKILL_GROUPS = [
       {te:"AC/Fridge మెకానిక్", en:"AC/fridge mechanic"},
       {te:"మొబైల్/ఎలక్ట్రానిక్స్ రిపేర్", en:"Mobile/electronics repair"},
       {te:"టైలర్/దర్జీ", en:"Tailor"},
-      {te:"బైక్/కారు మెకానిక్", en:"Bike/car mechanic"},
+      {te:"బైక్ మెకానిక్", en:"Bike mechanic"},
+      {te:"కారు మెకానిక్", en:"Car mechanic"},
       {te:"CCTV/నెట్‌వర్క్ టెక్నీషియన్", en:"CCTV/network technician"}
     ]
   },
@@ -851,7 +852,8 @@ const SKILL_GROUPS_URBAN = [
       {te:"కర్టెన్/సోఫా వర్క్", en:"Curtain / Sofa Work"},
       {te:"పెస్ట్ కంట్రోల్ వర్కర్", en:"Pest Control Worker"},
       {te:"వాటర్ ట్యాంక్ క్లీనింగ్", en:"Water Tank Cleaning"},
-      {te:"బైక్/కారు మెకానిక్", en:"Bike / Car Mechanic"},
+      {te:"బైక్ మెకానిక్", en:"Bike Mechanic"},
+      {te:"కారు మెకానిక్", en:"Car Mechanic"},
       {te:"కారు వాషింగ్/డిటైలింగ్", en:"Car Washing / Detailing"}
     ]
   },
