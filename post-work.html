@@ -14,6 +14,15 @@
 <meta name="apple-mobile-web-app-title" content="WorkPin">
 <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 <link rel="icon" href="assets/icons/icon-192.png">
+<style>
+  /* ఐచ్ఛిక వివరాల పెట్టె — నొక్కితేనే తెరుచుకుంటుంది */
+  .more-box { margin:14px 0; border:1px dashed #C9BCA4; border-radius:12px; padding:0 12px; background:#FBF6EE; }
+  .more-box summary { cursor:pointer; padding:12px 0; font-weight:700; color:#2C5B39; list-style:none; }
+  .more-box summary::-webkit-details-marker { display:none; }
+  .more-box summary::before { content:"▸ "; }
+  .more-box[open] summary::before { content:"▾ "; }
+  .more-box[open] { padding-bottom:12px; }
+</style>
 </head>
 <body>
 
@@ -56,7 +65,7 @@
     </div>
 
     <label data-i="village"></label>
-    <input type="text" id="evillage" required data-i-ph="ph_village">
+    <input type="text" id="evillage" data-i-ph="ph_village">
 
     <div class="group-label" data-i="work_type"></div>
     <!-- Skill search — హైదరాబాద్ select చేసినప్పుడు మాత్రమే కనిపిస్తుంది -->
@@ -65,24 +74,29 @@
     </div>
     <div id="eSkillBox"></div>
 
-    <label data-i="how_many"></label>
-    <input type="text" id="count" data-i-ph="ph_count">
+    <!-- ఐచ్ఛిక వివరాలు — మడిచి ఉంచాం. పోస్ట్ చేయడం 30 సెకన్లలో అయిపోవాలి. -->
+    <details class="more-box">
+      <summary data-i="more_details"></summary>
 
-    <label data-i="job_type_label"></label>
-    <select id="jobType">
-      <option value="any" data-i="job_any"></option>
-      <option value="full" data-i="job_full"></option>
-      <option value="part" data-i="job_part"></option>
-    </select>
+      <label data-i="how_many"></label>
+      <input type="text" id="count" data-i-ph="ph_count">
 
-    <label data-i="when_need"></label>
-    <input type="text" id="when" data-i-ph="ph_when">
+      <label data-i="job_type_label"></label>
+      <select id="jobType">
+        <option value="any" data-i="job_any"></option>
+        <option value="full" data-i="job_full"></option>
+        <option value="part" data-i="job_part"></option>
+      </select>
 
-    <label data-i="wage"></label>
-    <input type="text" id="wage" data-i-ph="ph_wage">
+      <label data-i="when_need"></label>
+      <input type="text" id="when" data-i-ph="ph_when">
 
-    <label data-i="details"></label>
-    <textarea id="details" data-i-ph="ph_details"></textarea>
+      <label data-i="wage"></label>
+      <input type="text" id="wage" data-i-ph="ph_wage">
+
+      <label data-i="details"></label>
+      <textarea id="details" data-i-ph="ph_details"></textarea>
+    </details>
 
     <button type="submit" class="btn terracotta" data-i="submit_post"></button>
     <p class="note" data-i="post_note"></p>
