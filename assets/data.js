@@ -986,6 +986,54 @@ function setupHydAreaSwitch(districtSel, mandalWrap, areaWrap){
   sync();
 }
 
+// ---- సుమారు సరిపోలిక (fuzzy match) ----
+// "ఎలక్ట్రిషన్" అని టైప్/వాయిస్ వచ్చినా "ఎలక్ట్రీషియన్" దొరకాలి.
+// తెలుగు గుణింతాలు (ా ి ీ ు ...), పొల్లు (్), సున్నా తీసేసి అక్షరాల అస్థిపంజరం పోలుస్తాం,
+// తర్వాత ఒకటి-రెండు అక్షరాల తేడాను అనుమతిస్తాం.
+function _skel(str){
+  return (str||'').toLowerCase()
+    .replace(/[\u0C00-\u0C03\u0C3C\u0C3E-\u0C56\u0C62\u0C63\u200C\u200D]/g,'')
+    .replace(/[^a-z0-9\u0C05-\u0C39\u0C58-\u0C61]/g,'');
+}
+function _lev(a,b){
+  if(a===b) return 0;
+  const m=a.length, n=b.length;
+  if(!m) return n; if(!n) return m;
+  let prev=new Array(n+1), cur=new Array(n+1);
+  for(let j=0;j<=n;j++) prev[j]=j;
+  for(let i=1;i<=m;i++){
+    cur[0]=i;
+    for(let j=1;j<=n;j++){
+      cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]===b[j-1]?0:1));
+    }
+    [prev,cur]=[cur,prev];
+  }
+  return prev[n];
+}
+function _fuzzyWord(q, word){
+  if(!q || !word) return false;
+  if(word.startsWith(q)) return true;
+  if(q.length >= 6 && word.includes(q)) return true;
+  // చిన్న పదాలకు తేడా అనుమతించం — తప్పు ఫలితాలు రాకుండా
+  if(q.length < 6) return false;
+  if(q[0] !== word[0]) return false;            // మొదటి అక్షరం ఒకటే ఉండాలి
+  const tol = q.length >= 9 ? 2 : 1;
+  if(_lev(q, word) <= tol) return true;
+  // టైప్ చేస్తుండగా (సగం పదం) — మొదటి భాగంతో పోల్చడం
+  if(word.length > q.length && _lev(q, word.slice(0, q.length)) <= 1) return true;
+  return false;
+}
+function skillMatches(it, rawQuery){
+  const raw = (rawQuery||'').trim();
+  if(!raw) return true;
+  const f = raw.toLowerCase();
+  if(it.en.toLowerCase().includes(f) || it.te.includes(raw)) return true;   // పాత విధానం — యథాతథం
+  const q = _skel(raw);
+  if(q.length < 3) return false;
+  const words = (it.te + ' ' + it.en).split(/[\s\/()\-&,]+/).map(_skel).filter(Boolean);
+  return words.some(w => _fuzzyWord(q, w));
+}
+
 function buildSkillChips(container, selectedSet, groups, filterText, preserveSelection){
   const list = groups || SKILL_GROUPS;
   const f = (filterText||'').trim().toLowerCase();
@@ -996,7 +1044,7 @@ function buildSkillChips(container, selectedSet, groups, filterText, preserveSel
   const seen = new Set(); // combined lists లో duplicate skills రాకుండా
   list.forEach(g=>{
     // Filter: English/Telugu label రెండింటిలో match అయిన skills మాత్రమే
-    const items = (f ? g.items.filter(it=> it.en.toLowerCase().includes(f) || it.te.includes(filterText.trim())) : g.items)
+    const items = (f ? g.items.filter(it=> skillMatches(it, filterText)) : g.items)
       .filter(it=>{ if(seen.has(it.te)) return false; seen.add(it.te); return true; });
     if(!items.length) return; // ఖాళీ group headings చూపించొద్దు
     const label=document.createElement('div');
