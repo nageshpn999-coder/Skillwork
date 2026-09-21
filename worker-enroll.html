@@ -14,6 +14,15 @@
 <meta name="apple-mobile-web-app-title" content="WorkPin">
 <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 <link rel="icon" href="assets/icons/icon-192.png">
+<style>
+  /* 🎤 Voice search */
+  .voice-row { display:flex; gap:8px; align-items:stretch; margin-bottom:8px; }
+  .voice-row input { flex:1; min-width:0; margin:0; }
+  .mic-btn { flex:0 0 auto; width:54px; border:2px solid #2C5B39; background:#fff; color:#2C5B39;
+             border-radius:14px; font-size:22px; cursor:pointer; padding:0; }
+  .mic-btn.listening { background:#C0392B; border-color:#C0392B; color:#fff; animation:micPulse 1s infinite; }
+  @keyframes micPulse { 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.07);} }
+</style>
 </head>
 <body>
 
@@ -61,7 +70,11 @@
     <div class="group-label" data-i="skills_label"></div>
     <!-- Skill search — హైదరాబాద్ select చేసినప్పుడు మాత్రమే కనిపిస్తుంది -->
     <div id="skillFilterWrap" style="display:none">
-      <input type="text" id="skillFilter" data-i-ph="skill_filter_ph" autocomplete="off" style="margin-bottom:8px">
+      <div class="voice-row">
+        <input type="text" id="skillFilter" data-i-ph="skill_filter_ph" autocomplete="off">
+        <!-- 🎤 మాట్లాడితే వెతుకుతుంది — సపోర్ట్ లేని బ్రౌజర్లలో దాగి ఉంటుంది -->
+        <button type="button" class="mic-btn" id="micBtn" aria-label="Voice search" style="display:none">🎤</button>
+      </div>
     </div>
     <div id="skillBox"></div>
 
@@ -188,6 +201,57 @@ skillFilterEl.addEventListener('input', ()=>{
   }
   buildSkillChips(document.getElementById('skillBox'), selectedSkills, groups, f, true);
 });
+
+// ---- 🎤 Voice search ----
+// మాట్లాడిన మాట skill search గడిలో పడి, పైన ఉన్న filter అలాగే పనిచేస్తుంది.
+// Android Chrome లో పనిచేస్తుంది; సపోర్ట్ లేకపోతే బటన్ కనిపించదు, టైపింగ్ యథావిధిగా.
+(function(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const micBtn = document.getElementById('micBtn');
+  if(!SR || !micBtn) return;
+  micBtn.style.display = 'block';
+
+  let rec = null, listening = false;
+  const origPh = () => skillFilterEl.getAttribute('placeholder') || '';
+  let savedPh = '';
+
+  function stop(){
+    listening = false;
+    micBtn.classList.remove('listening');
+    micBtn.textContent = '🎤';
+    if(savedPh) skillFilterEl.setAttribute('placeholder', savedPh);
+  }
+
+  micBtn.addEventListener('click', ()=>{
+    if(listening && rec){ rec.stop(); return; }
+    rec = new SR();
+    rec.lang = (getLang()==='en') ? 'en-IN' : 'te-IN';
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+
+    rec.onresult = (e)=>{
+      let text = (e.results[0][0].transcript || '').trim().replace(/[.।,!?]+$/,'');
+      skillFilterEl.value = text;
+      skillFilterEl.dispatchEvent(new Event('input'));   // ఉన్న filter logic నే వాడుతుంది
+    };
+    rec.onerror = (e)=>{
+      stop();
+      if(e.error==='not-allowed' || e.error==='service-not-allowed'){
+        showToast(getLang()==='en' ? 'Please allow microphone access' : 'మైక్రోఫోన్ అనుమతి ఇవ్వండి');
+      } else if(e.error==='no-speech'){
+        showToast(getLang()==='en' ? "Didn't hear anything — try again" : 'ఏమీ వినిపించలేదు — మళ్లీ ప్రయత్నించండి');
+      }
+    };
+    rec.onend = stop;
+
+    savedPh = origPh();
+    skillFilterEl.setAttribute('placeholder', getLang()==='en' ? '🎤 Speak now…' : '🎤 ఇప్పుడు మాట్లాడండి…');
+    listening = true;
+    micBtn.classList.add('listening');
+    micBtn.textContent = '■';
+    try { rec.start(); } catch(err){ stop(); }
+  });
+})();
 
 document.getElementById('wForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
