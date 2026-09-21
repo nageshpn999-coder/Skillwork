@@ -14,6 +14,11 @@
 <meta name="apple-mobile-web-app-title" content="WorkPin">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="icon" href="assets/icon-192.png">
+<style>
+  .wa-help { display:block; text-align:center; margin:4px 0 18px; padding:10px 12px;
+             font-size:14.5px; color:#4a4a4a; text-decoration:none; line-height:1.5; }
+  .wa-help b { color:#1E8E4E; white-space:nowrap; }
+</style>
 </head>
 <body>
 
@@ -67,6 +72,9 @@
     </div>
   </a>
 
+  <!-- 📞 WhatsApp సహాయం — ఫారం కష్టంగా ఉన్నవారి కోసం. నంబర్ కింద script లో WA_HELP_NUMBER లో ఉంది -->
+  <a class="wa-help" id="waHelp" target="_blank" rel="noopener" style="display:none"></a>
+
   <h2 data-i="already"></h2>
   <div class="mini-links">
     <a href="find-work.html" data-i="see_work"></a>
@@ -107,6 +115,23 @@ function loadStats(){
   }).catch(()=>{ /* stats optional */ });
 }
 if(getLang()) loadStats();
+
+// ---- 📞 WhatsApp సహాయ బటన్ ----
+// నంబర్ మార్చాలంటే ఇక్కడ మాత్రమే (91 తో, + లేకుండా). ఖాళీగా '' పెడితే బటన్ కనిపించదు.
+const WA_HELP_NUMBER = '919959731120';
+(function(){
+  const el = document.getElementById('waHelp');
+  if(!el || !WA_HELP_NUMBER) return;
+  const en = getLang()==='en';
+  const msg = en
+    ? 'Hi, I need workers.\nWork: \nPlace: '
+    : 'నమస్తే, నాకు వర్కర్స్ కావాలి.\nపని: \nఊరు: ';
+  el.href = 'https://wa.me/' + WA_HELP_NUMBER + '?text=' + encodeURIComponent(msg);
+  el.innerHTML = en
+    ? 'Form difficult to fill? <b>📞 Tell us on WhatsApp</b>'
+    : 'ఫారం నింపడం కష్టంగా ఉందా? <b>📞 WhatsApp లో చెప్పండి</b>';
+  el.style.display = 'block';
+})();
 </script>
 <script>
 // ---- PWA install prompt ----
