@@ -261,6 +261,13 @@ function setupShortcutBox(boxId, titleTe, titleEn, GROUPS){
 setupShortcutBox('homeSvc',  '🏠 ఇంటి సేవలు',        '🏠 Home Services',    HOME_SERVICES);
 setupShortcutBox('buildSvc', '🏗️ ఇల్లు కట్టడానికి', '🏗️ Building a House', BUILD_SERVICES);
 
+// ఒక పెట్టె తెరిస్తే మిగతావి మూసుకుంటాయి — పేజీ పొడవు కాకుండా
+document.querySelectorAll('details.home-svc').forEach(d=>{
+  d.addEventListener('toggle', ()=>{
+    if(d.open) document.querySelectorAll('details.home-svc').forEach(o=>{ if(o!==d) o.open=false; });
+  });
+});
+
 // బయట tap చేస్తే suggestions మూసుకుంటాయి
 document.addEventListener('click', (e)=>{
   if(!e.target.closest('.search-wrap')) sugBox.classList.remove('show');
