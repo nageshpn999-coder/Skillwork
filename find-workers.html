@@ -14,6 +14,21 @@
 <meta name="apple-mobile-web-app-title" content="WorkPin">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="icon" href="assets/icon-192.png">
+<style>
+  /* 🏠 ఇంటి సేవలు షార్ట్‌కట్ పెట్టె */
+  .home-svc { margin:10px 0 12px; border:1px solid #E2D9C8; border-radius:14px; background:#fff; padding:0 12px; }
+  .home-svc summary { cursor:pointer; list-style:none; padding:12px 0; font-weight:800; color:#2C5B39; font-size:16px; }
+  .home-svc summary::-webkit-details-marker { display:none; }
+  .home-svc summary::after { content:" ▸"; }
+  .home-svc[open] summary::after { content:" ▾"; }
+  .home-svc[open] { padding-bottom:10px; }
+  .hs-group { margin:4px 0 10px; }
+  .hs-group b { display:block; font-size:13.5px; color:#9C5223; margin-bottom:6px; }
+  .hs-chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .hs-chip { border:1px solid #E2D9C8; background:#FBF6EE; color:#2b2b2b; border-radius:999px;
+             padding:7px 12px; font-size:14px; cursor:pointer; font-family:inherit; }
+  .hs-chip.on { background:#2C5B39; border-color:#2C5B39; color:#fff; }
+</style>
 </head>
 <body>
 
@@ -51,6 +66,12 @@
     </div>
     <div class="suggestions" id="sugBox"></div>
   </div>
+
+  <!-- 🏠 ఇంటి సేవలు — ఇప్పటికే ఉన్న స్కిల్స్‌కి షార్ట్‌కట్లు (కొత్త స్కిల్స్ కాదు). మడిచి ఉంటుంది. -->
+  <details class="home-svc" id="homeSvc">
+    <summary id="homeSvcTitle"></summary>
+    <div id="homeSvcBody"></div>
+  </details>
 
   <div class="filters">
     <select id="fDistrict"></select>
@@ -138,6 +159,74 @@ clearBtn.addEventListener('click', ()=>{
   render();
   searchEl.focus();
 });
+
+// ---- 🏠 ఇంటి సేవలు ----
+// ఇవి ఇప్పటికే ఉన్న స్కిల్స్‌కి షార్ట్‌కట్లు మాత్రమే. నొక్కితే search గడిలో పదం పడి,
+// పైన ఉన్న suggestion-select లాగే అదే search/sort/filter పనిచేస్తుంది. డేటా ఏమీ మారదు.
+// [తెలుగు బటన్, English బటన్, తెలుగు వెతుకుడు పదం, English వెతుకుడు పదం]
+const HOME_SERVICES = [
+  {te:'🔧 ఇంటి రిపేర్లు', en:'🔧 Home Repairs', items:[
+    ['ఎలక్ట్రీషియన్','Electrician','ఎలక్ట్రీషియన్','Electrician'],
+    ['ప్లంబర్','Plumber','ప్లంబర్','Plumber'],
+    ['కార్పెంటర్','Carpenter','కార్పెంటర్','Carpenter'],
+    ['పెయింటర్','Painter','పెయింటర్','Painter']]},
+  {te:'❄️ ఉపకరణాలు', en:'❄️ Appliances', items:[
+    ['AC/Fridge','AC/Fridge','AC/Fridge','AC/Fridge'],
+    ['వాషింగ్ మెషిన్','Washing Machine','వాషింగ్ మెషిన్','Washing Machine'],
+    ['RO వాటర్','RO Water','RO వాటర్','RO Water'],
+    ['గీజర్/మిక్సీ రిపేర్','Geyser/Mixer Repair','ఇంటి ఉపకరణాల','Home Appliance']]},
+  {te:'🧹 శుభ్రత', en:'🧹 Cleaning & Care', items:[
+    ['క్లీనింగ్ స్టాఫ్','Cleaner','క్లీనింగ్ స్టాఫ్','Cleaner'],
+    ['డీప్ క్లీనింగ్','Deep Cleaning','డీప్ క్లీనింగ్','Deep Cleaning'],
+    ['పెస్ట్ కంట్రోల్','Pest Control','పెస్ట్ కంట్రోల్','Pest Control'],
+    ['గార్డెనింగ్','Gardener','గార్డెనింగ్','Gardener']]},
+  {te:'🔐 భద్రత', en:'🔐 Security', items:[
+    ['CCTV','CCTV','CCTV','CCTV'],
+    ['స్మార్ట్ లాక్','Smart Lock','స్మార్ట్ లాక్','Smart Lock'],
+    ['సెక్యూరిటీ గార్డ్','Security Guard','సెక్యూరిటీ గార్డ్','Security Guard']]},
+  {te:'🏠 ఇంటి సహాయం', en:'🏠 Household Help', items:[
+    ['కారు డ్రైవర్','Car Driver','కారు డ్రైవర్','Car Driver'],
+    ['వంట మనిషి','Cook','వంట మనిషి','Cook'],
+    ['బేబీ/ఎల్డర్ కేర్','Baby/Elder Care','కేర్','Care'],
+    ['ఇంటి పని','House Maid','ఇంటి పని','House Maid']]},
+];
+
+(function(){
+  const box = document.getElementById('homeSvc');
+  if(!box) return;
+  const en = getLang()==='en';
+  document.getElementById('homeSvcTitle').textContent = en ? '🏠 Home Services' : '🏠 ఇంటి సేవలు';
+  const body = document.getElementById('homeSvcBody');
+  body.innerHTML = HOME_SERVICES.map(g=>`
+    <div class="hs-group"><b>${en?g.en:g.te}</b><div class="hs-chips">
+      ${g.items.map(it=>`<button type="button" class="hs-chip" data-q="${escHtml(en?it[3]:it[2])}">${escHtml(en?it[1]:it[0])}</button>`).join('')}
+    </div></div>`).join('');
+
+  function markActive(){
+    const cur = searchEl.value.trim();
+    body.querySelectorAll('.hs-chip').forEach(b=> b.classList.toggle('on', !!cur && b.dataset.q===cur));
+  }
+  body.querySelectorAll('.hs-chip').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const q = btn.dataset.q;
+      const same = searchEl.value.trim()===q;
+      // పైన ఉన్న suggestion-select లాగే — అదే logic
+      searchEl.value = same ? '' : q;
+      searchQuery = searchEl.value;
+      clearBtn.classList.toggle('show', !!searchQuery);
+      sugBox.classList.remove('show');
+      render();
+      markActive();
+      if(!same){
+        box.open = false;   // ఎంచుకున్నాక మడిచి, ఫలితాలు కనిపించేలా
+        document.getElementById('list').scrollIntoView({behavior:'smooth', block:'start'});
+      }
+    });
+  });
+  box.addEventListener('toggle', markActive);
+  searchEl.addEventListener('input', markActive);
+  clearBtn.addEventListener('click', markActive);
+})();
 
 // బయట tap చేస్తే suggestions మూసుకుంటాయి
 document.addEventListener('click', (e)=>{
