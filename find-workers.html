@@ -328,7 +328,12 @@ function render(){
     filtered = filtered.filter(w=> (w._distKm!=null) && w._distKm <= maxKm);
   }
 
-  filtered.sort((a,b)=> (slotOf(a)-slotOf(b)) || ((a.busy?1:0)-(b.busy?1:0)) || ((a._distKm||999) - (b._distKm||999)) || ((b.verified?1:0)-(a.verified?1:0)));
+  // క్రమం: ప్రీమియం → 30 కి.మీ లోపు ఉన్నవారు → ఖాళీగా ఉన్నవారు → దగ్గరివారు → ✅ ధృవీకరించినవారు
+  // (దూరంగా ఉన్న ఖాళీ వ్యక్తి, దగ్గరలో పనిలో ఉన్న వ్యక్తి కంటే పైకి రాకూడదు)
+  const NEAR_KM = 30;
+  const farGroup = w => (w._distKm != null && w._distKm <= NEAR_KM) ? 0 : 1;
+  const distOf  = w => (w._distKm == null ? 999 : w._distKm);
+  filtered.sort((a,b)=> (slotOf(a)-slotOf(b)) || (farGroup(a)-farGroup(b)) || ((a.busy?1:0)-(b.busy?1:0)) || (distOf(a)-distOf(b)) || ((b.verified?1:0)-(a.verified?1:0)));
 
   const list = document.getElementById('list');
   if(filtered.length===0){
