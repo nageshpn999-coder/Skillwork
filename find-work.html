@@ -135,6 +135,8 @@ document.addEventListener('click', (e)=>{
 });
 
 function render(){
+  // డేటా వచ్చాక 'loading' class తీసేయాలి — లేకపోతే కార్డ్‌లు ఇరుకుగా, మధ్యకు జరిగి కనిపిస్తాయి
+  document.getElementById('list').classList.remove('loading');
   // ---- Direct share: URL లో ?id=... ఉంటే ఆ ఒక్క పోస్ట్ మాత్రమే ----
   if(focusId){
     const one = allWork.filter(w=>w.id===focusId);
