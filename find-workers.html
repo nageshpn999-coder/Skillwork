@@ -361,15 +361,17 @@ function render(){
   filtered.sort((a,b)=> (slotOf(a)-slotOf(b)) || (farGroup(a)-farGroup(b)) || ((a.busy?1:0)-(b.busy?1:0)) || (distOf(a)-distOf(b)) || ((b.verified?1:0)-(a.verified?1:0)));
 
   const list = document.getElementById('list');
+  // 🏪 దుకాణాల ప్రకటనలు — దగ్గరలో ఉన్నవారికి మాత్రమే, జాబితా పైన (assets/data.js లో SHOP_ADS)
+  const adsHtml = shopAdsHtml(myLoc, [myManual.district, fSel.value]);
   if(filtered.length===0){
     // Search వల్ల ఖాళీ అయితే ప్రత్యేక message
     const msg = searchQuery.trim() ? t('no_match') : t('empty_workers');
-    list.innerHTML = (myLoc ? nearNoteHtml(false) : '') + `<div class="empty"><span class="big">📭</span>${msg}</div>`;
+    list.innerHTML = adsHtml + (myLoc ? nearNoteHtml(false) : '') + `<div class="empty"><span class="big">📭</span>${msg}</div>`;
     return;
   }
   // GPS ఉండి, 30 కి.మీ లోపు ఒక్కరూ లేకపోతే — పైన గమనిక + WhatsApp లింక్
   const anyNear = filtered.some(w=> w._distKm != null && w._distKm <= NEAR_KM);
-  list.innerHTML = ((myLoc && !anyNear) ? nearNoteHtml(true) : '') + filtered.map(w=>cardHtml(w)).join('');
+  list.innerHTML = adsHtml + ((myLoc && !anyNear) ? nearNoteHtml(true) : '') + filtered.map(w=>cardHtml(w)).join('');
 }
 
 // ఒక worker card ని HTML గా తయారు చేస్తుంది (list కి, single-profile view కి రెండింటికీ)
