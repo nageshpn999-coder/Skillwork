@@ -28,6 +28,10 @@
   .hs-chip { border:1px solid #E2D9C8; background:#FBF6EE; color:#2b2b2b; border-radius:999px;
              padding:7px 12px; font-size:14px; cursor:pointer; font-family:inherit; }
   .hs-chip.on { background:#2C5B39; border-color:#2C5B39; color:#fff; }
+  /* దగ్గరలో ఎవరూ లేనప్పుడు చూపించే గమనిక */
+  .near-note { background:#FFF4E5; border:1px solid #F0D9B5; border-radius:14px; padding:12px 14px;
+               margin:0 0 14px; font-size:14.5px; line-height:1.55; color:#5a4326; text-align:center; }
+  .near-note a { color:#1E8E4E; font-weight:800; text-decoration:none; white-space:nowrap; }
 </style>
 </head>
 <body>
@@ -287,6 +291,27 @@ function slotOf(w){
   return until > Date.now() ? r : 99;
 }
 
+// ---- 📞 దగ్గరలో ఎవరూ లేనప్పుడు WhatsApp సహాయం ----
+// నంబర్ మార్చాలంటే ఇక్కడ మాత్రమే (91 తో, + లేకుండా). ఖాళీగా '' పెడితే WhatsApp లింక్ కనిపించదు.
+const WA_HELP_NUMBER = '919959731120';
+function waHelpLink(){
+  if(!WA_HELP_NUMBER) return '';
+  const en = getLang()==='en';
+  const q = (searchQuery||'').trim();
+  const msg = en ? `Hi, I need workers.\nWork: ${q}\nPlace: ` : `నమస్తే, నాకు వర్కర్స్ కావాలి.\nపని: ${q}\nఊరు: `;
+  const href = 'https://wa.me/' + WA_HELP_NUMBER + '?text=' + encodeURIComponent(msg);
+  return `<a target="_blank" rel="noopener" href="${href}">${en ? '📞 Tell us on WhatsApp' : '📞 WhatsApp లో చెప్పండి'}</a>`;
+}
+// GPS ఉండి, 30 కి.మీ లోపు ఎవరూ లేకపోతే జాబితా పైన గమనిక
+function nearNoteHtml(hasFarOnes){
+  const en = getLang()==='en';
+  const wa = waHelpLink();
+  const a = en ? 'No one is registered near you (within 30 km) yet.' : 'మీ దగ్గరలో (30 కి.మీ లోపు) ఇంకా ఎవరూ నమోదు కాలేదు.';
+  const b = hasFarOnes ? (en ? ' People farther away are shown below.' : ' కింద దూరంగా ఉన్నవారు ఉన్నారు.') : '';
+  const c = wa ? (en ? ' Or ' : ' లేదా ') + wa : '';
+  return `<div class="near-note">${a}${b}${c}</div>`;
+}
+
 function render(){
   // ---- Direct profile share: URL లో ?id=... ఉంటే ఆ ఒక్కరిని మాత్రమే చూపించు ----
   if(focusId){
@@ -339,10 +364,12 @@ function render(){
   if(filtered.length===0){
     // Search వల్ల ఖాళీ అయితే ప్రత్యేక message
     const msg = searchQuery.trim() ? t('no_match') : t('empty_workers');
-    list.innerHTML = `<div class="empty"><span class="big">📭</span>${msg}</div>`;
+    list.innerHTML = (myLoc ? nearNoteHtml(false) : '') + `<div class="empty"><span class="big">📭</span>${msg}</div>`;
     return;
   }
-  list.innerHTML = filtered.map(w=>cardHtml(w)).join('');
+  // GPS ఉండి, 30 కి.మీ లోపు ఒక్కరూ లేకపోతే — పైన గమనిక + WhatsApp లింక్
+  const anyNear = filtered.some(w=> w._distKm != null && w._distKm <= NEAR_KM);
+  list.innerHTML = ((myLoc && !anyNear) ? nearNoteHtml(true) : '') + filtered.map(w=>cardHtml(w)).join('');
 }
 
 // ఒక worker card ని HTML గా తయారు చేస్తుంది (list కి, single-profile view కి రెండింటికీ)
