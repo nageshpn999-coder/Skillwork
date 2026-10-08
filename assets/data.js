@@ -1251,3 +1251,45 @@ function attachDistance(item, myLoc){
   }
   return item;
 }
+
+// ---- 🏪 దుకాణాల ప్రకటనలు (Shop Ads) ----
+// కొత్త ప్రకటన చేర్చాలంటే ఈ జాబితాలో ఒక { ... } చేర్చండి. తీసేయాలంటే ఆ { ... } తొలగించండి.
+//   lat/lng  — దుకాణం ఉన్న ఊరు (GPS ఉన్నవారికి radiusKm లోపు ఉంటేనే ప్రకటన కనిపిస్తుంది)
+//   district — GPS లేనివారు ఈ జిల్లా ఎంచుకుంటే ప్రకటన కనిపిస్తుంది (DISTRICTS లోని తెలుగు పేరు)
+//   until    — గడువు "YYYY-MM-DD" (ఆ రోజు తర్వాత ప్రకటన తానే ఆగిపోతుంది). ఖాళీ '' అయితే గడువు లేదు.
+const SHOP_ADS = [
+  {
+    te: {name:"జై భవానీ హార్డ్‌వేర్", place:"మక్తల్", text:"సిమెంట్, స్టీల్, హార్డ్‌వేర్ సామాను"},
+    en: {name:"Jai Bhavani Hardware", place:"Makthal", text:"Cement, steel, hardware materials"},
+    phone: "9490146603",
+    lat: 16.5019, lng: 77.5113,
+    district: "నారాయణపేట",
+    radiusKm: 30,
+    until: ""
+  }
+];
+
+// myLoc = {lat,lng} లేదా null; districts = చూసేవారు ఎంచుకున్న జిల్లా(లు)
+function shopAdsHtml(myLoc, districts){
+  const en = getLang()==='en';
+  const picked = (districts||[]).filter(Boolean);
+  return SHOP_ADS.filter(ad=>{
+    if(ad.until && new Date(ad.until+'T23:59:59').getTime() < Date.now()) return false;
+    if(myLoc) return haversineKm(myLoc.lat, myLoc.lng, ad.lat, ad.lng) <= (ad.radiusKm||30);
+    return picked.includes(ad.district);
+  }).map(ad=>{
+    const L = en ? ad.en : ad.te;
+    const waMsg = en ? `Hi, I saw your ad on WorkPin. I need: ` : `నమస్తే, WorkPin లో మీ ప్రకటన చూశాను. నాకు కావాల్సింది: `;
+    return `
+    <div class="card shop-ad">
+      <span class="adbadge">${en?'📢 Ad':'📢 ప్రకటన'}</span>
+      <b class="name">🏪 ${escHtml(L.name)}</b>
+      <div class="place">📍 ${escHtml(L.place)}</div>
+      <div class="adtext">${escHtml(L.text)}</div>
+      <div class="actions">
+        <a class="call" href="tel:${cleanPhone(ad.phone)}">${t('call')}</a>
+        <a class="wa" target="_blank" rel="noopener" href="${waLink(ad.phone, waMsg)}"><span>WhatsApp</span></a>
+      </div>
+    </div>`;
+  }).join('');
+}

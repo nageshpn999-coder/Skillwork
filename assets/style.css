@@ -550,3 +550,16 @@ footer.foot{
   color:var(--cream);border-radius:999px;padding:6px 14px;font-size:13px;
   font-weight:800;cursor:pointer;font-family:inherit;
 }
+
+/* 🏪 దుకాణం ప్రకటన కార్డ్ */
+.card.shop-ad{
+  border:2px solid var(--sun);
+  background:linear-gradient(180deg,#FFF8E8 0%,#fff 55%);
+  box-shadow:0 6px 20px rgba(232,169,59,.22);
+}
+.adbadge{
+  display:inline-block;font-size:11.5px;font-weight:800;
+  color:var(--terracotta-dark);background:#FBEEE3;border:1px solid #F0DCC8;
+  padding:3px 10px;border-radius:999px;margin-bottom:8px;
+}
+.card.shop-ad .adtext{font-size:15.5px;font-weight:700;margin-top:8px;line-height:1.5}
