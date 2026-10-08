@@ -259,6 +259,23 @@ document.getElementById('wForm').addEventListener('submit', async (e)=>{
   if(phone.length!==10){ showToast(t('err_phone')); return; }
   if(selectedSkills.size===0){ showToast(t('err_skill')); return; }
 
+  // ---- ఒకే ఫోన్ నంబర్ రెండుసార్లు నమోదు కాకుండా ----
+  if(enrollBusy) return;                 // బటన్ రెండుసార్లు నొక్కినా ఒక్కసారే పంపుతుంది
+  enrollBusy = true;
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  if(submitBtn) submitBtn.disabled = true;
+  const releaseEnroll = ()=>{ enrollBusy = false; if(submitBtn) submitBtn.disabled = false; };
+  try{
+    const dup = await db.collection('panipniWorkers').where('phone','==',phone).limit(1).get();
+    if(!dup.empty){
+      showDupPhone(dup.docs[0].data().name || '');
+      releaseEnroll();
+      return;
+    }
+  }catch(err){
+    console.error(err);                  // తనిఖీ విఫలమైతే నమోదు ఆపం — కింద మామూలుగా కొనసాగుతుంది
+  }
+
   const isHyd = districtSel.value===HYD_TE;
   const mandalVal = isHyd ? areaSel.value : document.getElementById('mandal').value.trim();
   // "Other Area" అయితే user టైప్ చేసిన పేరు customArea గా save (కొత్త field — existing fields మారవు)
@@ -290,7 +307,30 @@ document.getElementById('wForm').addEventListener('submit', async (e)=>{
     console.error(err);
     showToast(t('err_generic'));
   }
+  releaseEnroll();
 });
+
+// ఈ నంబర్ ఇప్పటికే ఉందని ఫోన్ గడి కింద చూపిస్తుంది (నంబర్ మార్చగానే మాయమవుతుంది)
+let enrollBusy = false;
+function showDupPhone(existingName){
+  const en = getLang()==='en';
+  const phoneEl = document.getElementById('phone');
+  let box = document.getElementById('dupPhoneMsg');
+  if(!box){
+    box = document.createElement('div');
+    box.id = 'dupPhoneMsg';
+    box.style.cssText = 'background:#FFF4E5;border:1px solid #F0D9B5;border-radius:12px;padding:10px 12px;margin:8px 0 4px;font-size:14.5px;line-height:1.5;color:#5a4326';
+    phoneEl.insertAdjacentElement('afterend', box);
+    phoneEl.addEventListener('input', ()=>{ box.style.display='none'; });
+  }
+  const who = existingName ? ' (' + escHtml(existingName) + ')' : '';
+  box.innerHTML = en
+    ? `This phone number is already registered${who}. To change details, open <a href="my-profile.html" style="color:#1E8E4E;font-weight:800">My Profile</a>.`
+    : `ఈ ఫోన్ నంబర్ ఇప్పటికే నమోదైంది${who}. వివరాలు మార్చాలంటే <a href="my-profile.html" style="color:#1E8E4E;font-weight:800">నా ప్రొఫైల్</a> తెరవండి.`;
+  box.style.display = 'block';
+  showToast(en ? 'Already registered' : 'ఈ నంబర్ ఇప్పటికే నమోదైంది');
+  phoneEl.scrollIntoView({behavior:'smooth', block:'center'});
+}
 
 // ---- వరుస enrollments కోసం ----
 // జిల్లా/ఏరియా అలాగే ఉంచి, వ్యక్తిగత fields మాత్రం clear చేస్తుంది
