@@ -14,25 +14,6 @@
 <meta name="apple-mobile-web-app-title" content="WorkPin">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="icon" href="assets/icon-192.png">
-<style>
-  /* 🏠 ఇంటి సేవలు షార్ట్‌కట్ పెట్టె */
-  .home-svc { margin:10px 0 12px; border:1px solid #E2D9C8; border-radius:14px; background:#fff; padding:0 12px; }
-  .home-svc summary { cursor:pointer; list-style:none; padding:12px 0; font-weight:800; color:#2C5B39; font-size:16px; }
-  .home-svc summary::-webkit-details-marker { display:none; }
-  .home-svc summary::after { content:" ▸"; }
-  .home-svc[open] summary::after { content:" ▾"; }
-  .home-svc[open] { padding-bottom:10px; }
-  .hs-group { margin:4px 0 10px; }
-  .hs-group b { display:block; font-size:13.5px; color:#9C5223; margin-bottom:6px; }
-  .hs-chips { display:flex; flex-wrap:wrap; gap:6px; }
-  .hs-chip { border:1px solid #E2D9C8; background:#FBF6EE; color:#2b2b2b; border-radius:999px;
-             padding:7px 12px; font-size:14px; cursor:pointer; font-family:inherit; }
-  .hs-chip.on { background:#2C5B39; border-color:#2C5B39; color:#fff; }
-  /* దగ్గరలో ఎవరూ లేనప్పుడు చూపించే గమనిక */
-  .near-note { background:#FFF4E5; border:1px solid #F0D9B5; border-radius:14px; padding:12px 14px;
-               margin:0 0 14px; font-size:14.5px; line-height:1.55; color:#5a4326; text-align:center; }
-  .near-note a { color:#1E8E4E; font-weight:800; text-decoration:none; white-space:nowrap; }
-</style>
 </head>
 <body>
 
@@ -70,18 +51,6 @@
     </div>
     <div class="suggestions" id="sugBox"></div>
   </div>
-
-  <!-- 🏠 ఇంటి సేవలు — ఇప్పటికే ఉన్న స్కిల్స్‌కి షార్ట్‌కట్లు (కొత్త స్కిల్స్ కాదు). మడిచి ఉంటుంది. -->
-  <details class="home-svc" id="homeSvc">
-    <summary id="homeSvcTitle"></summary>
-    <div id="homeSvcBody"></div>
-  </details>
-
-  <!-- 🏗️ ఇల్లు కట్టడానికి — ఇప్పటికే ఉన్న నిర్మాణ స్కిల్స్‌కి షార్ట్‌కట్లు -->
-  <details class="home-svc" id="buildSvc">
-    <summary id="buildSvcTitle"></summary>
-    <div id="buildSvcBody"></div>
-  </details>
 
   <div class="filters">
     <select id="fDistrict"></select>
@@ -125,12 +94,6 @@ let focusId = new URLSearchParams(location.search).get('id');
 let myLoc = null;
 let myManual = {district:'', mandal:''};
 
-// నా location (GPS గానీ, జిల్లా/మండలం గానీ) తెలియకపోతే — దూరం బ్యాడ్జ్ చూపించొద్దు.
-// లేకపోతే పోల్చడానికి ఏమీ లేక తప్పుగా "వేరే జిల్లా" అని వస్తుంది.
-function clearUnknownDistance(item){
-  if(!myManual.district && !myManual.mandal){ item._distKm = null; item._distText = ''; }
-}
-
 // ---- Smart Skill Search state & wiring ----
 // Store Once → Reuse Many Times: Firestore ఒక్కసారే load (కింద ఉన్న existing get()),
 // టైప్ చేసిన ప్రతిసారీ memory లోని allWorkers మీదే filter — Firebase reads పెరగవు.
@@ -170,147 +133,10 @@ clearBtn.addEventListener('click', ()=>{
   searchEl.focus();
 });
 
-// ---- 🏠 ఇంటి సేవలు ----
-// ఇవి ఇప్పటికే ఉన్న స్కిల్స్‌కి షార్ట్‌కట్లు మాత్రమే. నొక్కితే search గడిలో పదం పడి,
-// పైన ఉన్న suggestion-select లాగే అదే search/sort/filter పనిచేస్తుంది. డేటా ఏమీ మారదు.
-// [తెలుగు బటన్, English బటన్, తెలుగు వెతుకుడు పదం, English వెతుకుడు పదం]
-const HOME_SERVICES = [
-  {te:'🔧 ఇంటి రిపేర్లు', en:'🔧 Home Repairs', items:[
-    ['ఎలక్ట్రీషియన్','Electrician','ఎలక్ట్రీషియన్','Electrician'],
-    ['ప్లంబర్','Plumber','ప్లంబర్','Plumber'],
-    ['కార్పెంటర్','Carpenter','కార్పెంటర్','Carpenter'],
-    ['పెయింటర్','Painter','పెయింటర్','Painter']]},
-  {te:'❄️ ఉపకరణాలు', en:'❄️ Appliances', items:[
-    ['AC/Fridge','AC/Fridge','AC/Fridge','AC/Fridge'],
-    ['వాషింగ్ మెషిన్','Washing Machine','వాషింగ్ మెషిన్','Washing Machine'],
-    ['RO వాటర్','RO Water','RO వాటర్','RO Water'],
-    ['గీజర్/మిక్సీ రిపేర్','Geyser/Mixer Repair','ఇంటి ఉపకరణాల','Home Appliance']]},
-  {te:'🧹 శుభ్రత', en:'🧹 Cleaning & Care', items:[
-    ['క్లీనింగ్ స్టాఫ్','Cleaner','క్లీనింగ్ స్టాఫ్','Cleaner'],
-    ['డీప్ క్లీనింగ్','Deep Cleaning','డీప్ క్లీనింగ్','Deep Cleaning'],
-    ['పెస్ట్ కంట్రోల్','Pest Control','పెస్ట్ కంట్రోల్','Pest Control'],
-    ['గార్డెనింగ్','Gardener','గార్డెనింగ్','Gardener']]},
-  {te:'🔐 భద్రత', en:'🔐 Security', items:[
-    ['CCTV','CCTV','CCTV','CCTV'],
-    ['స్మార్ట్ లాక్','Smart Lock','స్మార్ట్ లాక్','Smart Lock'],
-    ['సెక్యూరిటీ గార్డ్','Security Guard','సెక్యూరిటీ గార్డ్','Security Guard']]},
-  {te:'🏠 ఇంటి సహాయం', en:'🏠 Household Help', items:[
-    ['కారు డ్రైవర్','Car Driver','కారు డ్రైవర్','Car Driver'],
-    ['వంట మనిషి','Cook','వంట మనిషి','Cook'],
-    ['బేబీ/ఎల్డర్ కేర్','Baby/Elder Care','కేర్','Care'],
-    ['ఇంటి పని','House Maid','ఇంటి పని','House Maid']]},
-];
-
-const BUILD_SERVICES = [
-  {te:'🧱 నిర్మాణం', en:'🧱 Construction', items:[
-    ['బిల్డింగ్ కాంట్రాక్టర్','Building Contractor','బిల్డింగ్ కాంట్రాక్టర్','Building Contractor'],
-    ['మేస్త్రీ','Mason','మేస్త్రీ','Mason'],
-    ['RCC రూఫ్/స్లాబ్','RCC Roof/Slab','RCC','RCC'],
-    ['సెంటరింగ్','Centering','సెంటరింగ్','Centering'],
-    ['బార్ బెండర్','Bar Bender','బార్ బెండర్','Bar bender']]},
-  {te:'📐 నిపుణులు', en:'📐 Experts', items:[
-    ['సివిల్ ఇంజనీర్','Civil Engineer','సివిల్ ఇంజనీర్','Civil Engineer'],
-    ['వాస్తు నిపుణుడు','Vastu Consultant','వాస్తు','Vastu'],
-    ['సర్వేయర్','Surveyor','సర్వేయర్','Surveyor']]},
-  {te:'🔨 పనులు', en:'🔨 Finishing Work', items:[
-    ['ఎలక్ట్రీషియన్','Electrician','ఎలక్ట్రీషియన్','Electrician'],
-    ['ప్లంబర్','Plumber','ప్లంబర్','Plumber'],
-    ['టైల్స్/మార్బుల్','Tiles/Marble','టైల్స్','Tiles'],
-    ['పెయింటర్','Painter','పెయింటర్','Painter'],
-    ['వెల్డర్','Welder','వెల్డర్','Welder']]},
-  {te:'🚜 యంత్రాలు', en:'🚜 Machines & Transport', items:[
-    ['JCB','JCB','JCB','JCB'],
-    ['బోర్‌వెల్','Borewell','బోర్‌వెల్','Borewell'],
-    ['ట్రాక్టర్','Tractor','ట్రాక్టర్ డ్రైవర్','Tractor driver'],
-    ['లారీ','Lorry/Truck','లారీ','Lorry']]},
-];
-
-function setupShortcutBox(boxId, titleTe, titleEn, GROUPS){
-  const box = document.getElementById(boxId);
-  if(!box) return;
-  const en = getLang()==='en';
-  document.getElementById(boxId+'Title').textContent = en ? titleEn : titleTe;
-  const body = document.getElementById(boxId+'Body');
-  body.innerHTML = GROUPS.map(g=>`
-    <div class="hs-group"><b>${en?g.en:g.te}</b><div class="hs-chips">
-      ${g.items.map(it=>`<button type="button" class="hs-chip" data-q="${escHtml(en?it[3]:it[2])}">${escHtml(en?it[1]:it[0])}</button>`).join('')}
-    </div></div>`).join('');
-
-  function markActive(){
-    // రెండు పెట్టెల్లోనూ — ఒకే search గడి కాబట్టి
-    const cur = searchEl.value.trim();
-    document.querySelectorAll('.hs-chip').forEach(b=> b.classList.toggle('on', !!cur && b.dataset.q===cur));
-  }
-  body.querySelectorAll('.hs-chip').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const q = btn.dataset.q;
-      const same = searchEl.value.trim()===q;
-      // పైన ఉన్న suggestion-select లాగే — అదే logic
-      searchEl.value = same ? '' : q;
-      searchQuery = searchEl.value;
-      clearBtn.classList.toggle('show', !!searchQuery);
-      sugBox.classList.remove('show');
-      render();
-      markActive();
-      if(!same){
-        box.open = false;   // ఎంచుకున్నాక మడిచి, ఫలితాలు కనిపించేలా
-        document.getElementById('list').scrollIntoView({behavior:'smooth', block:'start'});
-      }
-    });
-  });
-  box.addEventListener('toggle', markActive);
-  searchEl.addEventListener('input', markActive);
-  clearBtn.addEventListener('click', markActive);
-}
-setupShortcutBox('homeSvc',  '🏠 ఇంటి సేవలు',        '🏠 Home Services',    HOME_SERVICES);
-setupShortcutBox('buildSvc', '🏗️ ఇల్లు కట్టడానికి', '🏗️ Building a House', BUILD_SERVICES);
-
-// ఒక పెట్టె తెరిస్తే మిగతావి మూసుకుంటాయి — పేజీ పొడవు కాకుండా
-document.querySelectorAll('details.home-svc').forEach(d=>{
-  d.addEventListener('toggle', ()=>{
-    if(d.open) document.querySelectorAll('details.home-svc').forEach(o=>{ if(o!==d) o.open=false; });
-  });
-});
-
 // బయట tap చేస్తే suggestions మూసుకుంటాయి
 document.addEventListener('click', (e)=>{
   if(!e.target.closest('.search-wrap')) sugBox.classList.remove('show');
 });
-
-// ---- Premium listing (చెల్లింపు స్థానాలు 1,2,3) ----
-// మూడు షరతులు తీరితేనే పైన వస్తారు:
-//   1) promoRank = 1/2/3 ఉండాలి
-//   2) promoUntil గడువు దాటకూడదు (YYYY-MM-DD)
-//   3) దూరం 30 కి.మీ లోపు ఉండాలి — దూరపు వ్యక్తులు డబ్బు కట్టినా పైకి రారు
-const PROMO_MAX_KM = 30;
-function slotOf(w){
-  const r = Number(w.promoRank);
-  if(!r || r<1 || r>3) return 99;
-  if(w._distKm != null && w._distKm > PROMO_MAX_KM) return 99;
-  const until = w.promoUntil ? new Date(w.promoUntil+'T23:59:59').getTime() : 0;
-  return until > Date.now() ? r : 99;
-}
-
-// ---- 📞 దగ్గరలో ఎవరూ లేనప్పుడు WhatsApp సహాయం ----
-// నంబర్ మార్చాలంటే ఇక్కడ మాత్రమే (91 తో, + లేకుండా). ఖాళీగా '' పెడితే WhatsApp లింక్ కనిపించదు.
-const WA_HELP_NUMBER = '919959731120';
-function waHelpLink(){
-  if(!WA_HELP_NUMBER) return '';
-  const en = getLang()==='en';
-  const q = (searchQuery||'').trim();
-  const msg = en ? `Hi, I need workers.\nWork: ${q}\nPlace: ` : `నమస్తే, నాకు వర్కర్స్ కావాలి.\nపని: ${q}\nఊరు: `;
-  const href = 'https://wa.me/' + WA_HELP_NUMBER + '?text=' + encodeURIComponent(msg);
-  return `<a target="_blank" rel="noopener" href="${href}">${en ? '📞 Tell us on WhatsApp' : '📞 WhatsApp లో చెప్పండి'}</a>`;
-}
-// GPS ఉండి, 30 కి.మీ లోపు ఎవరూ లేకపోతే జాబితా పైన గమనిక
-function nearNoteHtml(hasFarOnes){
-  const en = getLang()==='en';
-  const wa = waHelpLink();
-  const a = en ? 'No one is registered near you (within 30 km) yet.' : 'మీ దగ్గరలో (30 కి.మీ లోపు) ఇంకా ఎవరూ నమోదు కాలేదు.';
-  const b = hasFarOnes ? (en ? ' People farther away are shown below.' : ' కింద దూరంగా ఉన్నవారు ఉన్నారు.') : '';
-  const c = wa ? (en ? ' Or ' : ' లేదా ') + wa : '';
-  return `<div class="near-note">${a}${b}${c}</div>`;
-}
 
 function render(){
   // ---- Direct profile share: URL లో ?id=... ఉంటే ఆ ఒక్కరిని మాత్రమే చూపించు ----
@@ -321,7 +147,7 @@ function render(){
       const list = document.getElementById('list');
       const w = {...one[0]};
       if(myLoc && w.lat!=null && w.lng!=null){ attachDistance(w, myLoc); }
-      else { w._myVillage=''; w._myMandal=myManual.mandal; w._myDistrict=myManual.district; attachDistance(w, null); clearUnknownDistance(w); }
+      else { w._myVillage=''; w._myMandal=myManual.mandal; w._myDistrict=myManual.district; attachDistance(w, null); }
       list.innerHTML = cardHtml(w);
       return;
     }
@@ -343,7 +169,6 @@ function render(){
     } else {
       item._myVillage=''; item._myMandal=myManual.mandal; item._myDistrict=myManual.district;
       attachDistance(item, null);
-      clearUnknownDistance(item);
     }
     return item;
   });
@@ -353,34 +178,25 @@ function render(){
     filtered = filtered.filter(w=> (w._distKm!=null) && w._distKm <= maxKm);
   }
 
-  // క్రమం: ప్రీమియం → 30 కి.మీ లోపు ఉన్నవారు → ఖాళీగా ఉన్నవారు → దగ్గరివారు → ✅ ధృవీకరించినవారు
-  // (దూరంగా ఉన్న ఖాళీ వ్యక్తి, దగ్గరలో పనిలో ఉన్న వ్యక్తి కంటే పైకి రాకూడదు)
-  const NEAR_KM = 30;
-  const farGroup = w => (w._distKm != null && w._distKm <= NEAR_KM) ? 0 : 1;
-  const distOf  = w => (w._distKm == null ? 999 : w._distKm);
-  filtered.sort((a,b)=> (slotOf(a)-slotOf(b)) || (farGroup(a)-farGroup(b)) || ((a.busy?1:0)-(b.busy?1:0)) || (distOf(a)-distOf(b)) || ((b.verified?1:0)-(a.verified?1:0)));
+  filtered.sort((a,b)=> ((a.busy?1:0)-(b.busy?1:0)) || ((a._distKm||999) - (b._distKm||999)) || ((b.verified?1:0)-(a.verified?1:0)));
 
   const list = document.getElementById('list');
-  // 🏪 దుకాణాల ప్రకటనలు — దగ్గరలో ఉన్నవారికి మాత్రమే, జాబితా పైన (assets/data.js లో SHOP_ADS)
-  const adsHtml = shopAdsHtml(myLoc, [myManual.district, fSel.value]);
   if(filtered.length===0){
     // Search వల్ల ఖాళీ అయితే ప్రత్యేక message
     const msg = searchQuery.trim() ? t('no_match') : t('empty_workers');
-    list.innerHTML = adsHtml + (myLoc ? nearNoteHtml(false) : '') + `<div class="empty"><span class="big">📭</span>${msg}</div>`;
+    list.innerHTML = `<div class="empty"><span class="big">📭</span>${msg}</div>`;
     return;
   }
-  // GPS ఉండి, 30 కి.మీ లోపు ఒక్కరూ లేకపోతే — పైన గమనిక + WhatsApp లింక్
-  const anyNear = filtered.some(w=> w._distKm != null && w._distKm <= NEAR_KM);
-  list.innerHTML = adsHtml + ((myLoc && !anyNear) ? nearNoteHtml(true) : '') + filtered.map(w=>cardHtml(w)).join('');
+  list.innerHTML = filtered.map(w=>cardHtml(w)).join('');
 }
 
 // ఒక worker card ని HTML గా తయారు చేస్తుంది (list కి, single-profile view కి రెండింటికీ)
 function cardHtml(w){
   return `
     <div class="card">
-      <b class="name">${highlightText(w.name, searchQuery)} ${slotOf(w)<99?`<span class="ptbadge">⭐ ప్రచారం</span>`:''} ${w.verified?`<span class="vbadge">${t('verified_badge')}</span>`:''} ${w.partTime?`<span class="ptbadge">${t('parttime_badge')}</span>`:''} ${w.busy?`<span class="busybadge">${t('busy_badge')}</span>`:''}</b>
+      <b class="name">${highlightText(w.name, searchQuery)} ${w.verified?`<span class="vbadge">${t('verified_badge')}</span>`:''} ${w.partTime?`<span class="ptbadge">${t('parttime_badge')}</span>`:''} ${w.busy?`<span class="busybadge">${t('busy_badge')}</span>`:''}</b>
       <div class="place">📍 ${escHtml(w.village)}, ${w.customArea ? escHtml(w.customArea) : areaLabel(w.mandal)}, ${districtLabel(w.district)}</div>
-      ${w._distText?`<span class="dist ${w._distKm>30?'far':''}">${w._exact?'📏':'≈'} ${w._distText}</span>`:''}
+      <span class="dist ${w._distKm>30?'far':''}">${w._exact?'📏':'≈'} ${w._distText}</span>
       <div class="tags">${(w.skills||[]).map(s=>`<span class="tag">${highlightText(skillLabel(s), searchQuery)}</span>`).join('')}</div>
       ${w.available?`<div class="place">${t('ready')} ${escHtml(w.available)}</div>`:''}
       <div class="actions">
