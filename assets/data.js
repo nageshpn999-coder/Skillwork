@@ -14,11 +14,11 @@ const I18N = {
     home_sub: "తెలంగాణ వ్యాప్తంగా — పని వెతుక్కునే వారికి, పని ఇచ్చే వారికి మధ్య వారధి. హైదరాబాద్ నుండి పల్లెల వరకు.",
     need_work: "నాకు పని కావాలి",
     need_work_sub: "మీ పేరు, స్కిల్, ప్రాంతం నమోదు చేసుకోండి — దగ్గరలో ఉన్న పని మీకు కనిపిస్తుంది",
-    need_people: "నాకు వర్కర్స్ కావాలి",
+    need_people: "నాకు మనుషులు కావాలి",
     need_people_sub: "మీకు కావాల్సిన పని పోస్ట్ చేయండి — దగ్గరలో ఉన్నవారు మీకు కనిపిస్తారు",
     already: "ఇప్పటికే నమోదు చేసుకున్నారా?",
     see_work: "📋 పని జాబితా చూడండి",
-    see_workers: "👥 వర్కర్స్ చూడండి",
+    see_workers: "👥 మనుషులను చూడండి",
     foot: "తెలంగాణ కోసం స్థానిక పని వేదిక",
     enroll_title: "మీ వివరాలు నమోదు చేయండి",
     enroll_sub: "ఇది ఉచితం. మీ ఫోన్ నంబర్ దగ్గరలో పని ఇచ్చే వారికి కనిపిస్తుంది, వారు నేరుగా కాల్/వాట్సాప్ చేస్తారు.",
@@ -34,7 +34,6 @@ const I18N = {
     enroll_note: "Submit చేసిన తర్వాత మీ వివరాలు పని ఇచ్చే వారికి కనిపిస్తాయి. 📍 Location permission అడిగితే \"Allow\" చేయండి — దూరం ఖచ్చితంగా చూపించగలుగుతాం.",
     post_title: "మీకు కావాల్సిన పని వివరాలు",
     post_sub: "పోస్ట్ చేసిన తర్వాత, ఆ ప్రాంతంలో ఉన్నవారికి కనిపిస్తుంది. వారు నేరుగా మిమ్మల్ని కాల్/వాట్సాప్ చేస్తారు.",
-    more_details: "మరిన్ని వివరాలు చేర్చండి (ఐచ్ఛికం)",
     biz_name: "మీ పేరు / సంస్థ పేరు",
     work_type: "ఎలాంటి పని కావాలి? (ఒకటి కంటే ఎక్కువ ఎంచుకోవచ్చు)",
     how_many: "ఎంతమంది కావాలి",
@@ -81,7 +80,7 @@ const I18N = {
     search_area_ph: "ఏరియా వెతకండి... (ఉదా: Gach, Kuka)",
     skill_search_ph: "🔍 స్కిల్, పేరు లేదా పని వెతకండి",
     no_match: "సరిపోలేవి దొరకలేదు.",
-    skill_filter_ph: "🔍 మీరు చేసే పని వెతకండి... (ఉదా: ఎలక్ట్రీషియన్)",
+    skill_filter_ph: "🔍 స్కిల్ వెతకండి... (ఉదా: Ele, Dri)",
     no_skills_found: "సరిపోలే స్కిల్స్ దొరకలేదు.",
     enter_area_ph: "మీ ఏరియా పేరు రాయండి / Enter Your Area Name",
     post_banner: "మీకు కావాల్సినవారు దొరకలేదా? 📝 పని పోస్ట్ చేయండి — వారే మిమ్మల్ని సంప్రదిస్తారు →",
@@ -148,11 +147,11 @@ const I18N = {
     home_sub: "Across Telangana — a bridge between people looking for work and people offering work. From Hyderabad to villages.",
     need_work: "I need work",
     need_work_sub: "Register your name, skill and area — nearby work will be shown to you",
-    need_people: "I need workers",
-    need_people_sub: "Post the work you need — nearby workers will be shown to you",
+    need_people: "I need people",
+    need_people_sub: "Post the work you need — nearby people will be shown to you",
     already: "Already registered?",
     see_work: "📋 Browse work",
-    see_workers: "👥 Browse workers",
+    see_workers: "👥 Browse people",
     foot: "A local work platform for Telangana",
     enroll_title: "Register your details",
     enroll_sub: "It's free. Your phone number will be visible to nearby employers, who will call/WhatsApp you directly.",
@@ -168,7 +167,6 @@ const I18N = {
     enroll_note: "After submitting, your details will be visible to employers. 📍 If asked for location permission, tap \"Allow\" — this lets us show exact distances.",
     post_title: "Details of the work you need",
     post_sub: "After posting, people in that area will see it and call/WhatsApp you directly.",
-    more_details: "Add more details (optional)",
     biz_name: "Your name / business name",
     work_type: "What kind of work? (select one or more)",
     how_many: "How many people needed",
@@ -215,7 +213,7 @@ const I18N = {
     search_area_ph: "Search area... (e.g. Gach, Kuka)",
     skill_search_ph: "🔍 Search skill, name or work",
     no_match: "No matches found.",
-    skill_filter_ph: "🔍 Search the work you do... (e.g. Electrician)",
+    skill_filter_ph: "🔍 Search skills... (e.g. Ele, Dri)",
     no_skills_found: "No matching skills found.",
     enter_area_ph: "Enter Your Area Name",
     post_banner: "Didn't find who you need? 📝 Post your work — they will contact you →",
@@ -479,17 +477,10 @@ const SKILL_GROUPS = [
       {te:"వెల్డర్", en:"Welder"},
       {te:"టైల్స్/మార్బుల్ వర్క్", en:"Tiles/marble work"},
       {te:"సెంటరింగ్ వర్క్", en:"Centering work"},
-      {te:"సివిల్ ఇంజనీర్", en:"Civil engineer"},
-      {te:"బిల్డింగ్ కాంట్రాక్టర్", en:"Building contractor"},
-      {te:"RCC రూఫ్/స్లాబ్ వర్క్", en:"RCC roof/slab work"},
-      {te:"బార్ బెండర్ (స్టీల్ వర్క్)", en:"Bar bender (steel work)"},
       {te:"సాధారణ కూలీలు", en:"General labour"},
       {te:"ఇంటీరియర్ డిజైనర్", en:"Interior designer"},
       {te:"JCB ఆపరేటర్", en:"JCB operator"},
       {te:"సర్వేయర్ (Land Surveyor)", en:"Land surveyor"},
-      {te:"వాస్తు నిపుణుడు", en:"Vastu consultant"},
-      {te:"బోర్‌వెల్ డ్రిల్లింగ్", en:"Borewell drilling"},
-      {te:"కోర్ కటింగ్/డ్రిల్లింగ్ వర్క్", en:"Core cutting/drilling work"},
       {te:"ఫాల్స్ సీలింగ్ వర్క్", en:"False ceiling work"},
       {te:"గ్రానైట్/స్టోన్ వర్క్", en:"Granite/stone work"}
     ]
@@ -499,7 +490,6 @@ const SKILL_GROUPS = [
     items: [
       {te:"కారు/ఆటో డ్రైవర్", en:"Car/auto driver"},
       {te:"లారీ డ్రైవర్", en:"Lorry driver"},
-      {te:"బొలెరో/పికప్ డ్రైవర్", en:"Bolero/pickup driver"},
       {te:"క్యాబ్/బైక్ టాక్సీ డ్రైవర్", en:"Cab/bike taxi driver"},
       {te:"డెలివరీ ఎగ్జిక్యూటివ్", en:"Delivery executive"},
       {te:"ప్యాకర్స్ & మూవర్స్ హెల్పర్", en:"Packers & movers helper"}
@@ -523,17 +513,9 @@ const SKILL_GROUPS = [
       {te:"ఫైబర్ ఇంటర్నెట్ టెక్నీషియన్", en:"Fiber Internet Technician"},
       {te:"నెట్‌వర్క్ టెక్నీషియన్", en:"Network Technician"},
       {te:"AC/Fridge మెకానిక్", en:"AC/fridge mechanic"},
-      {te:"కూలర్ మెకానిక్", en:"Cooler mechanic"},
-      {te:"బీరువా మెకానిక్", en:"Almirah (beeruva) mechanic"},
       {te:"మొబైల్/ఎలక్ట్రానిక్స్ రిపేర్", en:"Mobile/electronics repair"},
-      {te:"TV రిపేర్", en:"TV repair"},
-      {te:"DTH టెక్నీషియన్", en:"DTH technician"},
       {te:"టైలర్/దర్జీ", en:"Tailor"},
-      {te:"బైక్ మెకానిక్", en:"Bike mechanic"},
-      {te:"కారు మెకానిక్", en:"Car mechanic"},
-      {te:"ఆటో మెకానిక్", en:"Auto mechanic"},
-      {te:"టైర్ పంక్చర్/టైర్ వర్క్", en:"Tyre puncture/tyre work"},
-      {te:"డెంటింగ్ & పెయింటింగ్", en:"Denting & painting"},
+      {te:"బైక్/కారు మెకానిక్", en:"Bike/car mechanic"},
       {te:"CCTV/నెట్‌వర్క్ టెక్నీషియన్", en:"CCTV/network technician"}
     ]
   },
@@ -576,8 +558,6 @@ const SKILL_GROUPS = [
     group: {te:"🏪 దుకాణాలు/ఆఫీస్", en:"🏪 Shops/Office"},
     items: [
       {te:"సేల్స్ మ్యాన్", en:"Salesman"},
-      {te:"కూరగాయల వ్యాపారి", en:"Vegetable vendor"},
-      {te:"పండ్ల వ్యాపారి", en:"Fruit vendor"},
       {te:"బట్టల దుకాణం ఉద్యోగి", en:"Clothing Shop Worker"},
       {te:"సేల్స్ బాయ్", en:"Sales Boy"},
       {te:"సేల్స్ గర్ల్", en:"Sales Girl"},
@@ -657,7 +637,6 @@ const SKILL_GROUPS_URBAN = [
       {te:"ఆటో డ్రైవర్", en:"Auto Driver"},
       {te:"బైక్ రైడర్", en:"Bike Rider"},
       {te:"ట్రక్/లారీ డ్రైవర్", en:"Truck Driver"},
-      {te:"బొలెరో/పికప్ డ్రైవర్", en:"Bolero/pickup driver"},
       {te:"బస్ డ్రైవర్", en:"Bus Driver"}
     ]
   },
@@ -673,30 +652,17 @@ const SKILL_GROUPS_URBAN = [
       {te:"వెల్డర్", en:"Welder"},
       {te:"టైల్స్/మార్బుల్ వర్క్", en:"Tiles Worker"},
       {te:"POP/ఫాల్స్ సీలింగ్ వర్క్", en:"POP Worker"},
-      {te:"వాటర్‌ప్రూఫింగ్", en:"Waterproofing"},
       {te:"AC/Fridge మెకానిక్", en:"AC Technician"},
-      {te:"కూలర్ మెకానిక్", en:"Cooler Mechanic"},
-      {te:"బీరువా మెకానిక్", en:"Almirah (Beeruva) Mechanic"},
       {te:"CCTV/నెట్‌వర్క్ టెక్నీషియన్", en:"CCTV Technician"},
-      {te:"సెంటరింగ్ వర్క్", en:"Centering work"},
-      {te:"RCC రూఫ్/స్లాబ్ వర్క్", en:"RCC roof/slab work"},
-      {te:"బార్ బెండర్ (స్టీల్ వర్క్)", en:"Bar bender (steel work)"},
       {te:"సాధారణ కూలీలు", en:"General Labour"},
       {te:"ఇంటీరియర్ డిజైనర్", en:"Interior Designer"},
       {te:"ఆర్కిటెక్ట్", en:"Architect"},
-      {te:"సివిల్ ఇంజనీర్", en:"Civil Engineer"},
-      {te:"బిల్డింగ్ కాంట్రాక్టర్", en:"Building Contractor"},
       {te:"కన్‌స్ట్రక్షన్ ఇంజనీర్", en:"Construction Engineer"},
       {te:"స్ట్రక్చరల్ ఇంజనీర్", en:"Structural Engineer"},
       {te:"క్వాంటిటీ సర్వేయర్", en:"Quantity Surveyor"},
       {te:"ప్రాజెక్ట్ మేనేజర్", en:"Project Manager"},
-      {te:"సైట్ సూపర్‌వైజర్", en:"Site Supervisor"},
       {te:"JCB ఆపరేటర్", en:"JCB Operator"},
-      {te:"క్రేన్ ఆపరేటర్", en:"Crane Operator"},
-      {te:"సర్వేయర్ (Land Surveyor)", en:"Land Surveyor"},
-      {te:"వాస్తు నిపుణుడు", en:"Vastu consultant"},
-      {te:"బోర్‌వెల్ డ్రిల్లింగ్", en:"Borewell drilling"},
-      {te:"కోర్ కటింగ్/డ్రిల్లింగ్ వర్క్", en:"Core cutting/drilling work"}
+      {te:"సర్వేయర్ (Land Surveyor)", en:"Land Surveyor"}
     ]
   },
   {
@@ -718,7 +684,6 @@ const SKILL_GROUPS_URBAN = [
       {te:"హెయిర్ స్టైలిస్ట్", en:"Hair Stylist"},
       {te:"బ్యూటీషియన్", en:"Beautician"},
       {te:"మేకప్ ఆర్టిస్ట్", en:"Makeup Artist"},
-      {te:"మెహందీ ఆర్టిస్ట్", en:"Mehendi Artist"},
       {te:"స్పా థెరపిస్ట్", en:"Spa Therapist"}
     ]
   },
@@ -774,9 +739,7 @@ const SKILL_GROUPS_URBAN = [
       {te:"ప్యాకింగ్ స్టాఫ్", en:"Packing Staff"},
       {te:"స్టోర్ కీపర్", en:"Store Keeper"},
       {te:"బిల్లింగ్ ఎగ్జిక్యూటివ్", en:"Billing Executive"},
-      {te:"షోరూమ్ స్టాఫ్", en:"Showroom Staff"},
-      {te:"కూరగాయల వ్యాపారి", en:"Vegetable vendor"},
-      {te:"పండ్ల వ్యాపారి", en:"Fruit vendor"}
+      {te:"షోరూమ్ స్టాఫ్", en:"Showroom Staff"}
     ]
   },
   {
@@ -867,10 +830,6 @@ const SKILL_GROUPS_URBAN = [
       {te:"హోమ్ ఆటోమేషన్ టెక్నీషియన్", en:"Home Automation Technician"},
       {te:"RO వాటర్ ప్యూరిఫైయర్ టెక్నీషియన్", en:"RO Water Purifier Technician"},
       {te:"వాషింగ్ మెషిన్ రిపేర్", en:"Washing Machine Repair"},
-      {te:"TV రిపేర్", en:"TV Repair"},
-      {te:"ఇంటి ఉపకరణాల రిపేర్ (గీజర్/మిక్సీ/మైక్రోవేవ్/చిమ్నీ)", en:"Home Appliance Repair (Geyser/Mixer/Microwave/Chimney)"},
-      {te:"కంప్యూటర్/లాప్‌టాప్ రిపేర్", en:"Computer / Laptop Repair"},
-      {te:"DTH టెక్నీషియన్", en:"DTH Technician"},
       {te:"ఇన్వర్టర్/బ్యాటరీ టెక్నీషియన్", en:"Inverter / Battery Technician"},
       {te:"సోలార్ ప్యానెల్ టెక్నీషియన్", en:"Solar Panel Technician"},
       {te:"లిఫ్ట్ టెక్నీషియన్", en:"Lift Technician"},
@@ -879,12 +838,7 @@ const SKILL_GROUPS_URBAN = [
       {te:"కర్టెన్/సోఫా వర్క్", en:"Curtain / Sofa Work"},
       {te:"పెస్ట్ కంట్రోల్ వర్కర్", en:"Pest Control Worker"},
       {te:"వాటర్ ట్యాంక్ క్లీనింగ్", en:"Water Tank Cleaning"},
-      {te:"డీప్ క్లీనింగ్ (బాత్రూమ్/కిచెన్/సోఫా)", en:"Deep Cleaning (Bathroom/Kitchen/Sofa)"},
-      {te:"బైక్ మెకానిక్", en:"Bike Mechanic"},
-      {te:"కారు మెకానిక్", en:"Car Mechanic"},
-      {te:"ఆటో మెకానిక్", en:"Auto Mechanic"},
-      {te:"టైర్ పంక్చర్/టైర్ వర్క్", en:"Tyre Puncture / Tyre Work"},
-      {te:"డెంటింగ్ & పెయింటింగ్", en:"Denting & Painting"},
+      {te:"బైక్/కారు మెకానిక్", en:"Bike / Car Mechanic"},
       {te:"కారు వాషింగ్/డిటైలింగ్", en:"Car Washing / Detailing"}
     ]
   },
@@ -1005,54 +959,6 @@ function setupHydAreaSwitch(districtSel, mandalWrap, areaWrap){
   sync();
 }
 
-// ---- సుమారు సరిపోలిక (fuzzy match) ----
-// "ఎలక్ట్రిషన్" అని టైప్/వాయిస్ వచ్చినా "ఎలక్ట్రీషియన్" దొరకాలి.
-// తెలుగు గుణింతాలు (ా ి ీ ు ...), పొల్లు (్), సున్నా తీసేసి అక్షరాల అస్థిపంజరం పోలుస్తాం,
-// తర్వాత ఒకటి-రెండు అక్షరాల తేడాను అనుమతిస్తాం.
-function _skel(str){
-  return (str||'').toLowerCase()
-    .replace(/[\u0C00-\u0C03\u0C3C\u0C3E-\u0C56\u0C62\u0C63\u200C\u200D]/g,'')
-    .replace(/[^a-z0-9\u0C05-\u0C39\u0C58-\u0C61]/g,'');
-}
-function _lev(a,b){
-  if(a===b) return 0;
-  const m=a.length, n=b.length;
-  if(!m) return n; if(!n) return m;
-  let prev=new Array(n+1), cur=new Array(n+1);
-  for(let j=0;j<=n;j++) prev[j]=j;
-  for(let i=1;i<=m;i++){
-    cur[0]=i;
-    for(let j=1;j<=n;j++){
-      cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]===b[j-1]?0:1));
-    }
-    [prev,cur]=[cur,prev];
-  }
-  return prev[n];
-}
-function _fuzzyWord(q, word){
-  if(!q || !word) return false;
-  if(word.startsWith(q)) return true;
-  if(q.length >= 6 && word.includes(q)) return true;
-  // చిన్న పదాలకు తేడా అనుమతించం — తప్పు ఫలితాలు రాకుండా
-  if(q.length < 6) return false;
-  if(q[0] !== word[0]) return false;            // మొదటి అక్షరం ఒకటే ఉండాలి
-  const tol = q.length >= 9 ? 2 : 1;
-  if(_lev(q, word) <= tol) return true;
-  // టైప్ చేస్తుండగా (సగం పదం) — మొదటి భాగంతో పోల్చడం
-  if(word.length > q.length && _lev(q, word.slice(0, q.length)) <= 1) return true;
-  return false;
-}
-function skillMatches(it, rawQuery){
-  const raw = (rawQuery||'').trim();
-  if(!raw) return true;
-  const f = raw.toLowerCase();
-  if(it.en.toLowerCase().includes(f) || it.te.includes(raw)) return true;   // పాత విధానం — యథాతథం
-  const q = _skel(raw);
-  if(q.length < 3) return false;
-  const words = (it.te + ' ' + it.en).split(/[\s\/()\-&,]+/).map(_skel).filter(Boolean);
-  return words.some(w => _fuzzyWord(q, w));
-}
-
 function buildSkillChips(container, selectedSet, groups, filterText, preserveSelection){
   const list = groups || SKILL_GROUPS;
   const f = (filterText||'').trim().toLowerCase();
@@ -1063,7 +969,7 @@ function buildSkillChips(container, selectedSet, groups, filterText, preserveSel
   const seen = new Set(); // combined lists లో duplicate skills రాకుండా
   list.forEach(g=>{
     // Filter: English/Telugu label రెండింటిలో match అయిన skills మాత్రమే
-    const items = (f ? g.items.filter(it=> skillMatches(it, filterText)) : g.items)
+    const items = (f ? g.items.filter(it=> it.en.toLowerCase().includes(f) || it.te.includes(filterText.trim())) : g.items)
       .filter(it=>{ if(seen.has(it.te)) return false; seen.add(it.te); return true; });
     if(!items.length) return; // ఖాళీ group headings చూపించొద్దు
     const label=document.createElement('div');
@@ -1250,46 +1156,4 @@ function attachDistance(item, myLoc){
     item._exact = false;
   }
   return item;
-}
-
-// ---- 🏪 దుకాణాల ప్రకటనలు (Shop Ads) ----
-// కొత్త ప్రకటన చేర్చాలంటే ఈ జాబితాలో ఒక { ... } చేర్చండి. తీసేయాలంటే ఆ { ... } తొలగించండి.
-//   lat/lng  — దుకాణం ఉన్న ఊరు (GPS ఉన్నవారికి radiusKm లోపు ఉంటేనే ప్రకటన కనిపిస్తుంది)
-//   district — GPS లేనివారు ఈ జిల్లా ఎంచుకుంటే ప్రకటన కనిపిస్తుంది (DISTRICTS లోని తెలుగు పేరు)
-//   until    — గడువు "YYYY-MM-DD" (ఆ రోజు తర్వాత ప్రకటన తానే ఆగిపోతుంది). ఖాళీ '' అయితే గడువు లేదు.
-const SHOP_ADS = [
-  {
-    te: {name:"జై భవానీ హార్డ్‌వేర్", place:"మక్తల్", text:"సిమెంట్, స్టీల్, హార్డ్‌వేర్ సామాను"},
-    en: {name:"Jai Bhavani Hardware", place:"Makthal", text:"Cement, steel, hardware materials"},
-    phone: "9490146603",
-    lat: 16.5019, lng: 77.5113,
-    district: "నారాయణపేట",
-    radiusKm: 30,
-    until: ""
-  }
-];
-
-// myLoc = {lat,lng} లేదా null; districts = చూసేవారు ఎంచుకున్న జిల్లా(లు)
-function shopAdsHtml(myLoc, districts){
-  const en = getLang()==='en';
-  const picked = (districts||[]).filter(Boolean);
-  return SHOP_ADS.filter(ad=>{
-    if(ad.until && new Date(ad.until+'T23:59:59').getTime() < Date.now()) return false;
-    if(myLoc) return haversineKm(myLoc.lat, myLoc.lng, ad.lat, ad.lng) <= (ad.radiusKm||30);
-    return picked.includes(ad.district);
-  }).map(ad=>{
-    const L = en ? ad.en : ad.te;
-    const waMsg = en ? `Hi, I saw your ad on WorkPin. I need: ` : `నమస్తే, WorkPin లో మీ ప్రకటన చూశాను. నాకు కావాల్సింది: `;
-    return `
-    <div class="card shop-ad">
-      <span class="adbadge">${en?'📢 Ad':'📢 ప్రకటన'}</span>
-      <b class="name">🏪 ${escHtml(L.name)}</b>
-      <div class="place">📍 ${escHtml(L.place)}</div>
-      <div class="adtext">${escHtml(L.text)}</div>
-      <div class="actions">
-        <a class="call" href="tel:${cleanPhone(ad.phone)}">${t('call')}</a>
-        <a class="wa" target="_blank" rel="noopener" href="${waLink(ad.phone, waMsg)}"><span>WhatsApp</span></a>
-      </div>
-    </div>`;
-  }).join('');
 }
