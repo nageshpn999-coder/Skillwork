@@ -462,7 +462,9 @@ const SKILL_GROUPS = [
       {te:"పంట కోత", en:"Harvesting"},
       {te:"స్ప్రేయింగ్", en:"Spraying"},
       {te:"బోరు/పంపు మెకానిక్", en:"Bore/pump mechanic"},
-      {te:"ఎడ్ల బండి (Bull Cart)", en:"Bull cart"}
+      {te:"ఎడ్ల బండి (Bull Cart)", en:"Bull cart"},
+      {te:"మత్స్యకారుడు (చేపలు పట్టేవారు)", en:"Fisherman"},
+      {te:"చేపల అమ్మకం", en:"Fish Seller"}
     ]
   },
   {
@@ -482,7 +484,10 @@ const SKILL_GROUPS = [
       {te:"JCB ఆపరేటర్", en:"JCB operator"},
       {te:"సర్వేయర్ (Land Surveyor)", en:"Land surveyor"},
       {te:"ఫాల్స్ సీలింగ్ వర్క్", en:"False ceiling work"},
-      {te:"గ్రానైట్/స్టోన్ వర్క్", en:"Granite/stone work"}
+      {te:"గ్రానైట్/స్టోన్ వర్క్", en:"Granite/stone work"},
+      {te:"వడ్డెర కార్మికులు (రాళ్ళ పని)", en:"Stone Breaking Worker"},
+      {te:"రాళ్ళు/కంకర సప్లై", en:"Stone & Gravel Supply"},
+      {te:"ఇంటి ప్లాన్ డిజైనర్ (డ్రాఫ్ట్స్‌మెన్)", en:"House Plan Designer"}
     ]
   },
   {
@@ -492,7 +497,10 @@ const SKILL_GROUPS = [
       {te:"లారీ డ్రైవర్", en:"Lorry driver"},
       {te:"క్యాబ్/బైక్ టాక్సీ డ్రైవర్", en:"Cab/bike taxi driver"},
       {te:"డెలివరీ ఎగ్జిక్యూటివ్", en:"Delivery executive"},
-      {te:"ప్యాకర్స్ & మూవర్స్ హెల్పర్", en:"Packers & movers helper"}
+      {te:"ప్యాకర్స్ & మూవర్స్ హెల్పర్", en:"Packers & movers helper"},
+      {te:"వాటర్ క్యాన్ సప్లై (ప్లాంట్)", en:"Water Can Supply"},
+      {te:"గ్యాస్ సిలిండర్ డెలివరీ", en:"Gas Cylinder Delivery"},
+      {te:"డ్రైవింగ్ స్కూల్", en:"Driving School"}
     ]
   },
   {
@@ -516,7 +524,10 @@ const SKILL_GROUPS = [
       {te:"మొబైల్/ఎలక్ట్రానిక్స్ రిపేర్", en:"Mobile/electronics repair"},
       {te:"టైలర్/దర్జీ", en:"Tailor"},
       {te:"బైక్/కారు మెకానిక్", en:"Bike/car mechanic"},
-      {te:"CCTV/నెట్‌వర్క్ టెక్నీషియన్", en:"CCTV/network technician"}
+      {te:"CCTV/నెట్‌వర్క్ టెక్నీషియన్", en:"CCTV/network technician"},
+      {te:"ఇంటర్నెట్/కేబుల్ కనెక్షన్", en:"Internet & Cable Connection"},
+      {te:"టైర్ పంక్చర్ రిపేర్", en:"Tyre Puncture Repair"},
+      {te:"రెగ్జిన్ వర్క్ (సోఫా/సీట్ కవర్)", en:"Rexine Work"}
     ]
   },
   {
@@ -526,7 +537,8 @@ const SKILL_GROUPS = [
       {te:"వాచ్‌మెన్", en:"Watchman"},
       {te:"లిఫ్ట్ ఆపరేటర్", en:"Lift operator"},
       {te:"క్లీనింగ్ స్టాఫ్", en:"Cleaning staff"},
-      {te:"హమాలీ/లోడింగ్-అన్‌లోడింగ్", en:"Hamali/loading-unloading"}
+      {te:"హమాలీ/లోడింగ్-అన్‌లోడింగ్", en:"Hamali/loading-unloading"},
+      {te:"పూజారి", en:"Priest / Poojari"}
     ]
   },
   {
@@ -538,7 +550,9 @@ const SKILL_GROUPS = [
       {te:"కంపౌండర్", en:"Compounder"},
       {te:"వార్డ్ బాయ్", en:"Ward Boy"},
       {te:"వార్డ్ గర్ల్", en:"Ward Girl"},
-      {te:"పేషెంట్ కేర్ అసిస్టెంట్", en:"Patient Care Assistant"}
+      {te:"పేషెంట్ కేర్ అసిస్టెంట్", en:"Patient Care Assistant"},
+      {te:"డెంటిస్ట్", en:"Dentist"},
+      {te:"చర్మ వైద్యుడు (డెర్మటాలజిస్ట్)", en:"Dermatologist"}
     ]
   },
   {
@@ -551,7 +565,10 @@ const SKILL_GROUPS = [
       {te:"ఫంక్షన్ హాల్ వర్కర్", en:"Function Hall Worker"},
       {te:"డెకరేషన్ హెల్పర్", en:"Decoration Helper"},
       {te:"సర్వింగ్ స్టాఫ్", en:"Serving Staff"},
-      {te:"కిచెన్ హెల్పర్", en:"Kitchen Helper"}
+      {te:"కిచెన్ హెల్పర్", en:"Kitchen Helper"},
+      {te:"టెంట్ హౌస్", en:"Tent House"},
+      {te:"వంట మాస్టర్ (పెళ్లిళ్లు/ఫంక్షన్లు)", en:"Wedding / Function Cook"},
+      {te:"క్యాటరింగ్ కాంట్రాక్టర్", en:"Catering Contractor"}
     ]
   },
   {
@@ -567,7 +584,30 @@ const SKILL_GROUPS = [
       {te:"హెల్పర్", en:"Helper"},
       {te:"ఆఫీస్ బాయ్", en:"Office boy"},
       {te:"రిసెప్షనిస్ట్/ఫ్రంట్ డెస్క్", en:"Receptionist/front desk"},
-      {te:"హోటల్/రెస్టారెంట్ స్టాఫ్", en:"Hotel/restaurant staff"}
+      {te:"హోటల్/రెస్టారెంట్ స్టాఫ్", en:"Hotel/restaurant staff"},
+      {te:"కిరాణా దుకాణం", en:"Grocery Shop"},
+      {te:"చికెన్/మటన్ షాప్", en:"Chicken & Mutton Shop"},
+      {te:"చెప్పులు/షూ దుకాణం", en:"Footwear Shop"},
+      {te:"మొబైల్ షాప్", en:"Mobile Shop"},
+      {te:"ఫ్లెక్సీ/బ్యానర్ ప్రింటింగ్", en:"Flex & Banner Printing"},
+      {te:"ఆర్టిస్ట్ (పెయింటింగ్/డిజైన్)", en:"Artist (Painting/Design)"},
+      {te:"కూరగాయల దుకాణం", en:"Vegetable Shop"},
+      {te:"పాల డెయిరీ", en:"Milk Dairy"},
+      {te:"జిరాక్స్/నెట్ సెంటర్", en:"Xerox & Internet Centre"},
+      {te:"హార్డ్‌వేర్ దుకాణం", en:"Hardware Shop"},
+      {te:"బట్టల దుకాణం (ఓనర్)", en:"Cloth Store Owner"},
+      {te:"స్వర్ణకారుడు (గోల్డ్‌స్మిత్)", en:"Goldsmith"},
+      {te:"పండ్ల అమ్మకం", en:"Fruit Seller"},
+      {te:"పూల అమ్మకం", en:"Flower Seller"},
+      {te:"కూరగాయలు అమ్మేవారు (బండి)", en:"Vegetable Vendor"},
+      {te:"ఇన్వెస్ట్‌మెంట్ అడ్వైజర్", en:"Investment Advisor"},
+      {te:"హోమ్ లోన్ ఏజెంట్", en:"Home Loan Agent"},
+      {te:"లోన్/ఫైనాన్స్ ఏజెంట్", en:"Loan & Finance Agent"},
+      {te:"టీ బండి (మొబైల్ టీ)", en:"Mobile Tea Vendor"},
+      {te:"మ్యాథ్స్ ట్యూషన్ టీచర్", en:"Maths Tuition Teacher"},
+      {te:"డాక్యుమెంట్ రైటర్", en:"Document Writer"},
+      {te:"స్టాంప్ వెండర్", en:"Stamp Vendor"},
+      {te:"నోటరీ", en:"Notary"}
     ]
   }
 ];
@@ -586,7 +626,8 @@ const SKILL_GROUPS_URBAN = [
       {te:"టెలీకాలింగ్ (పార్ట్ టైం)", en:"Telecalling (Part Time)"},
       {te:"ప్రమోషన్/ఫ్లయర్ డిస్ట్రిబ్యూషన్", en:"Promotion / Flyer Distribution"},
       {te:"సర్వే వర్క్", en:"Survey Work"},
-      {te:"కంటెంట్/సోషల్ మీడియా", en:"Content / Social Media"}
+      {te:"కంటెంట్/సోషల్ మీడియా", en:"Content / Social Media"},
+      {te:"మ్యాథ్స్ ట్యూషన్ టీచర్", en:"Maths Tuition Teacher"}
     ]
   },
   {
@@ -626,7 +667,9 @@ const SKILL_GROUPS_URBAN = [
       {te:"కొరియర్ డెలివరీ", en:"Courier Delivery"},
       {te:"వేర్‌హౌస్ వర్కర్", en:"Warehouse Worker"},
       {te:"పికర్ & ప్యాకర్", en:"Picker & Packer"},
-      {te:"హమాలీ/లోడింగ్-అన్‌లోడింగ్", en:"Loader / Unloader"}
+      {te:"హమాలీ/లోడింగ్-అన్‌లోడింగ్", en:"Loader / Unloader"},
+      {te:"వాటర్ క్యాన్ సప్లై (ప్లాంట్)", en:"Water Can Supply"},
+      {te:"గ్యాస్ సిలిండర్ డెలివరీ", en:"Gas Cylinder Delivery"}
     ]
   },
   {
@@ -637,7 +680,8 @@ const SKILL_GROUPS_URBAN = [
       {te:"ఆటో డ్రైవర్", en:"Auto Driver"},
       {te:"బైక్ రైడర్", en:"Bike Rider"},
       {te:"ట్రక్/లారీ డ్రైవర్", en:"Truck Driver"},
-      {te:"బస్ డ్రైవర్", en:"Bus Driver"}
+      {te:"బస్ డ్రైవర్", en:"Bus Driver"},
+      {te:"డ్రైవింగ్ స్కూల్", en:"Driving School"}
     ]
   },
   {
@@ -662,7 +706,10 @@ const SKILL_GROUPS_URBAN = [
       {te:"క్వాంటిటీ సర్వేయర్", en:"Quantity Surveyor"},
       {te:"ప్రాజెక్ట్ మేనేజర్", en:"Project Manager"},
       {te:"JCB ఆపరేటర్", en:"JCB Operator"},
-      {te:"సర్వేయర్ (Land Surveyor)", en:"Land Surveyor"}
+      {te:"సర్వేయర్ (Land Surveyor)", en:"Land Surveyor"},
+      {te:"వడ్డెర కార్మికులు (రాళ్ళ పని)", en:"Stone Breaking Worker"},
+      {te:"రాళ్ళు/కంకర సప్లై", en:"Stone & Gravel Supply"},
+      {te:"ఇంటి ప్లాన్ డిజైనర్ (డ్రాఫ్ట్స్‌మెన్)", en:"House Plan Designer"}
     ]
   },
   {
@@ -704,7 +751,8 @@ const SKILL_GROUPS_URBAN = [
       {te:"ఫార్మసిస్ట్", en:"Pharmacist"},
       {te:"ల్యాబ్ టెక్నీషియన్", en:"Lab Technician"},
       {te:"ఫిజియోథెరపిస్ట్", en:"Physiotherapist"},
-      {te:"కేర్‌టేకర్", en:"Caretaker"}
+      {te:"కేర్‌టేకర్", en:"Caretaker"},
+      {te:"చర్మ వైద్యుడు (డెర్మటాలజిస్ట్)", en:"Dermatologist"}
     ]
   },
   {
@@ -714,7 +762,8 @@ const SKILL_GROUPS_URBAN = [
       {te:"ట్యూషన్ టీచర్", en:"Tuition Teacher"},
       {te:"లెక్చరర్", en:"Lecturer"},
       {te:"స్పోకెన్ ఇంగ్లీష్ ట్రైనర్", en:"Spoken English Trainer"},
-      {te:"కంప్యూటర్ ట్రైనర్", en:"Computer Trainer"}
+      {te:"కంప్యూటర్ ట్రైనర్", en:"Computer Trainer"},
+      {te:"మ్యాథ్స్ ట్యూషన్ టీచర్", en:"Maths Tuition Teacher"}
     ]
   },
   {
@@ -725,7 +774,10 @@ const SKILL_GROUPS_URBAN = [
       {te:"వెయిటర్", en:"Waiter"},
       {te:"కిచెన్ హెల్పర్", en:"Kitchen Helper"},
       {te:"క్యాషియర్", en:"Cashier"},
-      {te:"హోటల్ మేనేజర్", en:"Hotel Manager"}
+      {te:"హోటల్ మేనేజర్", en:"Hotel Manager"},
+      {te:"టీ బండి (మొబైల్ టీ)", en:"Mobile Tea Vendor"},
+      {te:"వంట మాస్టర్ (పెళ్లిళ్లు/ఫంక్షన్లు)", en:"Wedding / Function Cook"},
+      {te:"క్యాటరింగ్ కాంట్రాక్టర్", en:"Catering Contractor"}
     ]
   },
   {
@@ -739,7 +791,21 @@ const SKILL_GROUPS_URBAN = [
       {te:"ప్యాకింగ్ స్టాఫ్", en:"Packing Staff"},
       {te:"స్టోర్ కీపర్", en:"Store Keeper"},
       {te:"బిల్లింగ్ ఎగ్జిక్యూటివ్", en:"Billing Executive"},
-      {te:"షోరూమ్ స్టాఫ్", en:"Showroom Staff"}
+      {te:"షోరూమ్ స్టాఫ్", en:"Showroom Staff"},
+      {te:"కిరాణా దుకాణం", en:"Grocery Shop"},
+      {te:"చికెన్/మటన్ షాప్", en:"Chicken & Mutton Shop"},
+      {te:"చేపల అమ్మకం", en:"Fish Seller"},
+      {te:"చెప్పులు/షూ దుకాణం", en:"Footwear Shop"},
+      {te:"మొబైల్ షాప్", en:"Mobile Shop"},
+      {te:"కూరగాయల దుకాణం", en:"Vegetable Shop"},
+      {te:"పాల డెయిరీ", en:"Milk Dairy"},
+      {te:"జిరాక్స్/నెట్ సెంటర్", en:"Xerox & Internet Centre"},
+      {te:"హార్డ్‌వేర్ దుకాణం", en:"Hardware Shop"},
+      {te:"బట్టల దుకాణం (ఓనర్)", en:"Cloth Store Owner"},
+      {te:"స్వర్ణకారుడు (గోల్డ్‌స్మిత్)", en:"Goldsmith"},
+      {te:"పండ్ల అమ్మకం", en:"Fruit Seller"},
+      {te:"పూల అమ్మకం", en:"Flower Seller"},
+      {te:"కూరగాయలు అమ్మేవారు (బండి)", en:"Vegetable Vendor"}
     ]
   },
   {
@@ -780,7 +846,8 @@ const SKILL_GROUPS_URBAN = [
       {te:"లాండ్రీ వర్కర్", en:"Laundry Worker"},
       {te:"ఐరనింగ్ వర్కర్", en:"Ironing Worker"},
       {te:"షూ రిపేర్", en:"Shoe Repair"},
-      {te:"మొబైల్/ఎలక్ట్రానిక్స్ రిపేర్", en:"Mobile Repair Technician"}
+      {te:"మొబైల్/ఎలక్ట్రానిక్స్ రిపేర్", en:"Mobile Repair Technician"},
+      {te:"పూజారి", en:"Priest / Poojari"}
     ]
   },
   {
@@ -801,7 +868,12 @@ const SKILL_GROUPS_URBAN = [
       {te:"DJ/సౌండ్ సిస్టమ్", en:"DJ / Sound System"},
       {te:"డెకరేషన్ వర్కర్", en:"Decoration Worker"},
       {te:"లైటింగ్ వర్కర్", en:"Lighting Worker"},
-      {te:"అంకర్/హోస్ట్", en:"Anchor / Host"}
+      {te:"అంకర్/హోస్ట్", en:"Anchor / Host"},
+      {te:"ఫ్లెక్సీ/బ్యానర్ ప్రింటింగ్", en:"Flex & Banner Printing"},
+      {te:"ఆర్టిస్ట్ (పెయింటింగ్/డిజైన్)", en:"Artist (Painting/Design)"},
+      {te:"టెంట్ హౌస్", en:"Tent House"},
+      {te:"వంట మాస్టర్ (పెళ్లిళ్లు/ఫంక్షన్లు)", en:"Wedding / Function Cook"},
+      {te:"క్యాటరింగ్ కాంట్రాక్టర్", en:"Catering Contractor"}
     ]
   },
   {
@@ -839,7 +911,10 @@ const SKILL_GROUPS_URBAN = [
       {te:"పెస్ట్ కంట్రోల్ వర్కర్", en:"Pest Control Worker"},
       {te:"వాటర్ ట్యాంక్ క్లీనింగ్", en:"Water Tank Cleaning"},
       {te:"బైక్/కారు మెకానిక్", en:"Bike / Car Mechanic"},
-      {te:"కారు వాషింగ్/డిటైలింగ్", en:"Car Washing / Detailing"}
+      {te:"కారు వాషింగ్/డిటైలింగ్", en:"Car Washing / Detailing"},
+      {te:"ఇంటర్నెట్/కేబుల్ కనెక్షన్", en:"Internet & Cable Connection"},
+      {te:"టైర్ పంక్చర్ రిపేర్", en:"Tyre Puncture Repair"},
+      {te:"రెగ్జిన్ వర్క్ (సోఫా/సీట్ కవర్)", en:"Rexine Work"}
     ]
   },
   {
@@ -863,7 +938,13 @@ const SKILL_GROUPS_URBAN = [
       {te:"ఇన్సూరెన్స్ అడ్వైజర్", en:"Insurance Advisor"},
       {te:"లోన్ ఎగ్జిక్యూటివ్", en:"Loan Executive"},
       {te:"అడ్వకేట్", en:"Advocate"},
-      {te:"చార్టర్డ్ అకౌంటెంట్", en:"Chartered Accountant"}
+      {te:"చార్టర్డ్ అకౌంటెంట్", en:"Chartered Accountant"},
+      {te:"ఇన్వెస్ట్‌మెంట్ అడ్వైజర్", en:"Investment Advisor"},
+      {te:"హోమ్ లోన్ ఏజెంట్", en:"Home Loan Agent"},
+      {te:"లోన్/ఫైనాన్స్ ఏజెంట్", en:"Loan & Finance Agent"},
+      {te:"డాక్యుమెంట్ రైటర్", en:"Document Writer"},
+      {te:"స్టాంప్ వెండర్", en:"Stamp Vendor"},
+      {te:"నోటరీ", en:"Notary"}
     ]
   }
 ];
