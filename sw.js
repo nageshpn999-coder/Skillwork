@@ -3,7 +3,7 @@
 // నెట్ లేకపోతే మాత్రమే cache నుండి ఇస్తుంది (offline support).
 // ఇలా చేయడం వల్ల GitHub లో update చేసిన వెంటనే users కి కొత్త version వస్తుంది.
 
-const CACHE = 'workpin-v1';
+const CACHE = 'workpin-v2';
 const CORE = [
   'index.html',
   'worker-enroll.html',
@@ -17,7 +17,7 @@ const CORE = [
   'about.html',
   'assets/style.css',
   'assets/data.js',
-  'assets/icons/icon-192.png'
+  'assets/icon-192.png'
 ];
 
 self.addEventListener('install', e => {
@@ -43,7 +43,8 @@ self.addEventListener('fetch', e => {
   if (url.origin !== self.location.origin) return;
 
   e.respondWith(
-    fetch(req)
+    // cache:'no-cache' — బ్రౌజర్ పాత కాపీ ఇవ్వకుండా ప్రతిసారీ సర్వర్‌తో చెక్ చేస్తుంది
+    fetch(req, {cache:'no-cache'})
       .then(res => {
         // తాజా copy ని cache లో పెట్టు (offline కోసం)
         const copy = res.clone();
