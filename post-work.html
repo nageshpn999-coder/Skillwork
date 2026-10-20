@@ -125,13 +125,25 @@ if(typeof OWNER_WHATSAPP!=='undefined' && OWNER_WHATSAPP && !OWNER_WHATSAPP.incl
 
 const districtSel = document.getElementById('edistrict');
 fillDistrictSelect(districtSel);
-fillAreaSelect(document.getElementById('earea'));
 setupHydAreaSwitch(districtSel, document.getElementById('mandalWrap'), document.getElementById('areaWrap'));
 
 // ---- Phase 3: 🔍 Area search (Hyderabad only) ----
 const areaSearchEl = document.getElementById('areaSearch');
 const areaSel = document.getElementById('earea');
 const customAreaEl = document.getElementById('customArea');
+
+// ఏరియా లిస్ట్ పైన "— మీ ఏరియా ఎంచుకోండి —" — అమీర్‌పేట ముందే సెలెక్ట్ కాకుండా
+function fillAreaWithPrompt(filterText){
+  fillAreaSelect(areaSel, filterText);
+  const o = document.createElement('option');
+  o.value = '';
+  o.textContent = getLang()==='en' ? '— Select your area —' : '— మీ ఏరియా ఎంచుకోండి —';
+  areaSel.insertBefore(o, areaSel.firstChild);
+  const f = (filterText||'').trim();
+  const matched = f && (areaSel.options.length-1) < HYD_AREAS.length;
+  areaSel.selectedIndex = matched ? 1 : 0;
+}
+fillAreaWithPrompt();
 
 // "Other Area" select అయినప్పుడు మాత్రమే custom text box చూపించు
 function syncCustomArea(){
@@ -142,12 +154,13 @@ function syncCustomArea(){
 areaSel.addEventListener('change', syncCustomArea);
 
 areaSearchEl.addEventListener('input', ()=>{
-  fillAreaSelect(areaSel, areaSearchEl.value);
+  fillAreaWithPrompt(areaSearchEl.value);
   syncCustomArea();
 });
 
 // ---- Phase 3: 📍 Use My Current Location ----
 const useLocBtn = document.getElementById('useLocBtn');
+let lastLoc = null;
 const locMsg = document.getElementById('locMsg');
 useLocBtn.textContent = t('use_my_loc');
 
@@ -155,6 +168,7 @@ useLocBtn.addEventListener('click', async ()=>{
   useLocBtn.disabled = true;
   useLocBtn.textContent = t('loc_detecting');
   const loc = await getMyLocation();
+  if(loc) lastLoc = loc;             // పోస్ట్ చేసేటప్పుడు మళ్ళీ అడగకుండా
   useLocBtn.disabled = false;
   useLocBtn.textContent = t('use_my_loc');
   locMsg.style.display = 'block';
@@ -173,7 +187,7 @@ useLocBtn.addEventListener('click', async ()=>{
     const na = nearestHydArea(loc.lat, loc.lng);
     if(na){
       areaSearchEl.value='';
-      fillAreaSelect(areaSel);
+      fillAreaWithPrompt();
       areaSel.value = na.te;   // GPS ఎప్పుడూ named area నే select చేస్తుంది
       syncCustomArea();
     }
@@ -191,6 +205,11 @@ function rebuildChips(){
   // Skill search box అన్ని జిల్లాలకూ — rural లో professional skills search చేస్తేనే కనిపిస్తాయి
   skillFilterWrap.style.display = 'block';
   skillFilterEl.value='';
+  // ఊరు/కాలనీ ఉదాహరణ జిల్లాను బట్టి
+  const en = getLang()==='en';
+  document.getElementById('evillage').placeholder = isHyd
+    ? (en ? 'e.g. KPHB Colony' : 'ఉదా: KPHB కాలనీ')
+    : (en ? 'e.g. Gopalpet' : 'ఉదా: గోపాల్‌పేట్');
   buildSkillChips(document.getElementById('eSkillBox'), eSelectedSkills, groups, '', false);
 }
 districtSel.addEventListener('change', rebuildChips);
@@ -214,13 +233,26 @@ document.getElementById('eForm').addEventListener('submit', async (e)=>{
   const phone = cleanPhone(document.getElementById('ephone').value);
   if(phone.length!==10){ showToast(t('err_phone')); return; }
   if(eSelectedSkills.size===0){ showToast(t('err_worktype')); return; }
+  if(districtSel.value===HYD_TE && !areaSel.value){
+    showToast(getLang()==='en' ? 'Please select your area' : 'మీ ఏరియా ఎంచుకోండి');
+    areaSel.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  // బటన్ రెండుసార్లు నొక్కినా ఒక్కసారే పోస్ట్ అవుతుంది
+  if(postBusy) return;
+  postBusy = true;
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const btnText = submitBtn ? submitBtn.textContent : '';
+  if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = getLang()==='en' ? 'Posting…' : 'పోస్ట్ అవుతోంది…'; }
+  const releasePost = ()=>{ postBusy = false; if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = btnText; } };
 
   const isHyd = districtSel.value===HYD_TE;
   const mandalVal = isHyd ? areaSel.value : document.getElementById('emandal').value.trim();
   // "Other Area" అయితే user టైప్ చేసిన పేరు customArea గా save
   const customAreaVal = (isHyd && areaSel.value===OTHER_AREA_TE) ? customAreaEl.value.trim() : '';
 
-  const loc = await getMyLocation();
+  // 📍 బటన్‌తో ఇంతకుముందే తీసుకుంటే అదే; పాప్‌అప్‌కి జవాబు లేకపోతే 8 సెకన్లలో లొకేషన్ లేకుండానే
+  const loc = lastLoc || await Promise.race([getMyLocation(), new Promise(r=>setTimeout(()=>r(null), 8000))]);
 
   const data = {
     name: document.getElementById('ename').value.trim(),
@@ -247,8 +279,10 @@ document.getElementById('eForm').addEventListener('submit', async (e)=>{
   }catch(err){
     console.error(err);
     showToast(t('err_generic'));
+    releasePost();
   }
 });
+let postBusy = false;
 </script>
 <script>
 // Service worker register — offline support + home screen install
