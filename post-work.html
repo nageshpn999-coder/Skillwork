@@ -228,11 +228,41 @@ skillFilterEl.addEventListener('input', ()=>{
   buildSkillChips(document.getElementById('eSkillBox'), eSelectedSkills, groups, f, true);
 });
 
+// ---- పని పేరు బార్‌లో ఉంది కానీ chip నొక్కలేదు — సహాయం ----
+// బార్‌లో పదం సరిగ్గా ఒక chip తో సరిపోతే / ఒక్కటే chip ఉంటే దాన్ని ఎంచుకుంటుంది
+const __skillBox = document.getElementById('eSkillBox');
+function autoPickSkill(){
+  const f = skillFilterEl.value.trim().toLowerCase();
+  if(!f) return null;
+  const chips = Array.from(__skillBox.querySelectorAll('.chip'));
+  if(!chips.length) return null;
+  let pick = chips.find(c=>c.textContent.trim().toLowerCase()===f);
+  if(!pick && chips.length===1) pick = chips[0];
+  if(pick && !pick.classList.contains('on')) pick.click();
+  return pick || null;
+}
+// "👇 కింద మీ పనిని నొక్కి ఎంచుకోండి" — వెతికి, ఇంకా ఏదీ ఎంచుకోనప్పుడు మాత్రమే
+const __hint = document.createElement('div');
+__hint.style.cssText = 'display:none;background:#FFF4E5;border:1px solid #F0D9B5;border-radius:10px;padding:8px 12px;margin:0 0 8px;font-weight:700;color:#8A4B12;font-size:15px';
+__hint.textContent = getLang()==='en' ? '👇 Tap your work below to select it' : '👇 కింద మీ పనిని నొక్కి ఎంచుకోండి';
+__skillBox.parentNode.insertBefore(__hint, __skillBox);
+function updateSkillHint(){
+  const hasChips = !!__skillBox.querySelector('.chip');
+  __hint.style.display = (skillFilterEl.value.trim() && eSelectedSkills.size===0 && hasChips) ? 'block' : 'none';
+}
+skillFilterEl.addEventListener('input', updateSkillHint);
+__skillBox.addEventListener('click', ()=>setTimeout(updateSkillHint,0));
+
 document.getElementById('eForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
   const phone = cleanPhone(document.getElementById('ephone').value);
   if(phone.length!==10){ showToast(t('err_phone')); return; }
-  if(eSelectedSkills.size===0){ showToast(t('err_worktype')); return; }
+  if(eSelectedSkills.size===0 && !autoPickSkill()){
+    showToast(getLang()==='en' ? 'Tap your work below to select it' : 'కింద మీ పనిని నొక్కి ఎంచుకోండి');
+    updateSkillHint();
+    __skillBox.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
   if(districtSel.value===HYD_TE && !areaSel.value){
     showToast(getLang()==='en' ? 'Please select your area' : 'మీ ఏరియా ఎంచుకోండి');
     areaSel.scrollIntoView({behavior:'smooth', block:'center'});
